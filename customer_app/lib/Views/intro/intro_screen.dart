@@ -86,7 +86,7 @@ class _IntroScreenState extends State<IntroScreen> {
                       introModel.title ?? "", 34, Colors.black,
                       fontWeight: FontWeight.w900,
                       textAlign: TextAlign.center,
-                      txtHeight:1.3),
+                      txtHeight: 1.3),
                 ),
                 getVerSpace(FetchPixels.getPixelHeight(10)),
                 getPaddingWidget(
@@ -96,7 +96,7 @@ class _IntroScreenState extends State<IntroScreen> {
                       introModel.description ?? "", 16, Colors.black,
                       fontWeight: FontWeight.w400,
                       textAlign: TextAlign.center,
-                      txtHeight:1.3),
+                      txtHeight: 1.3),
                 ),
                 getVerSpace(FetchPixels.getPixelHeight(51)),
                 DotsIndicator(

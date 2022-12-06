@@ -1,11 +1,11 @@
-import 'package:home_service_provider/app/routes/app_routes.dart';
-import 'package:home_service_provider/base/constant.dart';
-import 'package:home_service_provider/base/pref_data.dart';
-import 'package:home_service_provider/base/resizer/fetch_pixels.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../base/color_data.dart';
-import '../../../../base/widget_utils.dart';
+import '../../../Constants/color_data.dart';
+import '../../../Constants/constant.dart';
+import '../../../Constants/pref_data.dart';
+import '../../../Constants/resizer/fetch_pixels.dart';
+import '../../../Constants/widget_utils.dart';
+import '../../../Routes/app_routes.dart';
 
 class TabProfile extends StatefulWidget {
   const TabProfile({Key? key}) : super(key: key);
