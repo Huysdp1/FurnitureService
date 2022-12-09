@@ -1,3 +1,4 @@
+import 'package:customer_app/Models/model_intro.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 
 import 'package:flutter/material.dart';
@@ -7,7 +8,6 @@ import '../../Constants/resizer/fetch_pixels.dart';
 import '../../Constants/widget_utils.dart';
 import '../../Routes/app_routes.dart';
 import '../../data/data_file.dart';
-import '../../models/model_intro.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({Key? key}) : super(key: key);

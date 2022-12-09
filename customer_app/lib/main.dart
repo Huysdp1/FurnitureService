@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Furniture',
       initialRoute: "/",
       routes: AppPages.routes,
-      //ádasd
+
     );
   }
 }

@@ -1,13 +1,16 @@
-import 'package:home_service_provider/app/data/data_file.dart';
-import 'package:home_service_provider/app/models/model_cart.dart';
-import 'package:home_service_provider/app/models/model_salon.dart';
-import 'package:home_service_provider/base/pref_data.dart';
-import 'package:home_service_provider/base/resizer/fetch_pixels.dart';
-import 'package:home_service_provider/base/widget_utils.dart';
+
+import 'package:customer_app/Models/model_popular_service.dart';
 import 'package:flutter/material.dart';
-import '../../../base/color_data.dart';
-import '../../../base/constant.dart';
-import '../../models/model_popular_service.dart';
+
+import '../../Constants/color_data.dart';
+import '../../Constants/constant.dart';
+import '../../Constants/pref_data.dart';
+import '../../Constants/resizer/fetch_pixels.dart';
+import '../../Constants/widget_utils.dart';
+import '../../Models/model_cart.dart';
+import '../../Models/model_salon.dart';
+import '../../data/data_file.dart';
+
 import '../dialog/color_dialog.dart';
 
 class DetailScreen extends StatefulWidget {

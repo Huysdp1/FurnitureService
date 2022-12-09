@@ -1,4 +1,5 @@
 
+import 'package:customer_app/Models/model_address.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -7,7 +8,7 @@ import '../../Constants/constant.dart';
 import '../../Constants/resizer/fetch_pixels.dart';
 import '../../Constants/widget_utils.dart';
 import '../../data/data_file.dart';
-import '../../models/model_address.dart';
+
 
 class DeleteDialog extends StatefulWidget {
   const DeleteDialog({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class DeleteDialog extends StatefulWidget {
 }
 
 class _DeleteDialogState extends State<DeleteDialog> {
-  List<ModelAddress> addressList = DataFile.addressList.cast<ModelAddress>();
+  List<ModelAddress> addressList = DataFile.addressList;
 
   SharedPreferences? selection;
 

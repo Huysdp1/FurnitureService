@@ -13,7 +13,6 @@ import '../../Constants/widget_utils.dart';
 
 class HomeScreen extends StatefulWidget {
  final int index;
-
   const HomeScreen(this.index, {Key? key}) : super(key: key);
 
   @override

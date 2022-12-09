@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 getVerSpace(FetchPixels.getPixelHeight(49)),
                 getButton(context, blueColor, "Login", Colors.white, () {
                   PrefData.setLogIn(true);
-                  Constant.sendToNext(context, Routes.homeScreenRoute);
+                  Constant.sendToNext(context, Routes.homeScreenRoute,arguments: 0);
                 }, 18,
                     weight: FontWeight.w600,
                     buttonHeight: FetchPixels.getPixelHeight(60),
