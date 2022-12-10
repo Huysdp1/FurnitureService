@@ -17,4 +17,3 @@ void registerPlugins(Registrar registrar) {
   SmartAuthWeb.registerWith(registrar);
   registrar.registerMessageHandler();
 }
-// aaaaa
