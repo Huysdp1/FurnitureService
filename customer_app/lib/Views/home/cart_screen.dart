@@ -1,13 +1,16 @@
-import 'package:home_service_provider/app/data/data_file.dart';
-import 'package:home_service_provider/app/models/model_cart.dart';
-import 'package:home_service_provider/app/models/model_other.dart';
-import 'package:home_service_provider/app/routes/app_routes.dart';
-import 'package:home_service_provider/base/resizer/fetch_pixels.dart';
+
 import 'package:flutter/material.dart';
 
-import '../../../base/color_data.dart';
-import '../../../base/constant.dart';
-import '../../../base/widget_utils.dart';
+import '../../Constants/color_data.dart';
+import '../../Constants/constant.dart';
+import '../../Constants/resizer/fetch_pixels.dart';
+import '../../Constants/widget_utils.dart';
+import '../../Models/model_cart.dart';
+import '../../Models/model_other.dart';
+import '../../Routes/app_routes.dart';
+import '../../data/data_file.dart';
+
+
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -22,6 +25,8 @@ class _CartScreenState extends State<CartScreen> {
   List<ModelOther> otherProductLists = DataFile.otherProductList;
   double total = 0;
   double discount = 4.80;
+  
+  get backGroundColor => null;
 
   Future<List<ModelCart>> getList() async {
     list = [];

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:home_service_provider/app/data/data_file.dart';
-import 'package:home_service_provider/app/models/model_category.dart';
-import 'package:home_service_provider/base/constant.dart';
-import 'package:home_service_provider/base/device_util.dart';
-import 'package:home_service_provider/base/resizer/fetch_pixels.dart';
-import 'package:home_service_provider/base/widget_utils.dart';
 
-import '../../../base/color_data.dart';
+
+import '../../Constants/color_data.dart';
+import '../../Constants/constant.dart';
+import '../../Constants/device_util.dart';
+import '../../Constants/resizer/fetch_pixels.dart';
+import '../../Constants/widget_utils.dart';
+import '../../Models/model_category.dart';
+import '../../data/data_file.dart';
 import '../../routes/app_routes.dart';
 
 class CategoryScreen extends StatefulWidget {

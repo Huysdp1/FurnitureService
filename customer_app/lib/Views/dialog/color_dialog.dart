@@ -124,6 +124,7 @@ class _ColorDialogState extends State<ColorDialog> {
           child: Row(
             children: [
               Container(
+
                 height: FetchPixels.getPixelHeight(104),
                 width: FetchPixels.getPixelHeight(104),
                 decoration: BoxDecoration(

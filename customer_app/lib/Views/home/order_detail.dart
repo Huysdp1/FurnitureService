@@ -1,11 +1,12 @@
 import 'package:dotted_line/dotted_line.dart';
-import 'package:home_service_provider/base/resizer/fetch_pixels.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../base/color_data.dart';
-import '../../../base/constant.dart';
-import '../../../base/widget_utils.dart';
+
+import '../../Constants/color_data.dart';
+import '../../Constants/constant.dart';
+import '../../Constants/resizer/fetch_pixels.dart';
+import '../../Constants/widget_utils.dart';
 import '../../data/data_file.dart';
 import '../../models/model_cart.dart';
 import '../dialog/confirm_dialog.dart';

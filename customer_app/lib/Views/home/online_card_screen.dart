@@ -1,11 +1,13 @@
-import 'package:home_service_provider/app/data/data_file.dart';
-import 'package:home_service_provider/app/models/model_card.dart';
-import 'package:home_service_provider/base/resizer/fetch_pixels.dart';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../base/color_data.dart';
-import '../../../base/widget_utils.dart';
+
+import '../../Constants/color_data.dart';
+import '../../Constants/resizer/fetch_pixels.dart';
+import '../../Constants/widget_utils.dart';
+import '../../Models/model_card.dart';
+import '../../data/data_file.dart';
 import '../dialog/card_dialog.dart';
 
 class OnlineCardScreen extends StatefulWidget {

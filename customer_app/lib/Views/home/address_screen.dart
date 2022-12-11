@@ -1,11 +1,14 @@
 import 'package:dotted_line/dotted_line.dart';
-import 'package:home_service_provider/app/routes/app_routes.dart';
-import 'package:home_service_provider/base/resizer/fetch_pixels.dart';
-import 'package:home_service_provider/base/widget_utils.dart';
+
 import 'package:flutter/material.dart';
 
-import '../../../base/color_data.dart';
-import '../../../base/constant.dart';
+import '../../Constants/color_data.dart';
+import '../../Constants/constant.dart';
+import '../../Constants/resizer/fetch_pixels.dart';
+import '../../Constants/widget_utils.dart';
+import '../../Routes/app_routes.dart';
+
+
 
 class AddressScreen extends StatefulWidget {
   const AddressScreen({Key? key}) : super(key: key);
