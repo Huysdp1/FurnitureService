@@ -15,10 +15,8 @@ class EditAddressScreen extends StatefulWidget {
 class _EditAddressScreenState extends State<EditAddressScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  TextEditingController pinCodeController = TextEditingController();
   TextEditingController landmarkController = TextEditingController();
   TextEditingController cityController = TextEditingController();
-  TextEditingController countryController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
   @override
@@ -31,7 +29,8 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
           bottomNavigationBar: addAddressButton(context),
           body: SafeArea(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: FetchPixels.getDefaultHorSpace(context)),
+              padding: EdgeInsets.symmetric(
+                  horizontal: FetchPixels.getDefaultHorSpace(context)),
               child: Column(
                 children: [
                   getVerSpace(FetchPixels.getPixelHeight(20)),
@@ -51,83 +50,67 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
 
   Expanded buildExpand(BuildContext context) {
     return Expanded(
-                  flex: 1,
-                  child: ListView(
-                    physics: const BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    primary: true,
-                    children: [
-                      getDefaultTextFiledWithLabel(
-                          context, "Name", nameController, Colors.grey,
-                          function: () {},
-                          height: FetchPixels.getPixelHeight(60),
-                          withprefix: true,
-                          image: "profile.svg",
-                          isEnable: false,
-                          minLines: true),
-                      getVerSpace(FetchPixels.getPixelHeight(20)),
-                      getDefaultTextFiledWithLabel(
-                          context, "Address", addressController, Colors.grey,
-                          function: () {},
-                          isEnable: false,
-                          withprefix: false,
-                          minLines: true,
-                          height: FetchPixels.getPixelHeight(120),
-                          alignmentGeometry: Alignment.topLeft),
-                      getVerSpace(FetchPixels.getPixelHeight(20)),
-                      getDefaultTextFiledWithLabel(
-                          context, "PinCode", pinCodeController, Colors.grey,
-                          function: () {},
-                          isEnable: false,
-                          withprefix: false,
-                          minLines: true,
-                          height: FetchPixels.getPixelHeight(60)),
-                      getVerSpace(FetchPixels.getPixelHeight(20)),
-                      getDefaultTextFiledWithLabel(
-                        context,
-                        "Landmark",
-                        landmarkController,
-                        Colors.grey,
-                        function: () {},
-                        isEnable: false,
-                        withprefix: false,
-                        minLines: true,
-                        height: FetchPixels.getPixelHeight(60),
-                        withSufix: true,
-                        suffiximage: "down_arrow.svg",
-                      ),
-                      getVerSpace(FetchPixels.getPixelHeight(20)),
-                      getDefaultTextFiledWithLabel(
-                          context, "City", cityController, Colors.grey,
-                          function: () {},
-                          isEnable: false,
-                          withprefix: false,
-                          minLines: true,
-                          height: FetchPixels.getPixelHeight(60),
-                          withSufix: true,
-                          suffiximage: "down_arrow.svg"),
-                      getVerSpace(FetchPixels.getPixelHeight(20)),
-                      getDefaultTextFiledWithLabel(
-                          context, "Country", countryController, Colors.grey,
-                          function: () {},
-                          isEnable: false,
-                          withprefix: false,
-                          minLines: true,
-                          height: FetchPixels.getPixelHeight(60),
-                          withSufix: true,
-                          suffiximage: "down_arrow.svg"),
-                      getVerSpace(FetchPixels.getPixelHeight(20)),
-                      getDefaultTextFiledWithLabel(
-                          context, "Phone", phoneController, Colors.grey,
-                          function: () {},
-                          height: FetchPixels.getPixelHeight(60),
-                          withprefix: true,
-                          image: "call.svg",
-                          isEnable: false,
-                          minLines: true),
-                    ],
-                  ),
-                );
+      flex: 1,
+      child: ListView(
+        physics: const BouncingScrollPhysics(),
+        shrinkWrap: true,
+        primary: true,
+        children: [
+          getDefaultTextFiledWithLabel(
+              context, "Tên", nameController, Colors.grey,
+              function: () {},
+              height: FetchPixels.getPixelHeight(60),
+              withprefix: true,
+              image: "profile.svg",
+              isEnable: false,
+              minLines: true),
+          getVerSpace(FetchPixels.getPixelHeight(20)),
+          getDefaultTextFiledWithLabel(
+              context, "Địa chỉ", addressController, Colors.grey,
+              function: () {},
+              isEnable: false,
+              withprefix: false,
+              minLines: true,
+              height: FetchPixels.getPixelHeight(120),
+              alignmentGeometry: Alignment.topLeft),
+          getVerSpace(FetchPixels.getPixelHeight(20)),
+          getVerSpace(FetchPixels.getPixelHeight(20)),
+          getDefaultTextFiledWithLabel(
+            context,
+            "Tòa nhà",
+            landmarkController,
+            Colors.grey,
+            function: () {},
+            isEnable: false,
+            withprefix: false,
+            minLines: true,
+            height: FetchPixels.getPixelHeight(60),
+            withSufix: true,
+            suffiximage: "down_arrow.svg",
+          ),
+          getVerSpace(FetchPixels.getPixelHeight(20)),
+          getDefaultTextFiledWithLabel(
+              context, "Thành Phố", cityController, Colors.grey,
+              function: () {},
+              isEnable: false,
+              withprefix: false,
+              minLines: true,
+              height: FetchPixels.getPixelHeight(60),
+              withSufix: true,
+              suffiximage: "down_arrow.svg"),
+          getVerSpace(FetchPixels.getPixelHeight(20)),
+          getVerSpace(FetchPixels.getPixelHeight(20)),
+          getDefaultTextFiledWithLabel(
+              context, "Số điện thoại", phoneController, Colors.grey,
+              function: () {},
+              height: FetchPixels.getPixelHeight(60),
+              withprefix: true,
+              image: "call.svg",
+              isEnable: false,
+              minLines: true),
+        ],
+      ),
+    );
   }
 
   Widget buildToolbar(BuildContext context) {
@@ -135,7 +118,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
       Constant.backToPrev(context);
     },
         istext: true,
-        title: "Edit My Address",
+        title: "Sửa địa chỉ",
         weight: FontWeight.w900,
         fontsize: 24,
         textColor: Colors.black);
@@ -148,7 +131,8 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
           left: FetchPixels.getPixelWidth(20),
           right: FetchPixels.getPixelWidth(20),
           bottom: FetchPixels.getPixelHeight(30)),
-      child: getButton(context, blueColor, "Add New Address", Colors.white, () {
+      child: getButton(context, blueColor, "Thêm địa chỉ mới", Colors.white,
+          () {
         Constant.backToPrev(context);
       }, 18,
           weight: FontWeight.w600,

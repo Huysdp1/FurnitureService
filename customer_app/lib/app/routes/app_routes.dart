@@ -1,7 +1,9 @@
-abstract class Routes{
+import 'package:customer_app/app/view/address/add_address_screen.dart';
+
+abstract class Routes {
   static const homeRoute = Paths.homepath;
   static const introRoute = Paths.introPath;
-  static const loginRoute  = Paths.loginPath;
+  static const loginRoute = Paths.loginPath;
   static const forgotRoute = Paths.forgotPath;
   static const resetRoute = Paths.resetPath;
   static const signupRoute = Paths.signUpPath;
@@ -28,8 +30,8 @@ abstract class Routes{
   static const privacyRoute = Paths.privacyPath;
   static const securityRoute = Paths.securityPath;
   static const termOfServiceRoute = Paths.termOfServicePath;
+  static const addAddressScreenRoute = Paths.addAddressScreenPath;
 }
-
 
 abstract class Paths {
   static const homepath = "/";
@@ -61,4 +63,5 @@ abstract class Paths {
   static const privacyPath = "/PrivacyScreen";
   static const securityPath = "/SecurityScreen";
   static const termOfServicePath = "/TermOfServiceScreen";
+  static const addAddressScreenPath = "/AddAddressScreen";
 }

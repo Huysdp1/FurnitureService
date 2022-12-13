@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../../base/color_data.dart';
@@ -89,7 +88,7 @@ class _TabHomeState extends State<TabHome> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    getCustomFont("Categories", 20, Colors.black, 1,
+                    getCustomFont("Loại dịch vụ", 20, Colors.black, 1,
                         fontWeight: FontWeight.w900),
                     GestureDetector(
                       onTap: () {
@@ -111,7 +110,7 @@ class _TabHomeState extends State<TabHome> {
                 height: FetchPixels.getPixelHeight(132),
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 6,
+                  itemCount: 3,
                   primary: false,
                   shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
@@ -223,7 +222,8 @@ class _TabHomeState extends State<TabHome> {
                                     double.infinity,
                                     FetchPixels.getPixelHeight(115),
                                     FetchPixels.getPixelHeight(12),
-                                    modelPopularService.image ?? "",boxFit: BoxFit.cover)),
+                                    modelPopularService.image ?? "",
+                                    boxFit: BoxFit.cover)),
                             // getAssetImage(
                             //     modelPopularService.image ?? "",
                             //     double.infinity,

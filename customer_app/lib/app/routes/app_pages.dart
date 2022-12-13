@@ -1,7 +1,9 @@
+import 'package:customer_app/app/view/address/edit_address_screen.dart';
+import 'package:customer_app/app/view/address/add_address_screen.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:path/path.dart';
 
-import '../view/address/edit_address_screen.dart';
 import '../view/address/my_address_screen.dart';
 import '../view/bookings/booking_detail.dart';
 import '../view/card/card_screen.dart';
@@ -28,6 +30,7 @@ import '../view/signup/select_country.dart';
 import '../view/signup/signup_screen.dart';
 import '../view/signup/verify_screen.dart';
 import '../view/splash_screen.dart';
+
 import 'app_routes.dart';
 
 class AppPages {
@@ -59,6 +62,7 @@ class AppPages {
     Routes.searchRoute: (context) => const SearchScreen(),
     Routes.bookingRoute: (context) => const BookingDetail(),
     Routes.securityRoute: (context) => const SecurityScreen(),
-    Routes.termOfServiceRoute: (context) => const TermOfServiceScreen()
+    Routes.termOfServiceRoute: (context) => const TermOfServiceScreen(),
+    Routes.addAddressScreenRoute: (context) => const AddAddressScreen()
   };
 }

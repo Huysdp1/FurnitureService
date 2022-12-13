@@ -1,4 +1,3 @@
-
 import '../../base/color_data.dart';
 import '../models/model_address.dart';
 import '../models/model_booking.dart';
@@ -47,21 +46,21 @@ class DataFile {
   ];
 
   static List<ModelCategory> categoryList = [
-    ModelCategory("cleaning.svg", "Cleaning"),
+    ModelCategory("cleaning.svg", "Washing"),
     ModelCategory("wrench.svg", "Repairing"),
-    ModelCategory("paint_roller.svg", "Painting"),
-    ModelCategory("sloon.svg", "Salon"),
-    ModelCategory("iron.svg", "Ironing"),
-    ModelCategory("laundry.svg", "Washing"),
-    ModelCategory("perfume.svg", "Beauty"),
-    ModelCategory("car_toy.svg", "Vehicle Wash"),
-    ModelCategory("pipe.svg", "Plumbing"),
-    ModelCategory("health_insurance.svg", "Health"),
-    ModelCategory("grill.svg", "Cooking Shef"),
-    ModelCategory("pipe.svg", "Plumbing"),
-    ModelCategory("dump_truck.svg", "Transport"),
-    ModelCategory("watering_plants.svg", "Gardening"),
-    ModelCategory("plastic_bin.svg", "Trashing")
+    ModelCategory("paint_roller.svg", "Maintaining"),
+    // ModelCategory("sloon.svg", "Salon"),
+    // ModelCategory("iron.svg", "Ironing"),
+    // ModelCategory("laundry.svg", "Washing"),
+    // ModelCategory("perfume.svg", "Beauty"),
+    // ModelCategory("car_toy.svg", "Vehicle Wash"),
+    // ModelCategory("pipe.svg", "Plumbing"),
+    // ModelCategory("health_insurance.svg", "Health"),
+    // ModelCategory("grill.svg", "Cooking Shef"),
+    // ModelCategory("pipe.svg", "Plumbing"),
+    // ModelCategory("dump_truck.svg", "Transport"),
+    // ModelCategory("watering_plants.svg", "Gardening"),
+    // ModelCategory("plastic_bin.svg", "Trashing")
   ];
 
   static List<ModelSalon> salonProductList = [
@@ -85,17 +84,10 @@ class DataFile {
   ];
 
   static List<String> timeList = [
-    "06:00 AM",
-    "08:00 AM",
-    "10:00 AM",
-    "12:00 PM",
-    "13:00 PM",
-    "14:00 PM",
-    "16:00 PM",
-    "18:00 PM",
-    "19:00 PM",
-    "20:00 PM",
-    "21:00 PM"
+    "08:00 - 10:00",
+    "10:00 - 12:00",
+    "13:00 - 15:00",
+    "15:00 - 17:00",
   ];
 
   static List<ModelCard> cardList = [
@@ -124,7 +116,7 @@ class DataFile {
   static List<ModelAddress> addressList = [
     ModelAddress("Alena Gomez",
         "3891 Ranchview Dr. Richardson, California 62639", "(907) 555-0101"),
-    ModelAddress("Alena Gomez", "4140 Parker Rd. Allentown, New Mexico 31134",
+    ModelAddress("Romeo chaless", "4140 Parker Rd. Allentown, New Mexico 31134",
         "(907) 555-0101"),
   ];
 

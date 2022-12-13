@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,8 +43,8 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
           bottomNavigationBar: doneButton(context),
           body: SafeArea(
             child: Container(
-              padding:
-                  EdgeInsets.symmetric(horizontal: FetchPixels.getPixelWidth(20)),
+              padding: EdgeInsets.symmetric(
+                  horizontal: FetchPixels.getPixelWidth(20)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -53,8 +52,7 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                   gettoolbarMenu(context, "back.svg", () {
                     Constant.backToPrev(context);
                   },
-                      title: "Date & Time",
-                      
+                      title: "Chọn ngày & giờ",
                       weight: FontWeight.w900,
                       istext: true,
                       fontsize: 24,
@@ -62,8 +60,8 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                   getVerSpace(FetchPixels.getPixelHeight(30)),
                   calendarContainer(),
                   getVerSpace(FetchPixels.getPixelHeight(30)),
-                  getCustomFont("Select Time", 16, Colors.black, 1,
-                       fontWeight: FontWeight.w900),
+                  getCustomFont("Chọn giờ", 16, Colors.black, 1,
+                      fontWeight: FontWeight.w900),
                   getVerSpace(FetchPixels.getPixelHeight(10)),
                   timeList()
                 ],
@@ -77,21 +75,26 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
         });
   }
 
+  DateTime noww = DateTime.now();
+
   Container doneButton(BuildContext context) {
     return Container(
-          color: backGroundColor,
-          padding: EdgeInsets.only(
-              left: FetchPixels.getPixelWidth(20),
-              right: FetchPixels.getPixelWidth(20),
-              bottom: FetchPixels.getPixelHeight(33)),
-          child: getButton(context, blueColor, "Done", Colors.white, () {
-            Constant.sendToNext(context, Routes.paymentRoute);
-          }, 18,
-              weight: FontWeight.w600,
-              buttonHeight: FetchPixels.getPixelHeight(60),
-              borderRadius:
-                  BorderRadius.circular(FetchPixels.getPixelHeight(14))),
-        );
+      color: backGroundColor,
+      padding: EdgeInsets.only(
+          left: FetchPixels.getPixelWidth(20),
+          right: FetchPixels.getPixelWidth(20),
+          bottom: FetchPixels.getPixelHeight(33)),
+      child: getButton(context, blueColor, "Done", Colors.white, () {
+        print(noww.hour);
+        print(noww.hour);
+        print(noww.minute);
+
+        Constant.sendToNext(context, Routes.paymentRoute);
+      }, 18,
+          weight: FontWeight.w600,
+          buttonHeight: FetchPixels.getPixelHeight(60),
+          borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(14))),
+    );
   }
 
   Expanded timeList() {
@@ -123,9 +126,13 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                       : null,
                   borderRadius:
                       BorderRadius.circular(FetchPixels.getPixelHeight(12))),
-              child: getCustomFont(timeLists[index], 16,
-                  select == index ? blueColor : Colors.black, 1,
-                  fontWeight: FontWeight.w600, ),
+              child: getCustomFont(
+                timeLists[index],
+                16,
+                select == index ? blueColor : Colors.black,
+                1,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           );
         },
@@ -162,6 +169,17 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
             selection!.setString("year", DateFormat.y().format(args.value));
           },
           selectionShape: DateRangePickerSelectionShape.circle,
+          selectableDayPredicate: (date) {
+            if (date.weekday == 6 || date.weekday == 7) {
+              return false;
+            }
+            DateTime now = DateTime.now().subtract(const Duration(days: 1));
+            if (!now.isBefore(date)) {
+              return false;
+            }
+
+            return true;
+          },
           showNavigationArrow: true,
           backgroundColor: Colors.white,
           selectionColor: blueColor,
@@ -169,27 +187,26 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
               todayCellDecoration: BoxDecoration(
                   border: Border.all(color: blueColor), shape: BoxShape.circle),
               textStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: FetchPixels.getPixelHeight(14),
-                  fontWeight: FontWeight.w400,
-                  ),
-              todayTextStyle: TextStyle(
-                  color: blueColor,
-                  fontSize: FetchPixels.getPixelHeight(14),
-                  fontWeight: FontWeight.w400,
-                  )),
-          selectionTextStyle: TextStyle(
-              color: Colors.white,
-              fontSize: FetchPixels.getPixelHeight(14),
-              fontWeight: FontWeight.w400,
+                color: Colors.black,
+                fontSize: FetchPixels.getPixelHeight(14),
+                fontWeight: FontWeight.w400,
               ),
+              todayTextStyle: TextStyle(
+                color: blueColor,
+                fontSize: FetchPixels.getPixelHeight(14),
+                fontWeight: FontWeight.w400,
+              )),
+          selectionTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: FetchPixels.getPixelHeight(14),
+            fontWeight: FontWeight.w400,
+          ),
           selectionMode: DateRangePickerSelectionMode.single,
           headerStyle: DateRangePickerHeaderStyle(
               textAlign: TextAlign.start,
               textStyle: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w900,
-                  
                   fontSize: FetchPixels.getPixelHeight(16))),
         ),
       ),

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../base/color_data.dart';
@@ -107,7 +106,7 @@ class _CartScreenState extends State<CartScreen> {
   Widget proceedButton(BuildContext context) {
     return getPaddingWidget(
       EdgeInsets.symmetric(horizontal: FetchPixels.getPixelWidth(20)),
-      getButton(context, blueColor, "Proceed", Colors.white, () {
+      getButton(context, blueColor, "Tiếp tục", Colors.white, () {
         Constant.sendToNext(context, Routes.addressRoute);
       }, 18,
           weight: FontWeight.w600,
@@ -123,7 +122,7 @@ class _CartScreenState extends State<CartScreen> {
         getPaddingWidget(
             EdgeInsets.symmetric(horizontal: FetchPixels.getPixelWidth(20)),
             getCustomFont(
-              "Payment Detail",
+              "chi tiết thanh toán",
               20,
               Colors.black,
               1,
@@ -136,7 +135,7 @@ class _CartScreenState extends State<CartScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               getCustomFont(
-                "Service Charge Total",
+                "Tổng phí dịch vụ",
                 16,
                 Colors.black,
                 1,
@@ -183,7 +182,7 @@ class _CartScreenState extends State<CartScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              getCustomFont("Total", 24, Colors.black, 1,
+              getCustomFont("Tổng", 24, Colors.black, 1,
                   fontWeight: FontWeight.w900),
               getCustomFont(
                 "\$${total - discount}",
@@ -206,7 +205,7 @@ class _CartScreenState extends State<CartScreen> {
         getPaddingWidget(
           EdgeInsets.symmetric(horizontal: FetchPixels.getPixelWidth(20)),
           getCustomFont(
-            "Frequently added together",
+            "Thường xuyên được cộng lại với nhau",
             20,
             Colors.black,
             1,

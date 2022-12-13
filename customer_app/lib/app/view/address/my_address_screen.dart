@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../base/color_data.dart';
@@ -67,11 +66,11 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
 
   Expanded buildExpand(BuildContext context) {
     return Expanded(
-                  flex: 1,
-                  child: (addressList.isEmpty)
-                      ? buildEmptyWidget(context)
-                      : buildAddressList(),
-                );
+      flex: 1,
+      child: (addressList.isEmpty)
+          ? buildEmptyWidget(context)
+          : buildAddressList(),
+    );
   }
 
   Column buildEmptyWidget(BuildContext context) {
@@ -160,8 +159,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                         width: FetchPixels.getPixelWidth(280),
                         child: getMultilineCustomFont(
                             modelAddress.address ?? "", 16, Colors.black,
-                            fontWeight: FontWeight.w400,
-                            txtHeight:1.3),
+                            fontWeight: FontWeight.w400, txtHeight: 1.3),
                       ),
                       getVerSpace(FetchPixels.getPixelHeight(10)),
                       getCustomFont(
@@ -247,7 +245,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
     return Column(
       children: [
         getButton(context, blueColor, "Add New Address", Colors.white, () {
-          Constant.sendToNext(context, Routes.editAddressRoute);
+          Constant.sendToNext(context, Routes.addAddressScreenRoute);
         }, 18,
             weight: FontWeight.w600,
             buttonHeight: FetchPixels.getPixelHeight(60),

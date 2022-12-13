@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 import '../../../base/color_data.dart';
 import '../../../base/constant.dart';
 import '../../../base/device_util.dart';
@@ -43,7 +42,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       Constant.backToPrev(context);
                     },
                         istext: true,
-                        title: "Categories",
+                        title: "Loại dịch vụ",
                         fontsize: 24,
                         weight: FontWeight.w900,
                         textColor: Colors.black)),
@@ -62,8 +61,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   categoryView() {
     return GridView.builder(
       itemCount: categoryLists.length,
-      padding:
-          EdgeInsets.symmetric(horizontal: FetchPixels.getPixelWidth(20)),
+      padding: EdgeInsets.symmetric(horizontal: FetchPixels.getPixelWidth(20)),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: noOfGrid,
           crossAxisSpacing: FetchPixels.getPixelWidth(19),
