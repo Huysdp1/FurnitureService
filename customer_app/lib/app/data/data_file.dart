@@ -35,14 +35,7 @@ class DataFile {
   ];
 
   static List<ModelCountry> countryList = [
-    ModelCountry("image_fghanistan.jpg", "Afghanistan (AF)", "+93"),
-    ModelCountry("image_ax.jpg", "Aland Islands (AX)", "+358"),
-    ModelCountry("image_albania.jpg", "Albania (AL)", "+355"),
-    ModelCountry("image_andora.jpg", "Andorra (AD)", "+376"),
-    ModelCountry("image_islands.jpg", "Aland Islands (AX)", "+244"),
-    ModelCountry("image_angulia.jpg", "Anguilla (AL)", "+1"),
-    ModelCountry("image_armenia.jpg", "Armenia (AN)", "+374"),
-    ModelCountry("image_austia.jpg", "Austria (AT)", "+372"),
+    ModelCountry("vietnam.png", "Việt Nam (VN)", "+84"),
   ];
 
   static List<ModelCategory> categoryList = [

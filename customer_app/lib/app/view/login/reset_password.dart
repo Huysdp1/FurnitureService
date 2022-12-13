@@ -61,7 +61,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                   },
                 ),
                 getVerSpace(FetchPixels.getPixelHeight(20)),
-                getCustomFont("Reset Password", 24, Colors.black, 1,
+                getCustomFont("Đổi mật khẩu", 24, Colors.black, 1,
                      fontWeight: FontWeight.w900,textAlign: TextAlign.center),
                 getVerSpace(FetchPixels.getPixelHeight(10)),
                 buildDetailView(),
@@ -72,7 +72,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                 getVerSpace(FetchPixels.getPixelHeight(14)),
                 buildConfirmPassField(),
                 getVerSpace(FetchPixels.getPixelHeight(50)),
-                getButton(context, blueColor, "Submit", Colors.white, () {
+                getButton(context, blueColor, "Xác nhận", Colors.white, () {
                   showDialog(
                       barrierDismissible: false,
                       builder: (context) {
@@ -92,7 +92,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     return ValueListenableBuilder(
                   builder: (context, value, child) {
                     return getDefaultTextFiledWithLabel(
-                        context, "Old Password", oldController, textColor,
+                        context, "Mật khẩu cũ", oldController, textColor,
                         function: () {},
                         height: FetchPixels.getPixelHeight(60),
                         isEnable: false,
@@ -113,7 +113,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     return ValueListenableBuilder(
                     builder: (context, value, child) {
                       return getDefaultTextFiledWithLabel(
-                          context, "New Password", newController, textColor,
+                          context, "Mật khẩu mới", newController, textColor,
                           function: () {},
                           height: FetchPixels.getPixelHeight(60),
                           isEnable: false,
@@ -134,7 +134,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     return ValueListenableBuilder(
                   builder: (context, value, child) {
                     return getDefaultTextFiledWithLabel(
-                        context, "Confirm Password", confirmController, textColor,
+                        context, "Xác nhận mật khẩu mới", confirmController, textColor,
                         function: () {},
                         height: FetchPixels.getPixelHeight(60),
                         isEnable: false,
@@ -156,7 +156,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     EdgeInsets.symmetric(
                         horizontal: FetchPixels.getPixelWidth(60)),
                     getMultilineCustomFont(
-                        "We need your registration email for reset password!",
+                        "Thay đổi mật khẩu",
                         16,
                         Colors.black,
                         fontWeight: FontWeight.w400,

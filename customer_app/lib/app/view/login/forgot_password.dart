@@ -56,7 +56,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           },
         ),
         getVerSpace(FetchPixels.getPixelHeight(20)),
-        getCustomFont("Forgot Password?", 24, Colors.black, 1,
+        getCustomFont("Quên mật khẩu?", 24, Colors.black, 1,
             fontWeight: FontWeight.w900, textAlign: TextAlign.center),
         getVerSpace(FetchPixels.getPixelHeight(10)),
         buildDetailView(),
@@ -70,18 +70,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   Widget buildMailTextFiled(BuildContext context) {
     return getDefaultTextFiledWithLabel(
-        context, "Email", emailController, Colors.grey,
+        context, "Số điện thoại", emailController, Colors.grey,
         function: () {},
         height: FetchPixels.getPixelHeight(60),
         isEnable: false,
         withprefix: true,
-        image: "message.svg",
+        image: "call.svg",
         imageWidth: FetchPixels.getPixelWidth(19),
         imageHeight: FetchPixels.getPixelHeight(17.66));
   }
 
   Widget buildButton(BuildContext context) {
-    return getButton(context, blueColor, "Submit", Colors.white, () {
+    return getButton(context, blueColor, "Xác nhận", Colors.white, () {
       Constant.sendToNext(context, Routes.resetRoute);
     }, 18,
         weight: FontWeight.w600,
@@ -93,7 +93,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return getPaddingWidget(
         EdgeInsets.symmetric(horizontal: FetchPixels.getPixelWidth(60)),
         getMultilineCustomFont(
-            "We need your registration email for reset password!",
+            "Nhập số điện thoại đã đăng ký để khôi phục mật khẩu!",
             16,
             Colors.black,
             fontWeight: FontWeight.w400,

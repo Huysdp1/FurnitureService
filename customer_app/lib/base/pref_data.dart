@@ -10,7 +10,7 @@ class PrefData {
   static String getDefaultCountry = "${prefName}country";
   static String defIndexVal = "${prefName}index";
   static String modelBooking = "${prefName}bookingModel";
-  static String defCountryName = "image_albania.jpg";
+  static String defCountryName = "vietnam.png";
 
   static Future<SharedPreferences> getPrefInstance() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();

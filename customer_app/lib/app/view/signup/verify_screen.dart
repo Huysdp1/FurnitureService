@@ -1,4 +1,5 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 
@@ -19,7 +20,45 @@ class _VerifyScreenState extends State<VerifyScreen> {
   void finishView() {
     Constant.backToPrev(context);
   }
+  @override
+  void initState() {
+    super.initState();
+    verify();
+  }
+  TextEditingController smsCode = TextEditingController();
+  late String _verificationCode;
+     verify() async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: '+84 399 390 110',
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await FirebaseAuth.instance
+              .signInWithCredential(credential)
+              .then((value) async {
+            if (value.user != null) {
+              showDialog(
+                  barrierDismissible: false,
+                  builder: (context) {
+                    return const VerifyDialog();
+                  },
+                  context: context);
+            }
+          });
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          print(e.message);
+        },
+        codeSent: (String verificationId, int? resendToken) async {
+          PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode.text);
+          await FirebaseAuth.instance.signInWithCredential(credential);
+        },
+        codeAutoRetrievalTimeout: (String verificationID) {
+          setState(() {
+            smsCode.text = verificationID;
+          });
+        },
+        timeout: const Duration(seconds: 120));
 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,28 +99,51 @@ class _VerifyScreenState extends State<VerifyScreen> {
                     },
                   ),
                   getVerSpace(FetchPixels.getPixelHeight(22)),
-                  getCustomFont("Verify", 24, Colors.black, 1,
+                  getCustomFont("Xác thực tài khoản", 24, Colors.black, 1,
                       fontWeight: FontWeight.w900, ),
                   getVerSpace(FetchPixels.getPixelHeight(10)),
-                  getCustomFont("Enter code sent to your phone number!", 16,
+                  getCustomFont("Nhập mã xác thực được gửi qua số điện thoại!", 16,
                       Colors.black, 1,
                        fontWeight: FontWeight.w400),
                   getVerSpace(FetchPixels.getPixelHeight(42)),
                   Pinput(
                     defaultPinTheme: defaultPinTheme,
                     pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+                    length: 6,
                     showCursor: true,
-                    onCompleted: (pin){},
+                    onCompleted: (pin){
+                      try {
+                        smsCode.text = pin;
+                      } catch (e) {
+                        FocusScope.of(context).unfocus();
+                      }
+                    },
+                    onChanged: (value) {
+                      print(value);
+                      setState(() {
+
+                      });
+                    },
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   ),
                   getVerSpace(FetchPixels.getPixelHeight(50)),
-                  getButton(context, blueColor, "Verify", Colors.white, () {
-                    showDialog(
-                        barrierDismissible: false,
-                        builder: (context) {
-                          return const VerifyDialog();
-                        },
-                        context: context);
+                  getButton(context, blueColor, "Xác thực", Colors.white, () async {
+                    await FirebaseAuth.instance.signInWithCredential(
+                        PhoneAuthProvider.credential(
+                            verificationId: _verificationCode, smsCode: smsCode.text))
+                        .then((value) async{
+                      if (value.user != null) {
+
+                        showDialog(
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return const VerifyDialog();
+                            },
+                            context: context);
+
+                      }
+                    });
+
                   }, 18,
                       weight: FontWeight.w600,
                       buttonHeight: FetchPixels.getPixelHeight(60),
@@ -91,10 +153,14 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      getCustomFont("Didn’t recieve code?", 14, Colors.black, 1,
+                      getCustomFont("Chưa nhận được mã?", 14, Colors.black, 1,
                            fontWeight: FontWeight.w400),
-                      getCustomFont(" Resend", 16, blueColor, 1,
-                          fontWeight: FontWeight.w900, )
+                      GestureDetector(
+                        onTap: () {
+                          verify();
+                        },
+                        child: getCustomFont(" Gửi lại", 16, blueColor, 1,
+                          fontWeight: FontWeight.w900, ),),
                     ],
                   )
                 ],

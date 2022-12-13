@@ -78,19 +78,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
         getVerSpace(FetchPixels.getPixelHeight(22)),
         getCustomFont(
-          "Sign Up",
+          "Đăng ký",
           24,
           Colors.black,
           1,
           fontWeight: FontWeight.w900,
         ),
         getVerSpace(FetchPixels.getPixelHeight(10)),
-        getCustomFont("Enter your detail for sign up!", 16, Colors.black, 1,
+        getCustomFont("Nhập thông tin đăng ký!", 16, Colors.black, 1,
             fontWeight: FontWeight.w400),
         getVerSpace(FetchPixels.getPixelHeight(30)),
         getDefaultTextFiledWithLabel(
           context,
-          "Name",
+          "Tên",
           nameController,
           Colors.grey,
           function: () {},
@@ -119,7 +119,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 getPrefVal();
               });
             },
-            child: getCountryTextField(context, "Phone Number",
+            child: getCountryTextField(context, "Số điện thoại",
                 phoneNumberController, textColor, defCode,
                 function: () {},
                 height: FetchPixels.getPixelHeight(60),
@@ -128,7 +128,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 image: defCountry)),
         getVerSpace(FetchPixels.getPixelHeight(20)),
         getDefaultTextFiledWithLabel(
-            context, "Password", passwordController, Colors.grey,
+            context, "Mật khẩu", passwordController, Colors.grey,
             function: () {},
             height: FetchPixels.getPixelHeight(60),
             isEnable: false,
@@ -143,38 +143,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             isPass = !isPass;
           });
         }),
-        getVerSpace(FetchPixels.getPixelHeight(30)),
-        Row(
-          children: [
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  agree = !agree;
-                });
-              },
-              child: Container(
-                height: FetchPixels.getPixelHeight(24),
-                width: FetchPixels.getPixelHeight(24),
-                decoration: BoxDecoration(
-                    color: (agree) ? blueColor : backGroundColor,
-                    border: (agree)
-                        ? null
-                        : Border.all(color: Colors.grey, width: 2),
-                    borderRadius:
-                        BorderRadius.circular(FetchPixels.getPixelHeight(6))),
-                padding: EdgeInsets.symmetric(
-                    vertical: FetchPixels.getPixelHeight(6),
-                    horizontal: FetchPixels.getPixelWidth(4)),
-                child: (agree) ? getSvgImage("done.svg") : null,
-              ),
-            ),
-            getHorSpace(FetchPixels.getPixelWidth(10)),
-            getCustomFont("I agree with Terms & Privacy", 16, Colors.black, 1,
-                fontWeight: FontWeight.w400)
-          ],
-        ),
+
         getVerSpace(FetchPixels.getPixelHeight(50)),
-        getButton(context, blueColor, "Sign Up", Colors.white, () {
+        getButton(context, blueColor, "Đăng ký", Colors.white, () {
           Constant.sendToNext(context, Routes.verifyRoute);
         }, 18,
             weight: FontWeight.w600,
@@ -186,7 +157,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             getCustomFont(
-              "Already have an account?",
+              "Đã có tài khoản?",
               14,
               Colors.black,
               1,
@@ -196,7 +167,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               onTap: () {
                 finishView();
               },
-              child: getCustomFont(" Login", 16, blueColor, 1,
+              child: getCustomFont(" Đăng nhập", 16, blueColor, 1,
                   fontWeight: FontWeight.w900),
             )
           ],
