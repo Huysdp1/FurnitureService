@@ -73,15 +73,17 @@ class Constant {
     });
   }
 
-  static String? loginCharactersValidate(String txt, String? title) {
+  static String? validateCharacters(String txt, String? title) {
 
       if (title == 'Số điện thoại' &&
           !RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)').hasMatch(txt)) {
         return 'Số điện thoại không đúng định dạng';
-      } else {
-        if (title == 'Mật khẩu' && txt.length < 8) {
+      }
+      if (title == 'Mật khẩu' && txt.length < 8) {
           return "Mật khẩu phải từ 8 ký tự";
-        }
+      }
+      if (txt.isEmpty){
+        return "Trống!";
       }
       return null;
     }

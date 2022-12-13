@@ -18,7 +18,7 @@ class _ResetPasswordState extends State<ResetPassword> {
   void finish() {
     Constant.backToPrev(context);
   }
-
+  bool isValidated = false;
   TextEditingController oldController = TextEditingController();
   TextEditingController newController = TextEditingController();
   TextEditingController confirmController = TextEditingController();
@@ -73,6 +73,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                 buildConfirmPassField(),
                 getVerSpace(FetchPixels.getPixelHeight(50)),
                 getButton(context, blueColor, "Xác nhận", Colors.white, () {
+                  setState(() {
+                    isValidated = true;
+                  });
                   showDialog(
                       barrierDismissible: false,
                       builder: (context) {
@@ -92,7 +95,9 @@ class _ResetPasswordState extends State<ResetPassword> {
     return ValueListenableBuilder(
                   builder: (context, value, child) {
                     return getDefaultTextFiledWithLabel(
-                        context, "Mật khẩu cũ", oldController, textColor,
+                        context, "Mật khẩu cũ",
+                        isValidated,
+                        oldController, textColor,
                         function: () {},
                         height: FetchPixels.getPixelHeight(60),
                         isEnable: false,
@@ -113,7 +118,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     return ValueListenableBuilder(
                     builder: (context, value, child) {
                       return getDefaultTextFiledWithLabel(
-                          context, "Mật khẩu mới", newController, textColor,
+                          context, "Mật khẩu mới", isValidated, newController, textColor,
                           function: () {},
                           height: FetchPixels.getPixelHeight(60),
                           isEnable: false,
@@ -134,7 +139,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     return ValueListenableBuilder(
                   builder: (context, value, child) {
                     return getDefaultTextFiledWithLabel(
-                        context, "Xác nhận mật khẩu mới", confirmController, textColor,
+                        context, "Xác nhận mật khẩu mới", isValidated, confirmController, textColor,
                         function: () {},
                         height: FetchPixels.getPixelHeight(60),
                         isEnable: false,

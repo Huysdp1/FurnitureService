@@ -1,4 +1,6 @@
+import 'package:customer_app/app/models/model_address.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../base/color_data.dart';
 import '../../../base/constant.dart';
@@ -14,14 +16,39 @@ class EditAddressScreen extends StatefulWidget {
 
 class _EditAddressScreenState extends State<EditAddressScreen> {
   TextEditingController nameController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
-  TextEditingController landmarkController = TextEditingController();
+  TextEditingController homeNumController = TextEditingController();
+  TextEditingController streetController = TextEditingController();
+  TextEditingController wardController = TextEditingController();
+  TextEditingController districtController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
-
+  bool isValidated = false;
+  SharedPreferences? selection;
+  @override
+  void initState() {
+    SharedPreferences.getInstance().then((SharedPreferences sp) {
+      selection = sp;
+      setState(() {});
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     FetchPixels(context);
+    nameController.text = selection!.getString("customer") ?? "";
+    homeNumController.text = selection!.getString("homeNumber") ?? "";
+    streetController.text = selection!.getString("street") ?? "";
+    wardController.text = selection!.getString("ward") ?? "";
+    districtController.text = selection!.getString("district") ?? "";
+    cityController.text = selection!.getString("city") ?? "";
+    selection?.remove("customer");
+    selection?.remove("homeNumber");
+    selection?.remove("street");
+    selection?.remove("ward");
+    selection?.remove("district");
+    selection?.remove("city");
+    selection?.remove("customerId");
+    selection?.remove("phone");
     return WillPopScope(
         child: Scaffold(
           resizeToAvoidBottomInset: false,
@@ -53,11 +80,12 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
       flex: 1,
       child: ListView(
         physics: const BouncingScrollPhysics(),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.manual,
         shrinkWrap: true,
         primary: true,
         children: [
           getDefaultTextFiledWithLabel(
-              context, "Tên", nameController, Colors.grey,
+              context, "Tên", isValidated, nameController, Colors.grey,
               function: () {},
               height: FetchPixels.getPixelHeight(60),
               withprefix: true,
@@ -66,19 +94,30 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
               minLines: true),
           getVerSpace(FetchPixels.getPixelHeight(20)),
           getDefaultTextFiledWithLabel(
-              context, "Địa chỉ", addressController, Colors.grey,
+              context, "Số nhà", isValidated, homeNumController, Colors.grey,
               function: () {},
               isEnable: false,
               withprefix: false,
               minLines: true,
-              height: FetchPixels.getPixelHeight(120),
+              image: "home.svg",
+              height: FetchPixels.getPixelHeight(60),
               alignmentGeometry: Alignment.topLeft),
           getVerSpace(FetchPixels.getPixelHeight(20)),
+          getDefaultTextFiledWithLabel(
+              context, "Đường", isValidated, streetController, Colors.grey,
+              function: () {},
+              isEnable: false,
+              withprefix: false,
+              minLines: true,
+              image: "home_address.svg",
+              height: FetchPixels.getPixelHeight(60),
+              alignmentGeometry: Alignment.topLeft),
           getVerSpace(FetchPixels.getPixelHeight(20)),
           getDefaultTextFiledWithLabel(
             context,
-            "Tòa nhà",
-            landmarkController,
+            "Phường",
+            isValidated,
+            wardController,
             Colors.grey,
             function: () {},
             isEnable: false,
@@ -90,7 +129,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
           ),
           getVerSpace(FetchPixels.getPixelHeight(20)),
           getDefaultTextFiledWithLabel(
-              context, "Thành Phố", cityController, Colors.grey,
+              context, "Quận", isValidated, districtController, Colors.grey,
               function: () {},
               isEnable: false,
               withprefix: false,
@@ -99,9 +138,19 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
               withSufix: true,
               suffiximage: "down_arrow.svg"),
           getVerSpace(FetchPixels.getPixelHeight(20)),
+          getDefaultTextFiledWithLabel(
+              context, "Thành Phố", isValidated, cityController, Colors.grey,
+              function: () {},
+              isEnable: false,
+              withprefix: false,
+              minLines: true,
+              height: FetchPixels.getPixelHeight(60),
+              withSufix: true,
+              suffiximage: "down_arrow.svg"),
+
           getVerSpace(FetchPixels.getPixelHeight(20)),
           getDefaultTextFiledWithLabel(
-              context, "Số điện thoại", phoneController, Colors.grey,
+              context, "Số điện thoại", isValidated, phoneController, Colors.grey,
               function: () {},
               height: FetchPixels.getPixelHeight(60),
               withprefix: true,

@@ -11,7 +11,7 @@ class PrefData {
   static String defIndexVal = "${prefName}index";
   static String modelBooking = "${prefName}bookingModel";
   static String defCountryName = "vietnam.png";
-
+  static String apiUrl = 'http://furniturecompany-001-site1.btempurl.com';
   static Future<SharedPreferences> getPrefInstance() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences;

@@ -55,7 +55,7 @@ class AppPages {
     Routes.profileRoute: (context) => const ProfileScreen(),
     Routes.editProfileRoute: (context) => const EditProfileScreen(),
     Routes.myAddressRoute: (context) => const MyAddressScreen(),
-    Routes.editAddressRoute: (context) => const EditAddressScreen(),
+    Routes.editAddressRoute: (context) =>  const EditAddressScreen(),
     Routes.cardRoute: (context) => const CardScreen(),
     Routes.settingRoute: (context) => const SettingScreen(),
     Routes.notificationRoutes: (context) => const NotificationScreen(),

@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool isPass = true;
-
+  bool isValidated = false;
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -60,6 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 getDefaultTextFiledWithLabel(
                   context,
                   "Số điện thoại",
+                  isValidated,
                   emailController,
                   Colors.grey,
                   minLines: true,
@@ -71,7 +72,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 getVerSpace(FetchPixels.getPixelHeight(20)),
                 getDefaultTextFiledWithLabel(
-                    context, "Mật khẩu", passwordController, Colors.grey,
+                    context, "Mật khẩu",
+                    isValidated,
+                    passwordController, Colors.grey,
                     function: () {},
                     height: FetchPixels.getPixelHeight(60),
                     isEnable: false,

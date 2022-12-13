@@ -71,6 +71,8 @@ class DataFile {
 
   static Map<String, ModelCart> cartList = {};
 
+  static Map<String, AddressModel> addressData = {};
+
   static List<ModelOther> otherProductList = [
     ModelOther("beard_shape.png", "Beard Shaping", 13.00, 0),
     ModelOther("head_massage.png", "Head Massage", 16.00, 0),
