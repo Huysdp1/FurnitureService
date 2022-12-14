@@ -55,7 +55,7 @@ class _CardDialogState extends State<CardDialog> {
               ),
               getVerSpace(FetchPixels.getPixelHeight(20)),
               getDefaultTextFiledWithLabel(
-                  context, "Name On Card", nameController, Colors.grey,
+                  context, "Name On Card", false, nameController, Colors.grey,
                   function: () {},
                   height: FetchPixels.getPixelHeight(60),
                   isEnable: false,

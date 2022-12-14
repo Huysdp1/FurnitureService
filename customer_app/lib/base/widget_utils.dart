@@ -447,7 +447,7 @@ Widget getButtonWithIcon(BuildContext context, Color bgColor, String text,
   );
 }
 
-Widget getDefaultTextFiledWithLabel(BuildContext context, String s,
+Widget getDefaultTextFiledWithLabel(BuildContext context, String s,  bool isValidated,
     TextEditingController textEditingController, Color fontColor,
     {bool withprefix = false,
     bool withSufix = false,
@@ -534,7 +534,7 @@ Widget getDefaultTextFiledWithLabel(BuildContext context, String s,
                             contentPadding: EdgeInsets.zero,
                             border: InputBorder.none,
                             hintText: s,
-                            errorText: textEditingController.text.isNotEmpty ? Constant.loginCharactersValidate(textEditingController.text, s) : null,
+                            errorText: isValidated ? Constant.validateCharacters(textEditingController.text, s): null,
                             hintStyle: TextStyle(
                               color: textColor,
                               fontWeight: FontWeight.w400,
@@ -800,7 +800,7 @@ Widget getCardEditText(BuildContext context, String s,
   );
 }
 
-Widget getCountryTextField(BuildContext context, String s,
+Widget getCountryTextField(BuildContext context, String s, bool isValidated,
     TextEditingController textEditingController, Color fontColor, String code,
     {bool withprefix = false,
     bool withSufix = false,
@@ -874,7 +874,7 @@ Widget getCountryTextField(BuildContext context, String s,
                         contentPadding: EdgeInsets.zero,
                         border: InputBorder.none,
                         hintText: s,
-                        errorText: textEditingController.text.isNotEmpty ? Constant.loginCharactersValidate(textEditingController.text, s): null,
+                        errorText: isValidated ? Constant.validateCharacters(textEditingController.text, s) : null,
                         hintStyle: TextStyle(
                           color: textColor,
                           fontWeight: FontWeight.w400,

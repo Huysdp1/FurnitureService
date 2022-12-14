@@ -17,7 +17,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController nameController = TextEditingController(text: "Alena Gomez");
   TextEditingController emailController = TextEditingController(text: "alenagomez23@gmail.com");
   TextEditingController phoneController = TextEditingController(text: "(907) 555-0101");
-
+  bool isValidated = false;
   @override
   Widget build(BuildContext context) {
     FetchPixels(context);
@@ -58,7 +58,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           profilePictureEdit(context),
           getVerSpace(FetchPixels.getPixelHeight(40)),
           getDefaultTextFiledWithLabel(
-              context, "Name", nameController, Colors.grey,
+              context, "Name", isValidated, nameController, Colors.grey,
               function: () {},
               height: FetchPixels.getPixelHeight(60),
               isEnable: false,
@@ -68,7 +68,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               imageHeight: FetchPixels.getPixelHeight(24)),
           getVerSpace(FetchPixels.getPixelHeight(20)),
           getDefaultTextFiledWithLabel(
-              context, "Email", emailController, Colors.grey,
+              context, "Email", isValidated, emailController, Colors.grey,
               function: () {},
               height: FetchPixels.getPixelHeight(60),
               isEnable: false,
@@ -78,7 +78,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               imageHeight: FetchPixels.getPixelHeight(24)),
           getVerSpace(FetchPixels.getPixelHeight(20)),
           getDefaultTextFiledWithLabel(
-              context, "Phone", phoneController, Colors.grey,
+              context, "Phone", isValidated, phoneController, Colors.grey,
               function: () {},
               height: FetchPixels.getPixelHeight(60),
               isEnable: false,

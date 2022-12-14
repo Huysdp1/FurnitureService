@@ -18,7 +18,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   void finish() {
     Constant.backToPrev(context);
   }
-
+  bool isValidated = false;
   TextEditingController emailController = TextEditingController();
 
   @override
@@ -70,7 +70,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   Widget buildMailTextFiled(BuildContext context) {
     return getDefaultTextFiledWithLabel(
-        context, "Số điện thoại", emailController, Colors.grey,
+        context, "Số điện thoại", isValidated,
+        emailController, Colors.grey,
         function: () {},
         height: FetchPixels.getPixelHeight(60),
         isEnable: false,

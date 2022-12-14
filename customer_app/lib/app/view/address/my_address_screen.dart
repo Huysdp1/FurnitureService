@@ -1,11 +1,12 @@
+import 'package:customer_app/app/data/account_data.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../base/color_data.dart';
 import '../../../base/constant.dart';
 import '../../../base/pref_data.dart';
 import '../../../base/resizer/fetch_pixels.dart';
 import '../../../base/widget_utils.dart';
-import '../../data/data_file.dart';
 import '../../models/model_address.dart';
 import '../../routes/app_routes.dart';
 import '../dialog/delete_dialog.dart';
@@ -18,10 +19,13 @@ class MyAddressScreen extends StatefulWidget {
 }
 
 class _MyAddressScreenState extends State<MyAddressScreen> {
-  List<ModelAddress> addressList = DataFile.addressList;
-
+  SharedPreferences? selection;
   @override
   void initState() {
+    SharedPreferences.getInstance().then((SharedPreferences sp) {
+      selection = sp;
+      setState(() {});
+    });
     super.initState();
   }
 
@@ -33,28 +37,38 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
           resizeToAvoidBottomInset: false,
           backgroundColor: backGroundColor,
           body: SafeArea(
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: FetchPixels.getPixelWidth(20)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  getVerSpace(FetchPixels.getPixelHeight(20)),
-                  buildToolbar(context),
-                  getVerSpace(FetchPixels.getPixelHeight(30)),
-                  Visibility(
-                    visible: addressList.isNotEmpty,
-                    child: getCustomFont("Your addresses", 16, Colors.black, 1,
-                        fontWeight: FontWeight.w400),
-                  ),
-                  buildExpand(context),
-                  Visibility(
-                    visible: addressList.isNotEmpty,
-                    child: addAddressButton(context),
-                  )
-                ],
+            child: FutureBuilder<List<AddressModel>>(
+              future: AccountData().fetchCustomerAddress(2),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  return Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: FetchPixels.getPixelWidth(20)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        getVerSpace(FetchPixels.getPixelHeight(20)),
+                        buildToolbar(context),
+                        getVerSpace(FetchPixels.getPixelHeight(30)),
+                        Visibility(
+                          visible: snapshot.data!.isNotEmpty,
+                          child: getCustomFont(
+                              "Your addresses", 16, Colors.black, 1,
+                              fontWeight: FontWeight.w400),
+                        ),
+                        buildExpand(context, snapshot.data!),
+                        Visibility(
+                          visible: snapshot.data!.isNotEmpty,
+                          child: addAddressButton(context),
+                        )
+                      ],
+                    ),
+                  );
+                }
+              }
               ),
-            ),
           ),
         ),
         onWillPop: () async {
@@ -64,12 +78,12 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
         });
   }
 
-  Expanded buildExpand(BuildContext context) {
+  Expanded buildExpand(BuildContext context,List<AddressModel> addressList) {
     return Expanded(
       flex: 1,
       child: (addressList.isEmpty)
           ? buildEmptyWidget(context)
-          : buildAddressList(),
+          : buildAddressList(addressList),
     );
   }
 
@@ -110,7 +124,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
     );
   }
 
-  ListView buildAddressList() {
+  ListView buildAddressList(List<AddressModel> addressList) {
     return ListView.builder(
       padding: EdgeInsets.only(top: FetchPixels.getPixelHeight(20)),
       scrollDirection: Axis.vertical,
@@ -119,7 +133,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
       primary: true,
       itemCount: addressList.length,
       itemBuilder: (context, index) {
-        ModelAddress modelAddress = addressList[index];
+        AddressModel modelAddress = addressList[index];
         return Container(
           margin: EdgeInsets.only(bottom: FetchPixels.getPixelHeight(20)),
           padding: EdgeInsets.only(
@@ -148,7 +162,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       getCustomFont(
-                        modelAddress.name ?? "",
+                        modelAddress.customer ?? "",
                         16,
                         Colors.black,
                         1,
@@ -158,24 +172,45 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                       SizedBox(
                         width: FetchPixels.getPixelWidth(280),
                         child: getMultilineCustomFont(
-                            modelAddress.address ?? "", 16, Colors.black,
+                            '${modelAddress.homeNumber},  ${modelAddress.street}, ${modelAddress.ward}, ${modelAddress.district}, ${modelAddress.city}', 16, Colors.black,
                             fontWeight: FontWeight.w400, txtHeight: 1.3),
                       ),
                       getVerSpace(FetchPixels.getPixelHeight(10)),
-                      getCustomFont(
-                        modelAddress.phone ?? "",
-                        16,
-                        Colors.black,
-                        1,
-                        fontWeight: FontWeight.w400,
-                      ),
+                      modelAddress.isDefault==true ?Container(
+                        //color: Colors.purple,
+                        alignment: Alignment.center,
+                        width: 80,
+                        height: 25,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.red, width: 1),
+                        ),
+                        child: getCustomFont("Mặc định",
+                          14,
+                          Colors.red,
+                          1,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ):Container(),
+                      // getCustomFont(
+                      //   modelAddress.phone ?? "",
+                      //   16,
+                      //   Colors.black,
+                      //   1,
+                      //   fontWeight: FontWeight.w400,
+                      // ),
                     ],
                   ),
                 ),
               ),
               PopupMenuButton<int>(
-                onSelected: (value) {
-                  if (value == 2) {
+                onSelected: (value) async {
+                  if (value == 1) {
+                    await AccountData().setDefaultAddress(2, modelAddress.addressId);
+                    setState(() {
+
+                    });
+                  }
+                  if (value == 3) {
                     PrefData.setDefIndex(index);
                     showDialog(
                         barrierDismissible: false,
@@ -185,8 +220,16 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                         context: context);
                     setState(() {});
                   }
-                  if (value == 1) {
-                    Constant.sendToNext(context, Routes.editAddressRoute);
+                  if (value == 2) {
+                    //await selection!.setString("customerId", modelAddress.customerId.toString() ?? '');
+                     selection!.setString("customer", modelAddress.customer ?? '');
+                     selection!.setString("homeNumber", modelAddress.homeNumber ?? '');
+                     selection!.setString("street", modelAddress.street ?? '');
+                     selection!.setString("ward", modelAddress.ward ?? '');
+                     selection!.setString("district", modelAddress.district ?? '');
+                     selection!.setString("city", modelAddress.city ?? '');
+                    //selection!.setString("phone", modelAddress.phone ?? '');
+                     Constant.sendToNext(context, Routes.editAddressRoute);
                   }
                 },
                 padding: EdgeInsets.only(top: FetchPixels.getPixelHeight(15)),
@@ -199,6 +242,25 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     value: 1,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        getCustomFont(
+                          "Đặt mặc định",
+                          14,
+                          Colors.black,
+                          1,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        const Icon(Icons.star_outlined,color: Colors.yellow),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuDivider(
+                    height: 0,
+                  ),
+                  PopupMenuItem(
+                    value: 2,
                     child: getCustomFont(
                       "Edit",
                       14,
@@ -211,7 +273,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                     height: 0,
                   ),
                   PopupMenuItem(
-                    value: 2,
+                    value: 3,
                     child: getCustomFont(
                       "Delete",
                       14,

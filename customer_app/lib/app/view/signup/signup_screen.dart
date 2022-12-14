@@ -91,6 +91,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         getDefaultTextFiledWithLabel(
           context,
           "Tên",
+          false,
           nameController,
           Colors.grey,
           function: () {},
@@ -103,6 +104,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         getDefaultTextFiledWithLabel(
           context,
           "Email",
+          false,
           emailController,
           Colors.grey,
           function: () {},
@@ -119,7 +121,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 getPrefVal();
               });
             },
-            child: getCountryTextField(context, "Số điện thoại",
+            child: getCountryTextField(context, "Số điện thoại", false,
                 phoneNumberController, textColor, defCode,
                 function: () {},
                 height: FetchPixels.getPixelHeight(60),
@@ -128,7 +130,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 image: defCountry)),
         getVerSpace(FetchPixels.getPixelHeight(20)),
         getDefaultTextFiledWithLabel(
-            context, "Mật khẩu", passwordController, Colors.grey,
+            context, "Mật khẩu", false, passwordController, Colors.grey,
             function: () {},
             height: FetchPixels.getPixelHeight(60),
             isEnable: false,
