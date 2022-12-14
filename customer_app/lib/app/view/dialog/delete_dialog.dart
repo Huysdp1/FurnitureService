@@ -1,4 +1,5 @@
 
+import 'package:customer_app/app/data/account_data.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,7 +18,6 @@ class DeleteDialog extends StatefulWidget {
 }
 
 class _DeleteDialogState extends State<DeleteDialog> {
-  List<ModelAddress> addressList = DataFile.addressList;
 
   SharedPreferences? selection;
 
@@ -46,7 +46,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
             children: [
               getVerSpace(FetchPixels.getPixelHeight(20)),
               getMultilineCustomFont(
-                  "Are you sure you want to delete this address?",
+                  "Chắc chắn xóa địa chỉ này?",
                   22,
                   Colors.black,
                   fontWeight: FontWeight.w900,
@@ -58,7 +58,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                 children: [
                   Expanded(
                       child: getButton(
-                          context, backGroundColor, "Cancle", blueColor, () {
+                          context, backGroundColor, "Hủy", blueColor, () {
                     Constant.backToPrev(context);
                   }, 18,
                           weight: FontWeight.w600,
@@ -71,9 +71,8 @@ class _DeleteDialogState extends State<DeleteDialog> {
                   getHorSpace(FetchPixels.getPixelWidth(20)),
                   Expanded(
                       child: getButton(
-                          context, blueColor, "Delete", Colors.white, () {
-                    addressList.removeAt(selection!.getInt("index")!);
-                    setState(() {});
+                          context, blueColor, "Xóa", Colors.white, () async {
+                            AccountData().deleteAddress(selection!.getInt('index')!);
                     Constant.backToPrev(context);
                   }, 18,
                           weight: FontWeight.w600,

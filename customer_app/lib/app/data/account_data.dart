@@ -44,6 +44,38 @@ class AccountData{
           'Content-Type': 'application/json; charset=UTF-8',
         },
     );
-
+    if(response.statusCode == 200){
+      print('success!');
+    }else{
+      throw Exception('Lấy dữ liệu thất bại');
+    }
+  }
+  Future<void> updateAddress(AddressModel addressModel,addressId
+      ) async{
+    final response = await http.put(
+      Uri.parse('${PrefData.apiUrl}/api/customer/updateAddress/adressId/$addressId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(addressModel.toJson())
+    );
+    if(response.statusCode == 200){
+      print('success!');
+    }else{
+      throw Exception('Lấy dữ liệu thất bại');
+    }
+  }
+  Future<void> deleteAddress(addressId)async{
+    final response = await http.put(
+      Uri.parse('${PrefData.apiUrl}/api/customer/deleteAddress/addressId/$addressId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if(response.statusCode == 200){
+      print('success!');
+    }else{
+      throw Exception('Lấy dữ liệu thất bại');
+    }
   }
 }

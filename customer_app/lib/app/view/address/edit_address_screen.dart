@@ -1,3 +1,4 @@
+import 'package:customer_app/app/data/account_data.dart';
 import 'package:customer_app/app/models/model_address.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,30 +26,34 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
   bool isValidated = false;
   SharedPreferences? selection;
   @override
-  void initState() {
-    SharedPreferences.getInstance().then((SharedPreferences sp) {
+    void initState()  {
+     SharedPreferences.getInstance().then((SharedPreferences sp) {
       selection = sp;
       setState(() {});
-    });
+    }).then((value) {
+     nameController.text = selection!.getString("customerNameOrder") ?? "";
+         homeNumController.text = selection!.getString("homeNumber") ?? "";
+     streetController.text = selection!.getString("street") ?? "";
+     wardController.text = selection!.getString("ward") ?? "";
+     districtController.text = selection!.getString("district") ?? "";
+     cityController.text = selection!.getString("city") ?? "";
+     phoneController.text = selection!.getString("phoneAddress") ?? "";
+     });
+
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     FetchPixels(context);
-    nameController.text = selection!.getString("customer") ?? "";
-    homeNumController.text = selection!.getString("homeNumber") ?? "";
-    streetController.text = selection!.getString("street") ?? "";
-    wardController.text = selection!.getString("ward") ?? "";
-    districtController.text = selection!.getString("district") ?? "";
-    cityController.text = selection!.getString("city") ?? "";
-    selection?.remove("customer");
+    selection?.remove("customerNameOrder");
     selection?.remove("homeNumber");
     selection?.remove("street");
     selection?.remove("ward");
     selection?.remove("district");
     selection?.remove("city");
     selection?.remove("customerId");
-    selection?.remove("phone");
+    selection?.remove("phoneAddress");
+
     return WillPopScope(
         child: Scaffold(
           resizeToAvoidBottomInset: false,
@@ -85,7 +90,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
         primary: true,
         children: [
           getDefaultTextFiledWithLabel(
-              context, "Tên", isValidated, nameController, Colors.grey,
+              context, "Tên", true, nameController, Colors.grey,
               function: () {},
               height: FetchPixels.getPixelHeight(60),
               withprefix: true,
@@ -94,7 +99,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
               minLines: true),
           getVerSpace(FetchPixels.getPixelHeight(20)),
           getDefaultTextFiledWithLabel(
-              context, "Số nhà", isValidated, homeNumController, Colors.grey,
+              context, "Số nhà", true, homeNumController, Colors.grey,
               function: () {},
               isEnable: false,
               withprefix: false,
@@ -104,7 +109,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
               alignmentGeometry: Alignment.topLeft),
           getVerSpace(FetchPixels.getPixelHeight(20)),
           getDefaultTextFiledWithLabel(
-              context, "Đường", isValidated, streetController, Colors.grey,
+              context, "Đường", true, streetController, Colors.grey,
               function: () {},
               isEnable: false,
               withprefix: false,
@@ -116,7 +121,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
           getDefaultTextFiledWithLabel(
             context,
             "Phường",
-            isValidated,
+            true,
             wardController,
             Colors.grey,
             function: () {},
@@ -129,7 +134,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
           ),
           getVerSpace(FetchPixels.getPixelHeight(20)),
           getDefaultTextFiledWithLabel(
-              context, "Quận", isValidated, districtController, Colors.grey,
+              context, "Quận", true, districtController, Colors.grey,
               function: () {},
               isEnable: false,
               withprefix: false,
@@ -139,7 +144,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
               suffiximage: "down_arrow.svg"),
           getVerSpace(FetchPixels.getPixelHeight(20)),
           getDefaultTextFiledWithLabel(
-              context, "Thành Phố", isValidated, cityController, Colors.grey,
+              context, "Thành Phố", true, cityController, Colors.grey,
               function: () {},
               isEnable: false,
               withprefix: false,
@@ -150,7 +155,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
 
           getVerSpace(FetchPixels.getPixelHeight(20)),
           getDefaultTextFiledWithLabel(
-              context, "Số điện thoại", isValidated, phoneController, Colors.grey,
+              context, "Số điện thoại", true, phoneController, Colors.grey,
               function: () {},
               height: FetchPixels.getPixelHeight(60),
               withprefix: true,
@@ -180,9 +185,21 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
           left: FetchPixels.getPixelWidth(20),
           right: FetchPixels.getPixelWidth(20),
           bottom: FetchPixels.getPixelHeight(30)),
-      child: getButton(context, blueColor, "Thêm địa chỉ mới", Colors.white,
-          () {
-        Constant.backToPrev(context);
+      child: getButton(context, blueColor, "Lưu", Colors.white,
+          () async {
+        AddressModel addressModel = AddressModel(
+            customerNameOrder: nameController.text,
+            customerPhoneOrder: phoneController.text,
+            homeNumber: homeNumController.text,
+            street: streetController.text,
+            ward: wardController.text,
+            district: districtController.text,
+            city: cityController.text,
+        );
+        await AccountData().updateAddress(addressModel, selection!.getInt('addressId'));
+        setState(() {
+        });
+        if(mounted){Constant.backToFinish(context);}
       }, 18,
           weight: FontWeight.w600,
           buttonHeight: FetchPixels.getPixelHeight(60),

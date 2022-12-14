@@ -174,17 +174,17 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           //Sua customerId thanh variable
           AddressModel newAddress = AddressModel(
             customerId: 2,
-            customer: nameController.text,
+            customerNameOrder: nameController.text,
             homeNumber: homeNumController.text,
             street: streetController.text,
             ward: wardController.text,
             district: districtController.text,
             city: cityController.text,
+            customerPhoneOrder: phoneController.text
           );
-          print('success');
            await AccountData().generateNewAddress(
               newAddress);
-           Constant.backToPrev(context);
+           if(mounted){Constant.backToPrev(context);}
 
         }
 

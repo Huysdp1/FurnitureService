@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -31,7 +33,13 @@ class Constant {
       Navigator.pushNamed(context, route);
     }
   }
-
+  static backToPrevWithRes(BuildContext context,{Object? arguments}) {
+    if (arguments != null) {
+      Navigator.of(context).pop(arguments);
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
   static sendToNextWithRes(BuildContext context, String route,
       {Object? arguments, Function? fun}) {
     if (arguments != null) {
