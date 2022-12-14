@@ -38,37 +38,36 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
           backgroundColor: backGroundColor,
           body: SafeArea(
             child: FutureBuilder<List<AddressModel>>(
-              future: AccountData().fetchCustomerAddress(2),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                } else {
-                  return Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: FetchPixels.getPixelWidth(20)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        getVerSpace(FetchPixels.getPixelHeight(20)),
-                        buildToolbar(context),
-                        getVerSpace(FetchPixels.getPixelHeight(30)),
-                        Visibility(
-                          visible: snapshot.data!.isNotEmpty,
-                          child: getCustomFont(
-                              "Your addresses", 16, Colors.black, 1,
-                              fontWeight: FontWeight.w400),
-                        ),
-                        buildExpand(context, snapshot.data!),
-                        Visibility(
-                          visible: snapshot.data!.isNotEmpty,
-                          child: addAddressButton(context),
-                        )
-                      ],
-                    ),
-                  );
-                }
-              }
-              ),
+                future: AccountData().fetchCustomerAddress(2),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: FetchPixels.getPixelWidth(20)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          getVerSpace(FetchPixels.getPixelHeight(20)),
+                          buildToolbar(context),
+                          getVerSpace(FetchPixels.getPixelHeight(30)),
+                          Visibility(
+                            visible: snapshot.data!.isNotEmpty,
+                            child: getCustomFont(
+                                "Địa chỉ của bạn", 16, Colors.black, 1,
+                                fontWeight: FontWeight.w400),
+                          ),
+                          buildExpand(context, snapshot.data!),
+                          Visibility(
+                            visible: snapshot.data!.isNotEmpty,
+                            child: addAddressButton(context),
+                          )
+                        ],
+                      ),
+                    );
+                  }
+                }),
           ),
         ),
         onWillPop: () async {
@@ -78,7 +77,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
         });
   }
 
-  Expanded buildExpand(BuildContext context,List<AddressModel> addressList) {
+  Expanded buildExpand(BuildContext context, List<AddressModel> addressList) {
     return Expanded(
       flex: 1,
       child: (addressList.isEmpty)
@@ -172,25 +171,31 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                       SizedBox(
                         width: FetchPixels.getPixelWidth(280),
                         child: getMultilineCustomFont(
-                            '${modelAddress.homeNumber},  ${modelAddress.street}, ${modelAddress.ward}, ${modelAddress.district}, ${modelAddress.city}', 16, Colors.black,
-                            fontWeight: FontWeight.w400, txtHeight: 1.3),
+                            '${modelAddress.homeNumber},  ${modelAddress.street}, ${modelAddress.ward}, ${modelAddress.district}, ${modelAddress.city}',
+                            16,
+                            Colors.black,
+                            fontWeight: FontWeight.w400,
+                            txtHeight: 1.3),
                       ),
                       getVerSpace(FetchPixels.getPixelHeight(10)),
-                      modelAddress.isDefault==true ?Container(
-                        //color: Colors.purple,
-                        alignment: Alignment.center,
-                        width: 80,
-                        height: 25,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.red, width: 1),
-                        ),
-                        child: getCustomFont("Mặc định",
-                          14,
-                          Colors.red,
-                          1,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ):Container(),
+                      modelAddress.isDefault == true
+                          ? Container(
+                              //color: Colors.purple,
+                              alignment: Alignment.center,
+                              width: 80,
+                              height: 25,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.red, width: 1),
+                              ),
+                              child: getCustomFont(
+                                "Mặc định",
+                                14,
+                                Colors.red,
+                                1,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            )
+                          : Container(),
                       // getCustomFont(
                       //   modelAddress.phone ?? "",
                       //   16,
@@ -205,10 +210,9 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
               PopupMenuButton<int>(
                 onSelected: (value) async {
                   if (value == 1) {
-                    await AccountData().setDefaultAddress(2, modelAddress.addressId);
-                    setState(() {
-
-                    });
+                    await AccountData()
+                        .setDefaultAddress(2, modelAddress.addressId);
+                    setState(() {});
                   }
                   if (value == 3) {
                     PrefData.setDefIndex(index);
@@ -222,14 +226,17 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                   }
                   if (value == 2) {
                     //await selection!.setString("customerId", modelAddress.customerId.toString() ?? '');
-                     selection!.setString("customer", modelAddress.customer ?? '');
-                     selection!.setString("homeNumber", modelAddress.homeNumber ?? '');
-                     selection!.setString("street", modelAddress.street ?? '');
-                     selection!.setString("ward", modelAddress.ward ?? '');
-                     selection!.setString("district", modelAddress.district ?? '');
-                     selection!.setString("city", modelAddress.city ?? '');
+                    selection!
+                        .setString("customer", modelAddress.customer ?? '');
+                    selection!
+                        .setString("homeNumber", modelAddress.homeNumber ?? '');
+                    selection!.setString("street", modelAddress.street ?? '');
+                    selection!.setString("ward", modelAddress.ward ?? '');
+                    selection!
+                        .setString("district", modelAddress.district ?? '');
+                    selection!.setString("city", modelAddress.city ?? '');
                     //selection!.setString("phone", modelAddress.phone ?? '');
-                     Constant.sendToNext(context, Routes.editAddressRoute);
+                    Constant.sendToNext(context, Routes.editAddressRoute);
                   }
                 },
                 padding: EdgeInsets.only(top: FetchPixels.getPixelHeight(15)),
@@ -252,7 +259,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                           1,
                           fontWeight: FontWeight.w400,
                         ),
-                        const Icon(Icons.star_outlined,color: Colors.yellow),
+                        const Icon(Icons.star_outlined, color: Colors.yellow),
                       ],
                     ),
                   ),
@@ -262,7 +269,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                   PopupMenuItem(
                     value: 2,
                     child: getCustomFont(
-                      "Edit",
+                      "Chỉnh sửa",
                       14,
                       Colors.black,
                       1,
@@ -275,7 +282,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                   PopupMenuItem(
                     value: 3,
                     child: getCustomFont(
-                      "Delete",
+                      "Xóa",
                       14,
                       Colors.black,
                       1,
@@ -297,7 +304,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
       Constant.backToPrev(context);
     },
         istext: true,
-        title: "My Address",
+        title: "Địa chỉ của tôi",
         weight: FontWeight.w900,
         fontsize: 24,
         textColor: Colors.black);
@@ -306,7 +313,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
   Column addAddressButton(BuildContext context) {
     return Column(
       children: [
-        getButton(context, blueColor, "Add New Address", Colors.white, () {
+        getButton(context, blueColor, "Thêm địa chỉ mới", Colors.white, () {
           Constant.sendToNext(context, Routes.addAddressScreenRoute);
         }, 18,
             weight: FontWeight.w600,
