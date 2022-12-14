@@ -39,9 +39,9 @@ class DataFile {
   ];
 
   static List<ModelCategory> categoryList = [
-    ModelCategory("cleaning.svg", "Washing"),
-    ModelCategory("wrench.svg", "Repairing"),
-    ModelCategory("paint_roller.svg", "Maintaining"),
+    ModelCategory("cleaning.svg", "Vệ sinh"),
+    ModelCategory("wrench.svg", "Sữa chữa"),
+    ModelCategory("paint_roller.svg", "Bảo trì"),
     // ModelCategory("sloon.svg", "Salon"),
     // ModelCategory("iron.svg", "Ironing"),
     // ModelCategory("laundry.svg", "Washing"),
@@ -139,8 +139,8 @@ class DataFile {
   static List<String> searchList = [];
 
   static List<String> popularSearchList = [
-    "cleaning",
-    "washing",
+    "Sữa chữa",
+    "Dọn dẹp",
     "painting",
     "salon",
     "health",
@@ -152,8 +152,8 @@ class DataFile {
   ];
 
   static List<ModelPopularService> popularServiceList = [
-    ModelPopularService("wallpaper.png", "Wall Painting", "Painter"),
-    ModelPopularService("barber.png", "Salon For Men", "Barber"),
+    ModelPopularService("wallpaper.png", "Sơn nhà", "Painter"),
+    ModelPopularService("barber.png", "Sữa bàn", "Barber"),
     ModelPopularService("wallpaper.png", "Wall Painting", "Painter"),
     ModelPopularService("barber.png", "Salon For Men", "Barber"),
   ];

@@ -1,5 +1,7 @@
 import 'package:customer_app/app/view/address/edit_address_screen.dart';
 import 'package:customer_app/app/view/address/add_address_screen.dart';
+import 'package:customer_app/app/view/home/repair_screen.dart';
+import 'package:customer_app/app/view/home/washing_screen.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
@@ -63,6 +65,8 @@ class AppPages {
     Routes.bookingRoute: (context) => const BookingDetail(),
     Routes.securityRoute: (context) => const SecurityScreen(),
     Routes.termOfServiceRoute: (context) => const TermOfServiceScreen(),
-    Routes.addAddressScreenRoute: (context) => const AddAddressScreen()
+    Routes.addAddressScreenRoute: (context) => const AddAddressScreen(),
+    Routes.repairScreenRoute: (context) => RepairScreen(),
+    Routes.washingScreen: (context) => WashingScreen()
   };
 }

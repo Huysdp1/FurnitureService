@@ -31,6 +31,8 @@ abstract class Routes {
   static const securityRoute = Paths.securityPath;
   static const termOfServiceRoute = Paths.termOfServicePath;
   static const addAddressScreenRoute = Paths.addAddressScreenPath;
+  static const repairScreenRoute = Paths.repairScreenPath;
+  static const washingScreen = Paths.washingScreenPath;
 }
 
 abstract class Paths {
@@ -64,4 +66,6 @@ abstract class Paths {
   static const securityPath = "/SecurityScreen";
   static const termOfServicePath = "/TermOfServiceScreen";
   static const addAddressScreenPath = "/AddAddressScreen";
+  static const repairScreenPath = "/RepairScreen";
+  static const washingScreenPath = "/WashingScreen";
 }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../../../base/color_data.dart';
 import '../../../base/constant.dart';
@@ -25,12 +24,9 @@ class _DetailScreenState extends State<DetailScreen> {
   // SharedPreferences? selection;
   var index = 0;
 
-
   getPrefData() async {
     index = await PrefData.getDefIndex();
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -40,7 +36,6 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   var total = 0.00;
-
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +56,8 @@ class _DetailScreenState extends State<DetailScreen> {
         });
   }
 
-  ListView buildPage(EdgeInsets edgeInsets, BuildContext context, int index,
-      double defSpace) {
+  ListView buildPage(
+      EdgeInsets edgeInsets, BuildContext context, int index, double defSpace) {
     return ListView(
       primary: true,
       shrinkWrap: true,
@@ -93,7 +88,10 @@ class _DetailScreenState extends State<DetailScreen> {
         getVerSpace(FetchPixels.getPixelHeight(15)),
         buildListView(defSpace),
         getVerSpace(FetchPixels.getPixelHeight(10)),
-        getPaddingWidget(edgeInsets, totalContainer(),),
+        getPaddingWidget(
+          edgeInsets,
+          totalContainer(),
+        ),
         viewCartButton(context),
         getVerSpace(FetchPixels.getPixelHeight(30))
         // packageList(context)
@@ -130,15 +128,14 @@ class _DetailScreenState extends State<DetailScreen> {
                     blurRadius: 10,
                     offset: Offset(0.0, 4.0)),
               ],
-              borderRadius: BorderRadius.circular(
-                  FetchPixels.getPixelHeight(12))),
+              borderRadius:
+                  BorderRadius.circular(FetchPixels.getPixelHeight(12))),
           child: Row(
             children: [
               packageImage(context, modelSalon),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.only(
-                      left: FetchPixels.getPixelWidth(16)),
+                  padding: EdgeInsets.only(left: FetchPixels.getPixelWidth(16)),
                   child: packageDescription(modelSalon),
                 ),
               ),
@@ -240,24 +237,24 @@ class _DetailScreenState extends State<DetailScreen> {
       child: total == 0.00
           ? Container()
           : Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              getCustomFont("Total", 24, Colors.black, 1,
-                  fontWeight: FontWeight.w900),
-              getCustomFont(
-                "\$$total",
-                24,
-                Colors.black,
-                1,
-                fontWeight: FontWeight.w900,
-              )
-            ],
-          ),
-          getVerSpace(FetchPixels.getPixelHeight(30)),
-        ],
-      ),
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    getCustomFont("Total", 24, Colors.black, 1,
+                        fontWeight: FontWeight.w900),
+                    getCustomFont(
+                      "\$$total",
+                      24,
+                      Colors.black,
+                      1,
+                      fontWeight: FontWeight.w900,
+                    )
+                  ],
+                ),
+                getVerSpace(FetchPixels.getPixelHeight(30)),
+              ],
+            ),
     );
   }
 
@@ -287,7 +284,7 @@ class _DetailScreenState extends State<DetailScreen> {
               borderWidth: 1.5,
               isBorder: true,
               borderRadius:
-              BorderRadius.circular(FetchPixels.getPixelHeight(10)))
+                  BorderRadius.circular(FetchPixels.getPixelHeight(10)))
         else
           Row(
             children: [
@@ -393,7 +390,7 @@ class _DetailScreenState extends State<DetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        getCustomFont("Salon For Men", 24, Colors.black, 1,
+        getCustomFont("Dịch vụ bảo trì", 24, Colors.black, 1,
             fontWeight: FontWeight.w900),
         getVerSpace(FetchPixels.getPixelHeight(17)),
         Row(
@@ -424,7 +421,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       offset: Offset(0.0, 4.0)),
                 ],
                 borderRadius:
-                BorderRadius.circular(FetchPixels.getPixelHeight(20)),
+                    BorderRadius.circular(FetchPixels.getPixelHeight(20)),
                 buttonHeight: FetchPixels.getPixelHeight(40),
                 insetsGeometrypadding: EdgeInsets.symmetric(
                     horizontal: FetchPixels.getPixelWidth(18)))
@@ -444,11 +441,15 @@ class _DetailScreenState extends State<DetailScreen> {
   Hero productImage(int index) {
     return Hero(
         tag: popularServiceLists[index],
-        child: getCircularImage(context, FetchPixels.getPixelWidth(374),
-            FetchPixels.getPixelHeight(225), FetchPixels.getPixelHeight(16),
-            popularServiceLists[index].image ?? "",boxFit: BoxFit.cover));
-        // getAssetImage(popularServiceLists[index].image ?? "",
-        // FetchPixels.getPixelWidth(374), FetchPixels.getPixelHeight(225),
-        // boxFit: BoxFit.fill),);
+        child: getCircularImage(
+            context,
+            FetchPixels.getPixelWidth(374),
+            FetchPixels.getPixelHeight(225),
+            FetchPixels.getPixelHeight(16),
+            popularServiceLists[index].image ?? "",
+            boxFit: BoxFit.cover));
+    // getAssetImage(popularServiceLists[index].image ?? "",
+    // FetchPixels.getPixelWidth(374), FetchPixels.getPixelHeight(225),
+    // boxFit: BoxFit.fill),);
   }
 }

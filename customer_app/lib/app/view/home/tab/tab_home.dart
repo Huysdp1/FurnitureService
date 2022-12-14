@@ -110,7 +110,7 @@ class _TabHomeState extends State<TabHome> {
                 height: FetchPixels.getPixelHeight(132),
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 3,
+                  itemCount: DataFile.categoryList.length,
                   primary: false,
                   shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
@@ -118,8 +118,17 @@ class _TabHomeState extends State<TabHome> {
                     ModelCategory modelCategory = categoryLists[index];
                     return GestureDetector(
                       onTap: () {
-                        PrefData.setDefIndex(1);
-                        Constant.sendToNext(context, Routes.detailRoute);
+                        // PrefData.setDefIndex(1);
+                        if (index == 0) {
+                          Constant.sendToNext(context, Routes.washingScreen);
+                        }
+                        if (index == 1) {
+                          Constant.sendToNext(
+                              context, Routes.repairScreenRoute);
+                        }
+                        if (index == 2) {
+                          Constant.sendToNext(context, Routes.detailRoute);
+                        }
                       },
                       child: Container(
                         margin: EdgeInsets.only(
@@ -163,13 +172,13 @@ class _TabHomeState extends State<TabHome> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     getCustomFont(
-                      "Popular Services",
+                      "Nổi bậc",
                       20,
                       Colors.black,
                       1,
                       fontWeight: FontWeight.w900,
                     ),
-                    getCustomFont("View All", 14, blueColor, 1,
+                    getCustomFont("Xem tất cả", 14, blueColor, 1,
                         fontWeight: FontWeight.w600)
                   ],
                 ),
