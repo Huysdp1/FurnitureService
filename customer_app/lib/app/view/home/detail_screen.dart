@@ -1,3 +1,5 @@
+import 'package:customer_app/app/data/service_data.dart';
+import 'package:customer_app/app/models/model_service.dart';
 import 'package:flutter/material.dart';
 import '../../../base/color_data.dart';
 import '../../../base/constant.dart';
@@ -5,9 +7,7 @@ import '../../../base/pref_data.dart';
 import '../../../base/resizer/fetch_pixels.dart';
 import '../../../base/widget_utils.dart';
 import '../../data/data_file.dart';
-import '../../models/model_cart.dart';
 import '../../models/model_popular_service.dart';
-import '../../models/model_salon.dart';
 import '../dialog/color_dialog.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -18,14 +18,16 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  static List<ModelSalon> salonProductLists = DataFile.salonProductList;
-  List<ModelPopularService> popularServiceLists = DataFile.popularServiceList;
 
+  List<ModelPopularService> popularServiceLists = DataFile.popularServiceList;
+  List<ServiceModel> serviceList = [];
+  List<int> choseService =[];
   // SharedPreferences? selection;
   var index = 0;
 
   getPrefData() async {
     index = await PrefData.getDefIndex();
+    serviceList = await ServiceData().fetchServicesAndCategories();
     setState(() {});
   }
 
@@ -35,7 +37,7 @@ class _DetailScreenState extends State<DetailScreen> {
     getPrefData();
   }
 
-  var total = 0.00;
+  int total = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -106,9 +108,9 @@ class _DetailScreenState extends State<DetailScreen> {
       padding: EdgeInsets.zero,
       scrollDirection: Axis.vertical,
       primary: false,
-      itemCount: salonProductLists.length,
+      itemCount: serviceList.length,
       itemBuilder: (context, index) {
-        ModelSalon modelSalon = salonProductLists[index];
+        ServiceModel serviceModel = serviceList[index];
         return Container(
           margin: EdgeInsets.only(
               bottom: FetchPixels.getPixelHeight(20),
@@ -132,14 +134,14 @@ class _DetailScreenState extends State<DetailScreen> {
                   BorderRadius.circular(FetchPixels.getPixelHeight(12))),
           child: Row(
             children: [
-              packageImage(context, modelSalon),
+              packageImage(context, serviceModel),
               Expanded(
                 child: Container(
                   padding: EdgeInsets.only(left: FetchPixels.getPixelWidth(16)),
-                  child: packageDescription(modelSalon),
+                  child: packageDescription(serviceModel),
                 ),
               ),
-              addButton(modelSalon, context, index)
+              addButton(serviceModel, context, index)
             ],
           ),
         );
@@ -234,17 +236,17 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Container totalContainer() {
     return Container(
-      child: total == 0.00
+      child: total == 0
           ? Container()
           : Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    getCustomFont("Total", 24, Colors.black, 1,
+                    getCustomFont("Tổng", 24, Colors.black, 1,
                         fontWeight: FontWeight.w900),
                     getCustomFont(
-                      "\$$total",
+                      "${Constant.showTextMoney(total)}đ",
                       24,
                       Colors.black,
                       1,
@@ -258,22 +260,15 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  Column addButton(ModelSalon modelSalon, BuildContext context, int index) {
+  Column addButton(ServiceModel serviceModel, BuildContext context, int index) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if (modelSalon.quantity == 0)
-          getButton(context, Colors.transparent, "Add", blueColor, () {
-            modelSalon.quantity = (modelSalon.quantity! + 1);
-            total = total + (modelSalon.price! * 1);
-            DataFile.cartList[index.toString()] = ModelCart(
-                modelSalon.image,
-                modelSalon.name,
-                modelSalon.productName,
-                modelSalon.rating,
-                modelSalon.price,
-                modelSalon.quantity);
-
+        if (serviceModel.quantity == 0)
+          getButton(context, Colors.transparent, "Thêm", blueColor, () {
+            serviceModel.quantity = (serviceModel.quantity! + 1);
+            total = total + (int.parse(serviceModel.price!) * 1);
+            choseService.add(serviceModel.serviceId!);
             setState(() {});
           }, 14,
               weight: FontWeight.w600,
@@ -293,18 +288,18 @@ class _DetailScreenState extends State<DetailScreen> {
                     width: FetchPixels.getPixelHeight(30),
                     height: FetchPixels.getPixelHeight(30)),
                 onTap: () {
-                  modelSalon.quantity = (modelSalon.quantity! + 1);
-                  total = total + (modelSalon.price! * 1);
-
-                  DataFile.cartList[index.toString()]!.quantity =
-                      modelSalon.quantity;
-
+                  serviceModel.quantity = (serviceModel.quantity! + 1);
+                  total = total + (int.parse(serviceModel.price!) * 1);
+                  choseService.add(serviceModel.serviceId!);
+                  // DataFile.cartList[index.toString()]!.quantity =
+                  //     modelSalon.quantity;
+                  print(choseService);
                   setState(() {});
                 },
               ),
               getHorSpace(FetchPixels.getPixelWidth(10)),
               getCustomFont(
-                modelSalon.quantity.toString(),
+                serviceModel.quantity.toString(),
                 14,
                 Colors.black,
                 1,
@@ -316,17 +311,18 @@ class _DetailScreenState extends State<DetailScreen> {
                     width: FetchPixels.getPixelHeight(30),
                     height: FetchPixels.getPixelHeight(30)),
                 onTap: () {
-                  modelSalon.quantity = (modelSalon.quantity! - 1);
-                  total = total - (modelSalon.price! * 1);
-
+                  serviceModel.quantity = (serviceModel.quantity! - 1);
+                  total = total - (int.parse(serviceModel.price!) * 1);
+                  choseService.remove(serviceModel.serviceId);
+                  print(choseService);
                   // print(
                   //     "cartList12===${cartLists.length}===${cartLists[index.toString()]!.quantity}");
 
-                  if (modelSalon.quantity! > 0) {
-                    DataFile.cartList[index.toString()]!.quantity =
-                        modelSalon.quantity;
+                  if (serviceModel.quantity! > 0) {
+                    // DataFile.cartList[index.toString()]!.quantity =
+                    //     serviceModel.quantity;
                   } else {
-                    DataFile.cartList.remove(index.toString());
+                    //DataFile.cartList.remove(index.toString());
                   }
 
                   setState(() {});
@@ -335,54 +331,56 @@ class _DetailScreenState extends State<DetailScreen> {
             ],
           ),
         getVerSpace(FetchPixels.getPixelHeight(40)),
-        getCustomFont("\$${modelSalon.price}", 16, blueColor, 1,
+        getCustomFont("${Constant.showTextMoney(serviceModel.price)}đ", 16, blueColor, 1,
             fontWeight: FontWeight.w900)
       ],
     );
   }
 
-  Column packageDescription(ModelSalon modelSalon) {
+  Column packageDescription(ServiceModel serviceModel) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         getCustomFont(
-          modelSalon.name ?? '',
+          serviceModel.serviceName ?? '',
           16,
           Colors.black,
           1,
           fontWeight: FontWeight.w900,
         ),
         getVerSpace(FetchPixels.getPixelHeight(4)),
-        getCustomFont(modelSalon.productName ?? "", 14, textColor, 1,
+        getCustomFont(serviceModel.categoryName ?? "", 14, textColor, 1,
             fontWeight: FontWeight.w400),
         getVerSpace(FetchPixels.getPixelHeight(6)),
-        Row(
-          children: [
-            getSvgImage("star.svg",
-                height: FetchPixels.getPixelHeight(16),
-                width: FetchPixels.getPixelHeight(16)),
-            getHorSpace(FetchPixels.getPixelWidth(6)),
-            getCustomFont(
-              modelSalon.rating ?? "",
-              14,
-              Colors.black,
-              1,
-              fontWeight: FontWeight.w400,
-            )
-          ],
-        )
+        getCustomFont(serviceModel.serviceDescription ?? "", 14, textColor, 1,
+            fontWeight: FontWeight.w400),
+        // Row(
+        //   children: [
+        //     getSvgImage("star.svg",
+        //         height: FetchPixels.getPixelHeight(16),
+        //         width: FetchPixels.getPixelHeight(16)),
+        //     getHorSpace(FetchPixels.getPixelWidth(6)),
+        //     // getCustomFont(
+        //     //   modelSalon.rating ?? "",
+        //     //   14,
+        //     //   Colors.black,
+        //     //   1,
+        //     //   fontWeight: FontWeight.w400,
+        //     // )
+        //   ],
+        // )
       ],
     );
   }
 
-  Container packageImage(BuildContext context, ModelSalon modelSalon) {
+  Container packageImage(BuildContext context, ServiceModel model) {
     return Container(
       height: FetchPixels.getPixelHeight(104),
       width: FetchPixels.getPixelHeight(104),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(10)),
           color: listColor,
-          image: getDecorationAssetImage(context, modelSalon.image ?? "")),
+          image: getDecorationAssetImage(context, 'shaving.png' ?? "")),
     );
   }
 

@@ -95,5 +95,11 @@ class Constant {
       }
       return null;
     }
+  static String? showTextMoney(dynamic txt) {
+  String converted = txt.toString().replaceAllMapped(
+      RegExp(r"(?<=\d)(?=(\d\d\d)+(?!\d))"), (match) => "${match.group(0)}.");
+
+    return converted;
+  }
   }
 
