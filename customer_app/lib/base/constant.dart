@@ -101,5 +101,24 @@ class Constant {
 
     return converted;
   }
+  static String? parseDateNoUTC(date,bool isTime){
+    if(date == null){
+      return '--:--\n--/--/----';
+    }
+    DateTime dt1 = DateTime.parse(date);
+    if(isTime) {
+      String hour = dt1.hour.toString();
+      String minute = dt1.minute.toString();
+      if (dt1.hour < 10) {
+        hour = '0$hour';
+      }
+      if (dt1.minute < 10) {
+        minute = '0$minute';
+      }
+      return '$hour:$minute, ${dt1.day}/${dt1.month}/${dt1.year}';
+    }else{
+      return '${dt1.day}/${dt1.month}/${dt1.year}';
+    }
+  }
   }
 

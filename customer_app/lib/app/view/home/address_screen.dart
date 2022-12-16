@@ -1,3 +1,4 @@
+import 'package:customer_app/app/data/account_data.dart';
 import 'package:customer_app/app/data/data_file.dart';
 import 'package:customer_app/app/models/model_address.dart';
 import 'package:dotted_line/dotted_line.dart';
@@ -18,7 +19,6 @@ class AddressScreen extends StatefulWidget {
   State<AddressScreen> createState() => _AddressScreenState();
 }
 
-List<ModelAddress> addressLists = DataFile.addressList;
 int? select;
 
 class _AddressScreenState extends State<AddressScreen> {
@@ -92,7 +92,7 @@ class _AddressScreenState extends State<AddressScreen> {
   Widget newAddressButton(BuildContext context) {
     return getButton(
         context, const Color(0xFFF2F4F8), "+ Add New Address", blueColor, () {
-      Constant.sendToNext(context, Routes.editAddressRoute);
+      Constant.sendToNext(context, Routes.addAddressScreenRoute);
     }, 18,
         weight: FontWeight.w600,
         buttonWidth: FetchPixels.getPixelWidth(224),
@@ -115,81 +115,90 @@ class _AddressScreenState extends State<AddressScreen> {
               ],
               borderRadius:
                   BorderRadius.circular(FetchPixels.getPixelHeight(12))),
-          child: ListView.builder(
-            padding: EdgeInsets.symmetric(
-                vertical: FetchPixels.getPixelHeight(16),
-                horizontal: FetchPixels.getPixelWidth(16)),
-            itemCount: addressLists.length,
-            shrinkWrap: true,
-            primary: true,
-            itemBuilder: ((context, index) {
-              ModelAddress modelAddress = addressLists[index];
-
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    select = index;
-                  });
-                },
-                child: Container(
-                  margin:
-                      EdgeInsets.only(bottom: FetchPixels.getPixelHeight(20)),
-                  width: FetchPixels.getPixelWidth(374),
-                  padding: EdgeInsets.symmetric(
-                      horizontal: FetchPixels.getPixelWidth(16),
-                      vertical: FetchPixels.getPixelHeight(16)),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 10,
-                            offset: Offset(0.0, 4.0)),
-                      ],
-                      borderRadius: BorderRadius.circular(
-                          FetchPixels.getPixelHeight(12))),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+          child: FutureBuilder<List<AddressModel>>(
+            future: AccountData().fetchCustomerAddress(2),
+            builder: (context,snapshot) {
+              if(!snapshot.hasData){
+                return const Center(child: CircularProgressIndicator(),);
+              }else {
+                return ListView.builder(
+                padding: EdgeInsets.symmetric(
+                    vertical: FetchPixels.getPixelHeight(16),
+                    horizontal: FetchPixels.getPixelWidth(16)),
+                itemCount: snapshot.data!.length,
+                shrinkWrap: true,
+                primary: true,
+                itemBuilder: ((context, index) {
+                  AddressModel modelAddress = snapshot.data![index];
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        select = index;
+                        DataFile.selectionAddress = modelAddress;
+                      });
+                    },
+                    child: Container(
+                      margin:
+                          EdgeInsets.only(bottom: FetchPixels.getPixelHeight(20)),
+                      width: FetchPixels.getPixelWidth(374),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: FetchPixels.getPixelWidth(16),
+                          vertical: FetchPixels.getPixelHeight(16)),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 10,
+                                offset: Offset(0.0, 4.0)),
+                          ],
+                          borderRadius: BorderRadius.circular(
+                              FetchPixels.getPixelHeight(12))),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Align(
-                            alignment: Alignment.bottomLeft,
-                            child: getCustomFont(
-                                modelAddress.name ?? '', 16, Colors.black, 1,
-                                fontWeight: FontWeight.w900),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Align(
+                                alignment: Alignment.bottomLeft,
+                                child: getCustomFont(
+                                    modelAddress.customerNameOrder ?? '', 16, Colors.black, 1,
+                                    fontWeight: FontWeight.w900),
+                              ),
+                              getVerSpace(FetchPixels.getPixelHeight(10)),
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: SizedBox(
+                                    width: FetchPixels.getPixelWidth(280),
+                                    child: getMultilineCustomFont(
+                                        '${modelAddress.homeNumber},  ${modelAddress.street}, ${modelAddress.ward}, ${modelAddress.district}, ${modelAddress.city}',
+                                        16,
+                                        Colors.black,
+                                        fontWeight: FontWeight.w400,
+                                        txtHeight: 1.4)),
+                              ),
+                              getVerSpace(FetchPixels.getPixelHeight(10)),
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: getCustomFont(
+                                    modelAddress.customerPhoneOrder ?? '', 16, Colors.black, 1,
+                                    fontWeight: FontWeight.w400),
+                              )
+                            ],
                           ),
-                          getVerSpace(FetchPixels.getPixelHeight(10)),
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: SizedBox(
-                                width: FetchPixels.getPixelWidth(280),
-                                child: getMultilineCustomFont(
-                                    modelAddress.address ?? '',
-                                    16,
-                                    Colors.black,
-                                    fontWeight: FontWeight.w400,
-                                    txtHeight: 1.4)),
-                          ),
-                          getVerSpace(FetchPixels.getPixelHeight(10)),
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: getCustomFont(
-                                modelAddress.phone ?? '', 16, Colors.black, 1,
-                                fontWeight: FontWeight.w400),
-                          )
+                          getSvgImage(
+                              select == index ? "selected.svg" : "unselected.svg",
+                              height: FetchPixels.getPixelHeight(24),
+                              width: FetchPixels.getPixelHeight(24))
                         ],
                       ),
-                      getSvgImage(
-                          select == index ? "selected.svg" : "unselected.svg",
-                          height: FetchPixels.getPixelHeight(24),
-                          width: FetchPixels.getPixelHeight(24))
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                }),
               );
-            }),
+              }
+            }
           ),
           // child: Stack(
           //   alignment: Alignment.topRight,

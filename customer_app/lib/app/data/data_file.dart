@@ -1,3 +1,5 @@
+import 'package:customer_app/app/models/model_service.dart';
+
 import '../../base/color_data.dart';
 import '../models/model_address.dart';
 import '../models/model_booking.dart';
@@ -70,7 +72,8 @@ class DataFile {
   ];
 
   static Map<String, ModelCart> cartList = {};
-
+  static AddressModel selectionAddress = AddressModel();
+  static List<ServiceModel> selectionServices = [];
   static Map<String, AddressModel> addressData = {};
 
   static List<ModelOther> otherProductList = [
@@ -86,6 +89,7 @@ class DataFile {
   ];
 
   static List<ModelCard> cardList = [
+    ModelCard('location_select.svg', "Thanh toán sau", "Thanh toán bằng tiền mặt hoặc ví điện tử sau khi hoàn thành dịch vụ"),
     ModelCard("paypal.svg", "Paypal", "xxxx xxxx xxxx 5416"),
     ModelCard("mastercard.svg", "Master Card", "xxxx xxxx xxxx 8624"),
     ModelCard("visa.svg", "Visa", "xxxx xxxx xxxx 4565")

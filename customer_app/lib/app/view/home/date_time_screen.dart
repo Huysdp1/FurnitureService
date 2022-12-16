@@ -85,9 +85,6 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
           right: FetchPixels.getPixelWidth(20),
           bottom: FetchPixels.getPixelHeight(33)),
       child: getButton(context, blueColor, "Done", Colors.white, () {
-        print(noww.hour);
-        print(noww.hour);
-        print(noww.minute);
 
         Constant.sendToNext(context, Routes.paymentRoute);
       }, 18,
@@ -108,7 +105,7 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
             onTap: () {
               setState(() {
                 select = index;
-                selection!.setString("time", timeLists[index]);
+                selection!.setString("time", timeLists[index].characters.take(5).toString());
               });
             },
             child: Container(
@@ -137,7 +134,7 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
           );
         },
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
+            crossAxisCount: 2,
             mainAxisExtent: FetchPixels.getPixelHeight(56),
             crossAxisSpacing: FetchPixels.getPixelWidth(19),
             mainAxisSpacing: FetchPixels.getPixelHeight(16)),
@@ -164,15 +161,14 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
             dayFormat: "EEE",
           ),
           onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-            selection!.setString("date", DateFormat.d().format(args.value));
-            selection!.setString("month", DateFormat.MMMM().format(args.value));
-            selection!.setString("year", DateFormat.y().format(args.value));
+            selection!.setString('selectDate', DateTime.parse(args.value.toString()).toString());
           },
+          initialSelectedDate: noww,
           selectionShape: DateRangePickerSelectionShape.circle,
           selectableDayPredicate: (date) {
-            if (date.weekday == 6 || date.weekday == 7) {
-              return false;
-            }
+            // if (date.weekday == 6 || date.weekday == 7) {
+            //   return false;
+            // }
             DateTime now = DateTime.now().subtract(const Duration(days: 1));
             if (!now.isBefore(date)) {
               return false;

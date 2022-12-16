@@ -21,7 +21,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   List<ModelPopularService> popularServiceLists = DataFile.popularServiceList;
   List<ServiceModel> serviceList = [];
-  List<int> choseService =[];
+  List<ServiceModel> selectionServices =[];
   // SharedPreferences? selection;
   var index = 0;
 
@@ -212,7 +212,7 @@ class _DetailScreenState extends State<DetailScreen> {
   // }
 
   Widget viewCartButton(BuildContext context) {
-    return getButton(context, blueColor, "View Cart", Colors.white, () {
+    return getButton(context, blueColor, "Xem hóa đơn", Colors.white, () {
       showModalBottomSheet(
           backgroundColor: backGroundColor,
           isDismissible: false,
@@ -224,6 +224,7 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
           ),
           builder: (context) {
+            DataFile.selectionServices = selectionServices;
             return const ColorDialog();
           });
     }, 18,
@@ -268,7 +269,7 @@ class _DetailScreenState extends State<DetailScreen> {
           getButton(context, Colors.transparent, "Thêm", blueColor, () {
             serviceModel.quantity = (serviceModel.quantity! + 1);
             total = total + (int.parse(serviceModel.price!) * 1);
-            choseService.add(serviceModel.serviceId!);
+            selectionServices.add(serviceModel);
             setState(() {});
           }, 14,
               weight: FontWeight.w600,
@@ -290,10 +291,8 @@ class _DetailScreenState extends State<DetailScreen> {
                 onTap: () {
                   serviceModel.quantity = (serviceModel.quantity! + 1);
                   total = total + (int.parse(serviceModel.price!) * 1);
-                  choseService.add(serviceModel.serviceId!);
                   // DataFile.cartList[index.toString()]!.quantity =
                   //     modelSalon.quantity;
-                  print(choseService);
                   setState(() {});
                 },
               ),
@@ -313,18 +312,9 @@ class _DetailScreenState extends State<DetailScreen> {
                 onTap: () {
                   serviceModel.quantity = (serviceModel.quantity! - 1);
                   total = total - (int.parse(serviceModel.price!) * 1);
-                  choseService.remove(serviceModel.serviceId);
-                  print(choseService);
-                  // print(
-                  //     "cartList12===${cartLists.length}===${cartLists[index.toString()]!.quantity}");
-
-                  if (serviceModel.quantity! > 0) {
-                    // DataFile.cartList[index.toString()]!.quantity =
-                    //     serviceModel.quantity;
-                  } else {
-                    //DataFile.cartList.remove(index.toString());
+                  if(serviceModel.quantity ==0) {
+                    selectionServices.remove(serviceModel);
                   }
-
                   setState(() {});
                 },
               ),

@@ -1,3 +1,5 @@
+import 'package:customer_app/app/data/order_data.dart';
+import 'package:customer_app/app/models/model_service.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,29 +20,44 @@ class OrderDetail extends StatefulWidget {
 }
 
 class _OrderDetailState extends State<OrderDetail> {
-  static Map<String, ModelCart> cartLists = DataFile.cartList;
-  List<ModelCart> list = [];
-  double total = 0;
-  double discount = 4.80;
-
-  Future<List<ModelCart>> getList() async {
+  List<ServiceModel> list = [];
+  int total = 0;
+  int discount = 0;
+  late CartModel fromCart;
+  Future<List<ServiceModel>> getList() async {
     list = [];
-    cartLists.forEach((key, value) {
+    for (var value in DataFile.selectionServices) {
       list.add(value);
-    });
-
+    }
     return list;
   }
-
-  double cartTotalPrice() {
-    cartLists.forEach((key, value) {
-      total += value.totalPrice();
-    });
+  List<ListService> listSerId = [];
+   createOrder() {
+     for(var val in list){
+      for(int i=0; i<val.quantity!;i++){
+        listSerId.add(ListService(serviceId: val.serviceId));
+      }
+    }
+    CartModel fromCart = CartModel(
+      customerId: 2,
+      address: DataFile.selectionAddress.addressId.toString(),
+      createAt: DateTime.now().toString(),
+      implementationDate: date,
+      implementationTime: time,
+      totalPrice: total.toString(),
+      listService: listSerId
+    );
+     OrderData().createOrderCustomer(2, fromCart);
+  }
+  int cartTotalPrice() {
+    for (var value in DataFile.selectionServices) {
+      total += int.parse(value.price!) * value.quantity!;
+    }
     return total;
   }
 
   SharedPreferences? selection;
-
+  DateTime now = DateTime.now();
   @override
   void initState() {
     super.initState();
@@ -50,11 +67,21 @@ class _OrderDetailState extends State<OrderDetail> {
       setState(() {});
     });
     cartTotalPrice();
+    now;
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    selection!.remove("selectDate");
+    selection!.remove("time");
+    selection!.remove("image");
+    selection!.remove("cardname");
+    selection!.remove("cardnumber");
+    DataFile.selectionServices.clear();
+    super.dispose();
+  }
   String? date;
-  String? month;
-  String? year;
   String? time;
   String? image;
   String? cardname;
@@ -64,13 +91,12 @@ class _OrderDetailState extends State<OrderDetail> {
 
   @override
   Widget build(BuildContext context) {
-    date = selection!.getString("date") ?? "";
-    month = selection!.getString("month") ?? "";
-    year = selection!.getString("year") ?? "";
-    time = selection!.getString("time") ?? "";
+    date = selection!.getString('selectDate')?? now.toString();
+    time = selection!.getString("time") ?? "8:00";
     image = selection!.getString("image") ?? '';
     cardname = selection!.getString("cardname") ?? "";
     cardnumber = selection!.getString("cardnumber") ?? "";
+
     FetchPixels(context);
     return WillPopScope(
         child: Scaffold(
@@ -138,7 +164,8 @@ class _OrderDetailState extends State<OrderDetail> {
           left: FetchPixels.getPixelWidth(20),
           right: FetchPixels.getPixelWidth(20),
           bottom: FetchPixels.getPixelHeight(33)),
-      child: getButton(context, blueColor, "Confirm", Colors.white, () {
+      child: getButton(context, blueColor, "Xác nhận", Colors.white, () async {
+        await createOrder();
         setState(() {
           confirm = true;
         });
@@ -159,15 +186,15 @@ class _OrderDetailState extends State<OrderDetail> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        getCustomFont("Payment Detail", 20, Colors.black, 1,
+        getCustomFont("Thông tin thanh toán", 20, Colors.black, 1,
             fontWeight: FontWeight.w900, ),
         getVerSpace(FetchPixels.getPixelHeight(16)),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            getCustomFont("Service Charge Total", 16, Colors.black, 1,
+            getCustomFont("Tổng dịch vụ", 16, Colors.black, 1,
                 fontWeight: FontWeight.w400, ),
-            getCustomFont("\$$total", 16, Colors.black, 1,
+            getCustomFont("${Constant.showTextMoney(total)}đ", 16, Colors.black, 1,
                 fontWeight: FontWeight.w600, )
           ],
         ),
@@ -175,9 +202,9 @@ class _OrderDetailState extends State<OrderDetail> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            getCustomFont("Discount (20%)", 16, Colors.black, 1,
+            getCustomFont("Giảm giá (0%)", 16, Colors.black, 1,
                 fontWeight: FontWeight.w400, ),
-            getCustomFont("-\$$discount", 16, Colors.black, 1,
+            getCustomFont("-${Constant.showTextMoney(discount)}đ", 16, Colors.black, 1,
                 fontWeight: FontWeight.w600, )
           ],
         ),
@@ -187,9 +214,9 @@ class _OrderDetailState extends State<OrderDetail> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            getCustomFont("Total", 24, Colors.black, 1,
+            getCustomFont("Tổng tiền", 24, Colors.black, 1,
                  fontWeight: FontWeight.w900),
-            getCustomFont("\$${total - discount}", 24, Colors.black, 1,
+            getCustomFont("${Constant.showTextMoney(total - discount)}đ", 24, Colors.black, 1,
                 fontWeight: FontWeight.w900, )
           ],
         ),
@@ -216,10 +243,10 @@ class _OrderDetailState extends State<OrderDetail> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          getCustomFont("Cart Detail", 16, Colors.black, 1,
+          getCustomFont("Chi tiết dịch vụ", 16, Colors.black, 1,
               fontWeight: FontWeight.w900, ),
           getVerSpace(FetchPixels.getPixelHeight(13)),
-          FutureBuilder<List<ModelCart>>(
+          FutureBuilder<List<ServiceModel>>(
               future: getList(),
               builder: (context, snapshot) {
                 if (snapshot.data != null && snapshot.data!.isNotEmpty) {
@@ -232,7 +259,7 @@ class _OrderDetailState extends State<OrderDetail> {
                     scrollDirection: Axis.vertical,
                     itemCount: list.length,
                     itemBuilder: (context, index) {
-                      ModelCart? modelCart = list[index];
+                      ServiceModel? serviceModel = list[index];
                       return Column(
                         children: [
                           Row(
@@ -241,11 +268,11 @@ class _OrderDetailState extends State<OrderDetail> {
                               Row(
                                 children: [
                                   Container(
-                                    height: FetchPixels.getPixelHeight(84),
-                                    width: FetchPixels.getPixelHeight(84),
+                                    height: FetchPixels.getPixelHeight(72),
+                                    width: FetchPixels.getPixelHeight(72),
                                     decoration: BoxDecoration(
                                       image: getDecorationAssetImage(
-                                          context, modelCart.image ?? ""),
+                                          context, 'shaving.png'),
                                     ),
                                   ),
                                   getHorSpace(FetchPixels.getPixelWidth(16)),
@@ -253,24 +280,30 @@ class _OrderDetailState extends State<OrderDetail> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      getCustomFont(modelCart.name ?? "", 16,
-                                          Colors.black, 1,
-                                          
-                                          fontWeight: FontWeight.w900),
+                                      SizedBox(
+                                        width: 150,
+                                        child:
+                                          getCustomFont(serviceModel.serviceName ?? "", 16,
+                                            Colors.black, 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+
+                                      ),
                                       getVerSpace(
                                           FetchPixels.getPixelHeight(4)),
                                       getCustomFont(
-                                          modelCart.productName ?? "",
+                                          serviceModel.categoryName.toString(),
                                           14,
                                           textColor,
-                                          1,
+                                          2,
                                           fontWeight: FontWeight.w400,
                                           ),
                                       getVerSpace(
                                           FetchPixels.getPixelHeight(9)),
-                                      getCustomFont("\$${modelCart.price}",
+                                      getCustomFont("\$${serviceModel.price}",
                                           16, blueColor, 1,
-                                          
+
                                           fontWeight: FontWeight.w900)
                                     ],
                                   )
@@ -284,14 +317,14 @@ class _OrderDetailState extends State<OrderDetail> {
                                         height:
                                             FetchPixels.getPixelHeight(30)),
                                     onTap: () {
-                                      modelCart.quantity =
-                                          (modelCart.quantity! + 1);
-                                      total = total + (modelCart.price! * 1);
+                                      serviceModel.quantity =
+                                          (serviceModel.quantity! + 1);
+                                      total = total + (int.parse(serviceModel.price!) * 1);
                                       setState(() {});
                                     },
                                   ),
                                   getHorSpace(FetchPixels.getPixelWidth(10)),
-                                  getCustomFont(modelCart.quantity.toString(),
+                                  getCustomFont(serviceModel.quantity.toString(),
                                       14, Colors.black, 1,
                                       fontWeight: FontWeight.w400,
                                       ),
@@ -302,16 +335,16 @@ class _OrderDetailState extends State<OrderDetail> {
                                         height:
                                             FetchPixels.getPixelHeight(30)),
                                     onTap: () {
-                                      if (modelCart.quantity! <= 1) {
+                                      if (serviceModel.quantity! <= 1) {
                                         setState(() {
-                                          cartLists.remove(index.toString());
+                                          DataFile.selectionServices.removeAt(index);
                                         });
                                       } else {
-                                        modelCart.quantity =
-                                            (modelCart.quantity! - 1);
+                                        serviceModel.quantity =
+                                            (serviceModel.quantity! - 1);
                                       }
                                       // print(modelSalon.quantity);
-                                      total = total - (modelCart.price! * 1);
+                                      total = total - (int.parse(serviceModel.price!) * 1);
 
                                       setState(() {});
                                     },
@@ -359,7 +392,7 @@ class _OrderDetailState extends State<OrderDetail> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          getCustomFont("Payment Method", 16, Colors.black, 1,
+          getCustomFont("Phương thức thanh toán", 16, Colors.black, 1,
               fontWeight: FontWeight.w900, ),
           getVerSpace(FetchPixels.getPixelHeight(14)),
           Row(
@@ -374,8 +407,11 @@ class _OrderDetailState extends State<OrderDetail> {
                   getCustomFont(cardname ?? "", 16, Colors.black, 1,
                       fontWeight: FontWeight.w600, ),
                   getVerSpace(FetchPixels.getPixelHeight(3)),
-                  getCustomFont(cardnumber ?? '', 16, Colors.black, 1,
-                       fontWeight: FontWeight.w400)
+                  SizedBox(
+                    width: 250,
+                    child: getCustomFont(cardnumber ?? '', 15, Colors.black, 3,
+                         fontWeight: FontWeight.w400),
+                  )
                 ],
               )
             ],
@@ -403,16 +439,31 @@ class _OrderDetailState extends State<OrderDetail> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          getCustomFont("Address", 16, Colors.black, 1,
+          getCustomFont("Địa chỉ", 16, Colors.black, 1,
               fontWeight: FontWeight.w900, ),
           getVerSpace(FetchPixels.getPixelHeight(8)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              getCustomFont(
+                  DataFile.selectionAddress.customerNameOrder ?? '', 16, Colors.black, 1,
+                  fontWeight: FontWeight.w700),
+              if(DataFile.selectionAddress.customerPhoneOrder != null)
+                getCustomFont(' || ', 16, Colors.black, 1),
+
+              getCustomFont(
+                  DataFile.selectionAddress.customerPhoneOrder ?? '', 16, Colors.black, 1,
+                  fontWeight: FontWeight.w400),
+            ],
+          ),
+      getVerSpace(FetchPixels.getPixelHeight(8)),
           getMultilineCustomFont(
-              "3891 Ranchview Dr. Richardson, California 62639",
+              '${DataFile.selectionAddress.homeNumber},  ${DataFile.selectionAddress.street}, ${DataFile.selectionAddress.ward}, ${DataFile.selectionAddress.district}, ${DataFile.selectionAddress.city}',
               16,
               Colors.black,
-              
               fontWeight: FontWeight.w400,
-              txtHeight: 1.3)
+              txtHeight: 1.4),
+
         ],
       ),
     );
@@ -445,7 +496,7 @@ class _OrderDetailState extends State<OrderDetail> {
                   height: FetchPixels.getPixelHeight(24)),
               getHorSpace(FetchPixels.getPixelWidth(12)),
               getCustomFont(
-                  "$date $month, $year, $time", 16, Colors.black, 1,
+                  "${Constant.parseDateNoUTC(date, false)}, $time", 16, Colors.black, 1,
                    fontWeight: FontWeight.w400)
             ],
           ),

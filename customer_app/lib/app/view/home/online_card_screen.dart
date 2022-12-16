@@ -46,7 +46,7 @@ class _OnlineCardScreenState extends State<OnlineCardScreen> {
   }
 
   Widget addCardButton(BuildContext context) {
-    return getButton(context, const Color(0xFFF2F4F8), "+ Add New Card", blueColor,
+    return getButton(context, const Color(0xFFF2F4F8), "+ Thêm phương thức mới", blueColor,
         () {
       showModalBottomSheet(
           backgroundColor: backGroundColor,
@@ -117,9 +117,12 @@ class _OnlineCardScreenState extends State<OnlineCardScreen> {
                             modelCard.cardName ?? "", 16, Colors.black, 1,
                              fontWeight: FontWeight.w900),
                         getVerSpace(FetchPixels.getPixelHeight(2)),
-                        getCustomFont(
-                            modelCard.cardNumber ?? "", 16, Colors.black, 1,
-                            fontWeight: FontWeight.w400, )
+                        SizedBox(
+                          width: 250,
+                          child: getCustomFont(
+                              modelCard.cardNumber ?? "", 15, Colors.black, 3,
+                              fontWeight: FontWeight.w400, ),
+                        )
                       ],
                     )
                   ],
