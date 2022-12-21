@@ -10,6 +10,8 @@ class PrefData {
   static String getDefaultCountry = "${prefName}country";
   static String defIndexVal = "${prefName}index";
   static String modelBooking = "${prefName}bookingModel";
+  static String modelOrder = "${prefName}orderModel";
+  static String modelCategory = "${prefName}categoryModel";
   static String defCountryName = "vietnam.png";
   static String apiUrl = 'http://furniturecompany-001-site1.btempurl.com';
   static Future<SharedPreferences> getPrefInstance() async {
@@ -25,6 +27,16 @@ class PrefData {
   static setBookingModel(String avail) async {
     SharedPreferences preferences = await getPrefInstance();
     preferences.setString(modelBooking, avail);
+  }
+
+  static setOrderModel(String avail) async {
+    SharedPreferences preferences = await getPrefInstance();
+    preferences.setString(modelOrder, avail);
+  }
+
+  static setCategoryModel(String avail) async {
+    SharedPreferences preferences = await getPrefInstance();
+    preferences.setString(modelCategory, avail);
   }
 
   static setDefIndex(int avail) async {
@@ -51,6 +63,17 @@ class PrefData {
   static Future<String> getBookingModel() async {
     SharedPreferences preferences = await getPrefInstance();
     String isIntroAvailable = preferences.getString(modelBooking) ?? "";
+    return isIntroAvailable;
+  }
+  static Future<String> getCategoryModel() async {
+    SharedPreferences preferences = await getPrefInstance();
+    String isIntroAvailable = preferences.getString(modelCategory) ?? "";
+    return isIntroAvailable;
+  }
+
+  static Future<String> getOrderModel() async {
+    SharedPreferences preferences = await getPrefInstance();
+    String isIntroAvailable = preferences.getString(modelOrder) ?? "";
     return isIntroAvailable;
   }
 

@@ -39,11 +39,25 @@ class DataFile {
   static List<ModelCountry> countryList = [
     ModelCountry("vietnam.png", "Việt Nam (VN)", "+84"),
   ];
-
-  static List<ModelCategory> categoryList = [
-    ModelCategory("cleaning.svg", "Vệ sinh"),
-    ModelCategory("wrench.svg", "Sữa chữa"),
-    ModelCategory("paint_roller.svg", "Bảo trì"),
+  static List<String> categoryImage = [
+    "cleaning.svg",
+    "wrench.svg",
+    "paint_roller.svg",
+    "paint_roller.svg",
+    "sloon.svg",
+    "iron.svg",
+    "laundry.svg",
+    "perfume.svg",
+    "car_toy.svg",
+    "pipe.svg",
+    "dump_truck.svg",
+    "watering_plants.svg",
+    "plastic_bin.svg",
+  ];
+  static List<CategoryModel> categoryList = [
+    // ModelCategory("cleaning.svg", "Vệ sinh"),
+    // ModelCategory("wrench.svg", "Sữa chữa"),
+    // ModelCategory("paint_roller.svg", "Bảo trì"),
     // ModelCategory("sloon.svg", "Salon"),
     // ModelCategory("iron.svg", "Ironing"),
     // ModelCategory("laundry.svg", "Washing"),

@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:customer_app/app/data/service_data.dart';
+import 'package:customer_app/app/models/model_category.dart';
 import 'package:customer_app/app/models/model_service.dart';
 import 'package:flutter/material.dart';
 import '../../../base/color_data.dart';
@@ -22,13 +25,23 @@ class _DetailScreenState extends State<DetailScreen> {
   List<ModelPopularService> popularServiceLists = DataFile.popularServiceList;
   List<ServiceModel> serviceList = [];
   List<ServiceModel> selectionServices =[];
+  List<CategoryModel> categoryLists = [];
   // SharedPreferences? selection;
   var index = 0;
 
   getPrefData() async {
     index = await PrefData.getDefIndex();
+    String getModel = await PrefData.getCategoryModel();
+    if (getModel.isNotEmpty) {
+      categoryLists = CategoryModel.fromList(
+          json.decode(getModel).cast<Map<String, dynamic>>());
+      setState(() {});
+    }
     serviceList = await ServiceData().fetchServicesAndCategories();
-    setState(() {});
+    if(serviceList.isNotEmpty){
+    setState(() {
+    });}
+
   }
 
   @override
@@ -70,7 +83,7 @@ class _DetailScreenState extends State<DetailScreen> {
             gettoolbarMenu(context, "back.svg", () {
               Constant.backToPrev(context);
             },
-                title: "Detail",
+                title: "Chi tiết",
                 weight: FontWeight.w900,
                 textColor: Colors.black,
                 fontsize: 24,
@@ -85,7 +98,7 @@ class _DetailScreenState extends State<DetailScreen> {
         getVerSpace(FetchPixels.getPixelHeight(29)),
         getPaddingWidget(
             edgeInsets,
-            getCustomFont("Packages", 16, Colors.black, 1,
+            getCustomFont("Các dịch vụ ${categoryLists[index].categoryName!.toLowerCase()}:", 16, Colors.black, 1,
                 fontWeight: FontWeight.w900)),
         getVerSpace(FetchPixels.getPixelHeight(15)),
         buildListView(defSpace),
@@ -378,46 +391,46 @@ class _DetailScreenState extends State<DetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        getCustomFont("Dịch vụ bảo trì", 24, Colors.black, 1,
+        getCustomFont("Dịch vụ ${categoryLists[index].categoryName!.toLowerCase()}", 24, Colors.black, 1,
             fontWeight: FontWeight.w900),
         getVerSpace(FetchPixels.getPixelHeight(17)),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                getSvgImage("star.svg",
-                    width: FetchPixels.getPixelHeight(25),
-                    height: FetchPixels.getPixelHeight(25)),
-                getHorSpace(FetchPixels.getPixelWidth(10)),
-                getCustomFont(
-                  "4.5",
-                  16,
-                  Colors.black,
-                  1,
-                  fontWeight: FontWeight.w400,
-                ),
-              ],
-            ),
-            getButton(
-                context, Colors.white, "10K Bookings", blueColor, () {}, 14,
-                weight: FontWeight.w400,
-                boxShadow: [
-                  const BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 10,
-                      offset: Offset(0.0, 4.0)),
-                ],
-                borderRadius:
-                    BorderRadius.circular(FetchPixels.getPixelHeight(20)),
-                buttonHeight: FetchPixels.getPixelHeight(40),
-                insetsGeometrypadding: EdgeInsets.symmetric(
-                    horizontal: FetchPixels.getPixelWidth(18)))
-          ],
-        ),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   children: [
+        //     Row(
+        //       children: [
+        //         getSvgImage("star.svg",
+        //             width: FetchPixels.getPixelHeight(25),
+        //             height: FetchPixels.getPixelHeight(25)),
+        //         getHorSpace(FetchPixels.getPixelWidth(10)),
+        //         getCustomFont(
+        //           "4.5",
+        //           16,
+        //           Colors.black,
+        //           1,
+        //           fontWeight: FontWeight.w400,
+        //         ),
+        //       ],
+        //     ),
+        //     getButton(
+        //         context, Colors.white, "10K Bookings", blueColor, () {}, 14,
+        //         weight: FontWeight.w400,
+        //         boxShadow: [
+        //           const BoxShadow(
+        //               color: Colors.black12,
+        //               blurRadius: 10,
+        //               offset: Offset(0.0, 4.0)),
+        //         ],
+        //         borderRadius:
+        //             BorderRadius.circular(FetchPixels.getPixelHeight(20)),
+        //         buttonHeight: FetchPixels.getPixelHeight(40),
+        //         insetsGeometrypadding: EdgeInsets.symmetric(
+        //             horizontal: FetchPixels.getPixelWidth(18)))
+        //   ],
+        // ),
         getVerSpace(FetchPixels.getPixelHeight(24)),
         getMultilineCustomFont(
-            "There is a distinction between a beauty salon and a hair salon and although many small treatments, beauty salons provide extended services related to skin health.",
+            "Đây là mô tả về dịch vụ vệ sinh",
             16,
             Colors.black,
             fontWeight: FontWeight.w400,

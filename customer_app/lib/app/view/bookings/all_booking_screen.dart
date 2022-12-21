@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:customer_app/app/models/model_order.dart';
 import 'package:flutter/material.dart';
 
 import '../../../base/color_data.dart';
@@ -18,7 +19,7 @@ class AllBookingScreen extends StatefulWidget {
 }
 
 class _AllBookingScreenState extends State<AllBookingScreen> {
-  List<ModelBooking> bookingLists = DataFile.bookingList;
+  List<OrderModel> orderList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class _AllBookingScreenState extends State<AllBookingScreen> {
     );
     return Container(
       color: backGroundColor,
-      child: bookingLists.isEmpty
+      child: orderList.isEmpty
           ? getPaddingWidget(edgeInsets, nullListView(context))
           : allBookingList(),
     );
@@ -35,18 +36,25 @@ class _AllBookingScreenState extends State<AllBookingScreen> {
 
 
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
-
+    String getModel = await PrefData.getOrderModel();
+    if(getModel.isNotEmpty) {
+      orderList = OrderModel.fromList(json.decode(getModel).cast<Map<String, dynamic>>());
+      if (mounted) {
+        setState(() {
+        });
+      }
+    }
   }
 
   ListView allBookingList() {
     return ListView.builder(
       padding: EdgeInsets.zero,
-      itemCount: bookingLists.length,
+      itemCount: orderList.length,
       itemBuilder: (context, index) {
-        ModelBooking modelBooking = bookingLists[index];
-        return buildBookingListItem(modelBooking, context, index, () {
+        OrderModel orderModel = orderList[index];
+        return buildBookingListItem(orderModel, context, index, () {
           ModelBooking booking = ModelBooking(
               "",
               modelBooking.name ?? "",

@@ -1,8 +1,14 @@
 
+import 'dart:convert';
+
+import 'package:customer_app/app/data/data_file.dart';
+import 'package:customer_app/app/data/order_data.dart';
+import 'package:customer_app/app/models/model_order.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../base/color_data.dart';
 import '../../../../base/constant.dart';
+import '../../../../base/pref_data.dart';
 import '../../../../base/resizer/fetch_pixels.dart';
 import '../../../../base/widget_utils.dart';
 import '../../../routes/app_routes.dart';
@@ -23,7 +29,23 @@ class _TabBookingsState extends State<TabBookings>
   final PageController _controller = PageController(
     initialPage: 0,
   );
-
+  static List<OrderModel> orderList = [];
+  Future loadAPIData() async{
+    await OrderData().fetchOrdersOfCustomer(2);
+  }
+  Future<List<OrderModel>> getPrefData() async {
+    loadAPIData().then((value) async{
+      String getModel = await PrefData.getOrderModel();
+      if(getModel.isNotEmpty) {
+        orderList = OrderModel.fromList(json.decode(getModel).cast<Map<String, dynamic>>());
+        if (mounted) {
+          setState(() {
+          });
+        }
+      }}
+    );
+    return orderList;
+  }
   late TabController tabController;
   var position = 0;
 
@@ -45,28 +67,36 @@ class _TabBookingsState extends State<TabBookings>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: backGroundColor,
-      body: Column(
-        children: [
-          getVerSpace(FetchPixels.getPixelHeight(20)),
-          getPaddingWidget(
-            EdgeInsets.symmetric(
-                horizontal: FetchPixels.getDefaultHorSpace(context)),
-            withoutleftIconToolbar(context,
-                isrightimage: true,
-                title: "Bookings",
-                weight: FontWeight.w900,
-                textColor: Colors.black,
-                fontsize: 24,
-                istext: true,
-                rightimage: "notification.svg", rightFunction: () {
-              Constant.sendToNext(context, Routes.notificationRoutes);
-            }),
-          ),
-          getVerSpace(FetchPixels.getPixelHeight(30)),
-          tabBar(),
-          getVerSpace(FetchPixels.getPixelHeight(10)),
-          pageViewer()
-        ],
+      body: FutureBuilder(
+        future: getPrefData(),
+        builder: (context, snapshot) {
+          if(!snapshot.hasData){
+            return const Center(child: CircularProgressIndicator(),);
+          }
+          return Column(
+            children: [
+              getVerSpace(FetchPixels.getPixelHeight(20)),
+              getPaddingWidget(
+                EdgeInsets.symmetric(
+                    horizontal: FetchPixels.getDefaultHorSpace(context)),
+                withoutleftIconToolbar(context,
+                    isrightimage: true,
+                    title: "Bookings",
+                    weight: FontWeight.w900,
+                    textColor: Colors.black,
+                    fontsize: 24,
+                    istext: true,
+                    rightimage: "notification.svg", rightFunction: () {
+                  Constant.sendToNext(context, Routes.notificationRoutes);
+                }),
+              ),
+              getVerSpace(FetchPixels.getPixelHeight(30)),
+              tabBar(),
+              getVerSpace(FetchPixels.getPixelHeight(10)),
+              pageViewer()
+            ],
+          );
+        }
       ),
     );
   }

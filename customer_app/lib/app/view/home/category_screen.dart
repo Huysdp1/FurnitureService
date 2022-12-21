@@ -17,7 +17,7 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
-  static List<ModelCategory> categoryLists = DataFile.categoryList;
+  static List<CategoryModel> categoryLists = DataFile.categoryList;
 
   var noOfGrid = 3;
 
@@ -68,9 +68,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
           mainAxisSpacing: FetchPixels.getPixelHeight(20),
           mainAxisExtent: FetchPixels.getPixelHeight(121)),
       itemBuilder: (BuildContext context, int index) {
-        ModelCategory modelCategory = categoryLists[index];
+        CategoryModel modelCategory = categoryLists[index];
         return GestureDetector(
           onTap: () {
+
             Constant.sendToNext(context, Routes.detailRoute);
           },
           child: Container(
@@ -90,11 +91,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                getSvgImage(modelCategory.image ?? "",
+                getSvgImage(DataFile.categoryImage[index] ?? "",
                     width: FetchPixels.getPixelHeight(44),
                     height: FetchPixels.getPixelHeight(44)),
                 getVerSpace(FetchPixels.getPixelHeight(15)),
-                getCustomFont(modelCategory.name ?? '', 14, Colors.black, 1,
+                getCustomFont(modelCategory.categoryName ?? '', 14, Colors.black, 1,
                     fontWeight: FontWeight.w400)
               ],
             ),

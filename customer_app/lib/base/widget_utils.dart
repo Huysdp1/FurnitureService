@@ -1,4 +1,5 @@
 
+import 'package:customer_app/app/models/model_order.dart';
 import 'package:customer_app/base/resizer/fetch_pixels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -253,6 +254,185 @@ GestureDetector buildBookingListItem(ModelBooking modelBooking,
   );
 }
 
+GestureDetector buildOrderListItem(OrderModel modelBooking,
+    BuildContext context, int index, Function function, Function funDelete) {
+  return GestureDetector(
+    onTap: () {
+      function();
+    },
+    child: Container(
+      height: FetchPixels.getPixelHeight(171),
+      margin: EdgeInsets.only(
+          bottom: FetchPixels.getPixelHeight(20),
+          left: FetchPixels.getDefaultHorSpace(context),
+          right: FetchPixels.getDefaultHorSpace(context)),
+      padding: EdgeInsets.symmetric(
+          vertical: FetchPixels.getPixelHeight(16),
+          horizontal: FetchPixels.getPixelWidth(16)),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: const [
+            BoxShadow(
+                color: Colors.black12,
+                blurRadius: 10,
+                offset: Offset(0.0, 4.0)),
+          ],
+          borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(12))),
+      child: Column(
+        children: [
+          // Expanded(child:
+          //   Row(
+          //     children: [
+          //       Container(
+          //         height: FetchPixels.getPixelHeight(91),
+          //         width: FetchPixels.getPixelHeight(91),
+          //         decoration: BoxDecoration(
+          //           image: getDecorationAssetImage(
+          //               context, modelBooking.image ?? ""),
+          //         ),
+          //       ),
+          //       Expanded(child: Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           getCustomFont(
+          //               modelBooking.name ?? "", 16, Colors.black, 1,
+          //               fontWeight: FontWeight.w900),
+          //           getVerSpace(FetchPixels.getPixelHeight(6)),
+          //           getCustomFont(
+          //             modelBooking.date ?? "",
+          //             14,
+          //             textColor,
+          //             1,
+          //             fontWeight: FontWeight.w400,
+          //           ),
+          //           getVerSpace(FetchPixels.getPixelHeight(6)),
+          //           Row(
+          //             children: [
+          //               getSvgImage("star.svg",
+          //                   height: FetchPixels.getPixelHeight(16),
+          //                   width: FetchPixels.getPixelHeight(16)),
+          //               getHorSpace(FetchPixels.getPixelWidth(6)),
+          //               getCustomFont(
+          //                   modelBooking.rating ?? "", 14, Colors.black, 1,
+          //                   fontWeight: FontWeight.w400),
+          //             ],
+          //           )
+          //         ],
+          //       ),flex: 1,)
+          //     ],
+          //   )
+          //   ,flex: 1,),
+
+          Expanded(
+            flex: 1,
+            child: Row(
+              children: [
+                Container(
+                  height: FetchPixels.getPixelHeight(91),
+                  width: FetchPixels.getPixelHeight(91),
+                  decoration: BoxDecoration(
+                    image: getDecorationAssetImage(
+                        context, modelBooking.orderImages!.first ?? "",fit: BoxFit.cover),
+                  ),
+                ),
+                getHorSpace(FetchPixels.getPixelWidth(16)),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(flex: 1,child: getHorSpace(0),),
+                      getCustomFont(
+                          modelBooking. ?? "", 16, Colors.black, 1,
+                          fontWeight: FontWeight.w900),
+                      getVerSpace(FetchPixels.getPixelHeight(12)),
+                      getCustomFont(
+                        modelBooking.date ?? "",
+                        14,
+                        textColor,
+                        1,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      getVerSpace(FetchPixels.getPixelHeight(12)),
+                      Row(
+                        children: [
+                          getSvgImage("star.svg",
+                              height: FetchPixels.getPixelHeight(16),
+                              width: FetchPixels.getPixelHeight(16)),
+                          getHorSpace(FetchPixels.getPixelWidth(6)),
+                          getCustomFont(
+                              modelBooking.rating ?? "", 14, Colors.black, 1,
+                              fontWeight: FontWeight.w400),
+                        ],
+                      ),
+                      Expanded(flex: 1,child: getHorSpace(0),),
+                    ],
+                  ),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        funDelete();
+                      },
+                      child: getSvgImage("trash.svg",
+                          width: FetchPixels.getPixelHeight(20),
+                          height: FetchPixels.getPixelHeight(20)),
+                    ),
+                    getPaddingWidget(EdgeInsets.only(bottom:FetchPixels.getPixelHeight(10) ),  getCustomFont(
+                      "\$${modelBooking.price}",
+                      16,
+                      blueColor,
+                      1,
+                      fontWeight: FontWeight.w900,
+                    ))
+                  ],
+                )
+              ],
+            ),
+          ),
+          getVerSpace(FetchPixels.getPixelHeight(16)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  getAssetImage("dot.png", FetchPixels.getPixelHeight(8),
+                      FetchPixels.getPixelHeight(8)),
+                  getHorSpace(FetchPixels.getPixelWidth(8)),
+                  getCustomFont(modelBooking.owner ?? "", 14, textColor, 1,
+                      fontWeight: FontWeight.w400),
+                ],
+              ),
+              Wrap(
+                children: [
+                  getButton(
+                      context,
+                      Color(modelBooking.bgColor!.toInt()),
+                      modelBooking.tag ?? "",
+                      modelBooking.textColor!,
+                          () {},
+                      16,
+                      weight: FontWeight.w600,
+                      borderRadius:
+                      BorderRadius.circular(FetchPixels.getPixelHeight(37)),
+                      insetsGeometrypadding: EdgeInsets.symmetric(
+                          vertical: FetchPixels.getPixelHeight(6),
+                          horizontal: FetchPixels.getPixelWidth(12)))
+                ],
+              )
+            ],
+          )
+        ],
+      ),
+    ),
+  );
+}
 DecorationImage getDecorationAssetImage(BuildContext buildContext, String image,
     {BoxFit fit = BoxFit.contain}) {
   return DecorationImage(

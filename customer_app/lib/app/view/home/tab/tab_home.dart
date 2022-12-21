@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:customer_app/app/data/service_data.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../base/color_data.dart';
@@ -19,16 +22,35 @@ class TabHome extends StatefulWidget {
 
 class _TabHomeState extends State<TabHome> {
   TextEditingController searchController = TextEditingController();
-  static List<ModelCategory> categoryLists = DataFile.categoryList;
   List<ModelPopularService> popularServiceLists = DataFile.popularServiceList;
   ValueNotifier selectedPage = ValueNotifier(0);
+  static List<CategoryModel> categoryLists =[];
+  Future loadAPIData() async{
+     await ServiceData().fetchCategories();
+  }
   final _controller = PageController();
-
+  Future<List<CategoryModel>> getPrefData() async {
+    loadAPIData().then((value) async{
+    String getModel = await PrefData.getCategoryModel();
+    if(getModel.isNotEmpty) {
+      categoryLists = CategoryModel.fromList(json.decode(getModel).cast<Map<String, dynamic>>());
+      if (mounted) {
+        setState(() {
+        });
+      }
+    }}
+    );
+    return categoryLists;
+  }
   @override
   void initState() {
     super.initState();
   }
-
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     double horSpace = FetchPixels.getDefaultHorSpace(context);
@@ -95,7 +117,7 @@ class _TabHomeState extends State<TabHome> {
                         Constant.sendToNext(context, Routes.categoryRoute);
                       },
                       child: getCustomFont(
-                        "View All",
+                        "Tất cả",
                         14,
                         blueColor,
                         1,
@@ -106,65 +128,64 @@ class _TabHomeState extends State<TabHome> {
                 ),
               ),
               getVerSpace(FetchPixels.getPixelHeight(16)),
-              SizedBox(
-                height: FetchPixels.getPixelHeight(132),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: DataFile.categoryList.length,
-                  primary: false,
-                  shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    ModelCategory modelCategory = categoryLists[index];
-                    return GestureDetector(
-                      onTap: () {
-                        // PrefData.setDefIndex(1);
-                        if (index == 0) {
-                          Constant.sendToNext(context, Routes.washingScreen);
-                        }
-                        if (index == 1) {
-                          Constant.sendToNext(
-                              context, Routes.repairScreenRoute);
-                        }
-                        if (index == 2) {
-                          Constant.sendToNext(context, Routes.detailRoute);
-                        }
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(
-                            left: (index == 0) ? horSpace : 0,
-                            right: FetchPixels.getPixelWidth(20),
-                            bottom: FetchPixels.getPixelHeight(28)),
-                        padding: EdgeInsets.only(
-                            top: FetchPixels.getPixelHeight(16),
-                            bottom: FetchPixels.getPixelHeight(12)),
-                        width: FetchPixels.getPixelWidth(91),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: const [
-                              BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 10,
-                                  offset: Offset(0.0, 4.0)),
-                            ],
-                            borderRadius: BorderRadius.circular(
-                                FetchPixels.getPixelHeight(12))),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            getSvgImage(modelCategory.image ?? "",
-                                width: FetchPixels.getPixelHeight(44),
-                                height: FetchPixels.getPixelHeight(44)),
-                            getVerSpace(FetchPixels.getPixelHeight(10)),
-                            getCustomFont(
-                                modelCategory.name ?? "", 14, Colors.black, 1,
-                                fontWeight: FontWeight.w400),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+              FutureBuilder(
+                future: getPrefData(),
+                builder: (context,snapshot) {
+                  if(!snapshot.hasData){
+                    return const Center(child: CircularProgressIndicator(),);
+                  }
+                  return SizedBox(
+                    height: FetchPixels.getPixelHeight(132),
+                    child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: categoryLists.length,
+                          primary: false,
+                          shrinkWrap: true,
+                          physics: const BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            CategoryModel modelCategory =  categoryLists[index];
+                            return GestureDetector(
+                              onTap: () {
+                                 PrefData.setDefIndex(index);
+                                 Constant.sendToNext(context, Routes.detailRoute);
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    left: (index == 0) ? horSpace : 0,
+                                    right: FetchPixels.getPixelWidth(20),
+                                    bottom: FetchPixels.getPixelHeight(28)),
+                                padding: EdgeInsets.only(
+                                    top: FetchPixels.getPixelHeight(16),
+                                    bottom: FetchPixels.getPixelHeight(12)),
+                                width: FetchPixels.getPixelWidth(91),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: const [
+                                      BoxShadow(
+                                          color: Colors.black12,
+                                          blurRadius: 10,
+                                          offset: Offset(0.0, 4.0)),
+                                    ],
+                                    borderRadius: BorderRadius.circular(
+                                        FetchPixels.getPixelHeight(12))),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    getSvgImage(DataFile.categoryImage[index] ?? "",
+                                        width: FetchPixels.getPixelHeight(44),
+                                        height: FetchPixels.getPixelHeight(44)),
+                                    getVerSpace(FetchPixels.getPixelHeight(10)),
+                                    getCustomFont(
+                                        modelCategory.categoryName ?? "", 14, Colors.black, 1,
+                                        fontWeight: FontWeight.w400),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                  );
+                }
               ),
               getPaddingWidget(
                 EdgeInsets.symmetric(horizontal: FetchPixels.getPixelWidth(20)),
@@ -172,7 +193,7 @@ class _TabHomeState extends State<TabHome> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     getCustomFont(
-                      "Nổi bậc",
+                      "Nổi bật",
                       20,
                       Colors.black,
                       1,

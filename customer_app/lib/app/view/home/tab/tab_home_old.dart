@@ -20,7 +20,7 @@ class TabHome extends StatefulWidget {
 
 class _TabHomeState extends State<TabHome> {
   TextEditingController searchController = TextEditingController();
-  static List<ModelCategory> categoryLists = DataFile.categoryList;
+  static List<CategoryModel> categoryLists = DataFile.categoryList;
   List<ModelPopularService> popularServiceLists = DataFile.popularServiceList;
   ValueNotifier selectedPage = ValueNotifier(0);
   final _controller = PageController();
@@ -113,7 +113,7 @@ class _TabHomeState extends State<TabHome> {
           itemCount: 6,
           physics: const BouncingScrollPhysics(),
           itemBuilder: (context, index) {
-            ModelCategory modelCategory = categoryLists[index];
+            CategoryModel modelCategory = categoryLists[index];
             return GestureDetector(
               onTap: () {
                 // showModalBottomSheet(
@@ -155,12 +155,12 @@ class _TabHomeState extends State<TabHome> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // getVerSpace(FetchPixels.getPixelHeight(16)),
-                    getSvgImage(modelCategory.image ?? "",
+                    getSvgImage(DataFile.categoryImage[index] ?? "",
                         width: FetchPixels.getPixelHeight(44),
                         height: FetchPixels.getPixelHeight(44)),
                     getVerSpace(FetchPixels.getPixelHeight(10)),
                     getCustomFont(
-                        modelCategory.name ?? "", 14, Colors.black, 1,
+                        modelCategory.categoryName ?? "", 14, Colors.black, 1,
                          fontWeight: FontWeight.w400),
                     // getVerSpace(FetchPixels.getPixelHeight(12)),
                   ],
@@ -377,7 +377,7 @@ class _TabHomeState extends State<TabHome> {
             itemCount: 6,
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
-              ModelCategory modelCategory = categoryLists[index];
+              CategoryModel modelCategory = categoryLists[index];
               return GestureDetector(
                 onTap: () {
                   // showModalBottomSheet(
@@ -419,12 +419,12 @@ class _TabHomeState extends State<TabHome> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // getVerSpace(FetchPixels.getPixelHeight(16)),
-                      getSvgImage(modelCategory.image ?? "",
+                      getSvgImage(DataFile.categoryImage[index] ?? "",
                           width: FetchPixels.getPixelHeight(44),
                           height: FetchPixels.getPixelHeight(44)),
                       getVerSpace(FetchPixels.getPixelHeight(10)),
                       getCustomFont(
-                          modelCategory.name ?? "", 14, Colors.black, 1,
+                          modelCategory.categoryName ?? "", 14, Colors.black, 1,
                            fontWeight: FontWeight.w400),
                       // getVerSpace(FetchPixels.getPixelHeight(12)),
                     ],
