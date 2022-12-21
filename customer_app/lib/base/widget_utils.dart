@@ -1,4 +1,3 @@
-
 import 'package:customer_app/app/models/model_order.dart';
 import 'package:customer_app/base/resizer/fetch_pixels.dart';
 import 'package:flutter/material.dart';
@@ -152,7 +151,8 @@ GestureDetector buildBookingListItem(ModelBooking modelBooking,
                   width: FetchPixels.getPixelHeight(91),
                   decoration: BoxDecoration(
                     image: getDecorationAssetImage(
-                        context, modelBooking.image ?? "",fit: BoxFit.cover),
+                        context, modelBooking.image ?? "",
+                        fit: BoxFit.cover),
                   ),
                 ),
                 getHorSpace(FetchPixels.getPixelWidth(16)),
@@ -163,7 +163,10 @@ GestureDetector buildBookingListItem(ModelBooking modelBooking,
                     mainAxisAlignment: MainAxisAlignment.start,
                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(flex: 1,child: getHorSpace(0),),
+                      Expanded(
+                        flex: 1,
+                        child: getHorSpace(0),
+                      ),
                       getCustomFont(
                           modelBooking.name ?? "", 16, Colors.black, 1,
                           fontWeight: FontWeight.w900),
@@ -187,7 +190,10 @@ GestureDetector buildBookingListItem(ModelBooking modelBooking,
                               fontWeight: FontWeight.w400),
                         ],
                       ),
-                      Expanded(flex: 1,child: getHorSpace(0),),
+                      Expanded(
+                        flex: 1,
+                        child: getHorSpace(0),
+                      ),
                     ],
                   ),
                 ),
@@ -203,13 +209,15 @@ GestureDetector buildBookingListItem(ModelBooking modelBooking,
                           width: FetchPixels.getPixelHeight(20),
                           height: FetchPixels.getPixelHeight(20)),
                     ),
-                   getPaddingWidget(EdgeInsets.only(bottom:FetchPixels.getPixelHeight(10) ),  getCustomFont(
-                     "\$${modelBooking.price}",
-                     16,
-                     blueColor,
-                     1,
-                     fontWeight: FontWeight.w900,
-                   ))
+                    getPaddingWidget(
+                        EdgeInsets.only(bottom: FetchPixels.getPixelHeight(10)),
+                        getCustomFont(
+                          "\$${modelBooking.price}",
+                          16,
+                          blueColor,
+                          1,
+                          fontWeight: FontWeight.w900,
+                        ))
                   ],
                 )
               ],
@@ -251,6 +259,41 @@ GestureDetector buildBookingListItem(ModelBooking modelBooking,
         ],
       ),
     ),
+  );
+}
+
+Widget widgetOrderStatus(context, String status) {
+  int color = 0xFFEEFCF0;
+  Color theme = success;
+  if (status == 'Đã tiếp nhận') {
+    color = 0xFFEEFCF0;
+    theme = success;
+  }
+  if (status == 'Chờ khảo sát') {
+    color = 0xFFF0F8FF;
+    theme = completed;
+  }
+  if (status == 'Đang thực hiện') {
+    color = 0xFFFFF3F3;
+    theme = error;
+  }
+  if (status == 'Chờ thanh toán') {
+    color = 0xFFF0F8FF;
+    theme = completed;
+  }
+  if (status == 'Huỷ') {
+    color = 0xFFFFF3F3;
+    theme = error;
+  }
+  return Wrap(
+    children: [
+      getButton(context, Color(color.toInt()), status, theme, () {}, 16,
+          weight: FontWeight.w600,
+          borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(37)),
+          insetsGeometrypadding: EdgeInsets.symmetric(
+              vertical: FetchPixels.getPixelHeight(6),
+              horizontal: FetchPixels.getPixelWidth(12)))
+    ],
   );
 }
 
@@ -332,7 +375,8 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                   width: FetchPixels.getPixelHeight(91),
                   decoration: BoxDecoration(
                     image: getDecorationAssetImage(
-                        context, modelBooking.orderImages!.first ?? "",fit: BoxFit.cover),
+                        context, modelBooking.orderImages!.first ?? "",
+                        fit: BoxFit.cover),
                   ),
                 ),
                 getHorSpace(FetchPixels.getPixelWidth(16)),
@@ -343,31 +387,37 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                     mainAxisAlignment: MainAxisAlignment.start,
                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(flex: 1,child: getHorSpace(0),),
+                      Expanded(
+                        flex: 1,
+                        child: getHorSpace(0),
+                      ),
                       getCustomFont(
-                          modelBooking. ?? "", 16, Colors.black, 1,
+                          modelBooking.address ?? "", 16, Colors.black, 1,
                           fontWeight: FontWeight.w900),
                       getVerSpace(FetchPixels.getPixelHeight(12)),
                       getCustomFont(
-                        modelBooking.date ?? "",
+                        '${modelBooking.implementationTime}, ${Constant.parseDateNoUTC(modelBooking.implementationDate, false)}',
                         14,
                         textColor,
                         1,
                         fontWeight: FontWeight.w400,
                       ),
                       getVerSpace(FetchPixels.getPixelHeight(12)),
-                      Row(
-                        children: [
-                          getSvgImage("star.svg",
-                              height: FetchPixels.getPixelHeight(16),
-                              width: FetchPixels.getPixelHeight(16)),
-                          getHorSpace(FetchPixels.getPixelWidth(6)),
-                          getCustomFont(
-                              modelBooking.rating ?? "", 14, Colors.black, 1,
-                              fontWeight: FontWeight.w400),
-                        ],
+                      // Row(
+                      //   children: [
+                      //     getSvgImage("star.svg",
+                      //         height: FetchPixels.getPixelHeight(16),
+                      //         width: FetchPixels.getPixelHeight(16)),
+                      //     getHorSpace(FetchPixels.getPixelWidth(6)),
+                      //     getCustomFont(
+                      //         modelBooking. ?? "", 14, Colors.black, 1,
+                      //         fontWeight: FontWeight.w400),
+                      //   ],
+                      // ),
+                      Expanded(
+                        flex: 1,
+                        child: getHorSpace(0),
                       ),
-                      Expanded(flex: 1,child: getHorSpace(0),),
                     ],
                   ),
                 ),
@@ -383,13 +433,15 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                           width: FetchPixels.getPixelHeight(20),
                           height: FetchPixels.getPixelHeight(20)),
                     ),
-                    getPaddingWidget(EdgeInsets.only(bottom:FetchPixels.getPixelHeight(10) ),  getCustomFont(
-                      "\$${modelBooking.price}",
-                      16,
-                      blueColor,
-                      1,
-                      fontWeight: FontWeight.w900,
-                    ))
+                    getPaddingWidget(
+                        EdgeInsets.only(bottom: FetchPixels.getPixelHeight(10)),
+                        getCustomFont(
+                          "\${Constant.showTextMoney(modelBooking.totalPrice)}đ",
+                          16,
+                          blueColor,
+                          1,
+                          fontWeight: FontWeight.w900,
+                        ))
                   ],
                 )
               ],
@@ -405,27 +457,12 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                   getAssetImage("dot.png", FetchPixels.getPixelHeight(8),
                       FetchPixels.getPixelHeight(8)),
                   getHorSpace(FetchPixels.getPixelWidth(8)),
-                  getCustomFont(modelBooking.owner ?? "", 14, textColor, 1,
+                  getCustomFont(
+                      modelBooking.description ?? "", 14, textColor, 1,
                       fontWeight: FontWeight.w400),
                 ],
               ),
-              Wrap(
-                children: [
-                  getButton(
-                      context,
-                      Color(modelBooking.bgColor!.toInt()),
-                      modelBooking.tag ?? "",
-                      modelBooking.textColor!,
-                          () {},
-                      16,
-                      weight: FontWeight.w600,
-                      borderRadius:
-                      BorderRadius.circular(FetchPixels.getPixelHeight(37)),
-                      insetsGeometrypadding: EdgeInsets.symmetric(
-                          vertical: FetchPixels.getPixelHeight(6),
-                          horizontal: FetchPixels.getPixelWidth(12)))
-                ],
-              )
+              widgetOrderStatus(context, modelBooking.status.toString()),
             ],
           )
         ],
@@ -433,6 +470,7 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
     ),
   );
 }
+
 DecorationImage getDecorationAssetImage(BuildContext buildContext, String image,
     {BoxFit fit = BoxFit.contain}) {
   return DecorationImage(
@@ -627,8 +665,12 @@ Widget getButtonWithIcon(BuildContext context, Color bgColor, String text,
   );
 }
 
-Widget getDefaultTextFiledWithLabel(BuildContext context, String s,  bool isValidated,
-    TextEditingController textEditingController, Color fontColor,
+Widget getDefaultTextFiledWithLabel(
+    BuildContext context,
+    String s,
+    bool isValidated,
+    TextEditingController textEditingController,
+    Color fontColor,
     {bool withprefix = false,
     bool withSufix = false,
     bool minLines = false,
@@ -709,12 +751,15 @@ Widget getDefaultTextFiledWithLabel(BuildContext context, String s,  bool isVali
                           fontWeight: FontWeight.w400,
                           fontSize: FetchPixels.getPixelHeight(16),
                         ),
-                        onChanged: (_) => setState(()=> ''),
+                        onChanged: (_) => setState(() => ''),
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.zero,
                             border: InputBorder.none,
                             hintText: s,
-                            errorText: isValidated ? Constant.validateCharacters(textEditingController.text, s): null,
+                            errorText: isValidated
+                                ? Constant.validateCharacters(
+                                    textEditingController.text, s)
+                                : null,
                             hintStyle: TextStyle(
                               color: textColor,
                               fontWeight: FontWeight.w400,
@@ -1049,12 +1094,15 @@ Widget getCountryTextField(BuildContext context, String s, bool isValidated,
                       fontWeight: FontWeight.w400,
                       fontSize: FetchPixels.getPixelHeight(16),
                     ),
-                    onChanged: (_) => setState(()=> ''),
+                    onChanged: (_) => setState(() => ''),
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.zero,
                         border: InputBorder.none,
                         hintText: s,
-                        errorText: isValidated ? Constant.validateCharacters(textEditingController.text, s) : null,
+                        errorText: isValidated
+                            ? Constant.validateCharacters(
+                                textEditingController.text, s)
+                            : null,
                         hintStyle: TextStyle(
                           color: textColor,
                           fontWeight: FontWeight.w400,

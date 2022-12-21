@@ -26,26 +26,38 @@ class _AllBookingScreenState extends State<AllBookingScreen> {
     EdgeInsets edgeInsets = EdgeInsets.symmetric(
       horizontal: FetchPixels.getDefaultHorSpace(context),
     );
-    return Container(
-      color: backGroundColor,
-      child: orderList.isEmpty
-          ? getPaddingWidget(edgeInsets, nullListView(context))
-          : allBookingList(),
-    );
+    return FutureBuilder(
+        future: getPrefData(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return Container(
+            color: backGroundColor,
+            child: orderList.isEmpty
+                ? getPaddingWidget(edgeInsets, nullListView(context))
+                : allBookingList(),
+          );
+        });
   }
 
+  getPrefData() async {
+    String getModel = await PrefData.getOrderModel();
+    if (getModel.isNotEmpty) {
+      orderList = OrderModel.fromList(
+          json.decode(getModel).cast<Map<String, dynamic>>());
+      print(orderList.first.toJson());
+      setState(() {});
+    }
+  }
 
   @override
-  Future<void> initState() async {
+  void initState() {
+    // TODO: implement initState
     super.initState();
-    String getModel = await PrefData.getOrderModel();
-    if(getModel.isNotEmpty) {
-      orderList = OrderModel.fromList(json.decode(getModel).cast<Map<String, dynamic>>());
-      if (mounted) {
-        setState(() {
-        });
-      }
-    }
+    //getPrefData();
   }
 
   ListView allBookingList() {
@@ -54,22 +66,22 @@ class _AllBookingScreenState extends State<AllBookingScreen> {
       itemCount: orderList.length,
       itemBuilder: (context, index) {
         OrderModel orderModel = orderList[index];
-        return buildBookingListItem(orderModel, context, index, () {
-          ModelBooking booking = ModelBooking(
-              "",
-              modelBooking.name ?? "",
-              modelBooking.date ?? "",
-              modelBooking.rating ?? "",
-              modelBooking.price ?? 0.0,
-              modelBooking.owner ?? "",
-              modelBooking.tag,
-              0,
-              null);
-          PrefData.setBookingModel(jsonEncode(booking));
+        return buildOrderListItem(orderModel, context, index, () {
+          // ModelBooking booking = ModelBooking(
+          //     "",
+          //     modelBooking.name ?? "",
+          //     modelBooking.date ?? "",
+          //     modelBooking.rating ?? "",
+          //     modelBooking.price ?? 0.0,
+          //     modelBooking.owner ?? "",
+          //     modelBooking.tag,
+          //     0,
+          //     null);
+          // PrefData.setBookingModel(jsonEncode(booking));
           Constant.sendToNext(context, Routes.bookingRoute);
         }, () {
           setState(() {
-            bookingLists.removeAt(index);
+            orderList.removeAt(index);
           });
         });
       },

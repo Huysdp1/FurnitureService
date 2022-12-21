@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:customer_app/app/data/data_file.dart';
@@ -30,22 +29,24 @@ class _TabBookingsState extends State<TabBookings>
     initialPage: 0,
   );
   static List<OrderModel> orderList = [];
-  Future loadAPIData() async{
+  Future loadAPIData() async {
     await OrderData().fetchOrdersOfCustomer(2);
   }
+
   Future<List<OrderModel>> getPrefData() async {
-    loadAPIData().then((value) async{
+    loadAPIData().then((value) async {
       String getModel = await PrefData.getOrderModel();
-      if(getModel.isNotEmpty) {
-        orderList = OrderModel.fromList(json.decode(getModel).cast<Map<String, dynamic>>());
+      if (getModel.isNotEmpty) {
+        orderList = OrderModel.fromList(
+            json.decode(getModel).cast<Map<String, dynamic>>());
         if (mounted) {
-          setState(() {
-          });
+          setState(() {});
         }
-      }}
-    );
+      }
+    });
     return orderList;
   }
+
   late TabController tabController;
   var position = 0;
 
@@ -68,36 +69,37 @@ class _TabBookingsState extends State<TabBookings>
       resizeToAvoidBottomInset: false,
       backgroundColor: backGroundColor,
       body: FutureBuilder(
-        future: getPrefData(),
-        builder: (context, snapshot) {
-          if(!snapshot.hasData){
-            return const Center(child: CircularProgressIndicator(),);
-          }
-          return Column(
-            children: [
-              getVerSpace(FetchPixels.getPixelHeight(20)),
-              getPaddingWidget(
-                EdgeInsets.symmetric(
-                    horizontal: FetchPixels.getDefaultHorSpace(context)),
-                withoutleftIconToolbar(context,
-                    isrightimage: true,
-                    title: "Bookings",
-                    weight: FontWeight.w900,
-                    textColor: Colors.black,
-                    fontsize: 24,
-                    istext: true,
-                    rightimage: "notification.svg", rightFunction: () {
-                  Constant.sendToNext(context, Routes.notificationRoutes);
-                }),
-              ),
-              getVerSpace(FetchPixels.getPixelHeight(30)),
-              tabBar(),
-              getVerSpace(FetchPixels.getPixelHeight(10)),
-              pageViewer()
-            ],
-          );
-        }
-      ),
+          future: getPrefData(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return Column(
+              children: [
+                getVerSpace(FetchPixels.getPixelHeight(20)),
+                getPaddingWidget(
+                  EdgeInsets.symmetric(
+                      horizontal: FetchPixels.getDefaultHorSpace(context)),
+                  withoutleftIconToolbar(context,
+                      isrightimage: true,
+                      title: "Bookings",
+                      weight: FontWeight.w900,
+                      textColor: Colors.black,
+                      fontsize: 24,
+                      istext: true,
+                      rightimage: "notification.svg", rightFunction: () {
+                    Constant.sendToNext(context, Routes.notificationRoutes);
+                  }),
+                ),
+                getVerSpace(FetchPixels.getPixelHeight(30)),
+                tabBar(),
+                getVerSpace(FetchPixels.getPixelHeight(10)),
+                pageViewer()
+              ],
+            );
+          }),
     );
   }
 
@@ -109,9 +111,9 @@ class _TabBookingsState extends State<TabBookings>
         scrollDirection: Axis.horizontal,
         children: const [
           AllBookingScreen(),
-          ActiveBookingScreen(),
-          CompleteBookingScreen(),
-          CancelBookingScreen()
+          //ActiveBookingScreen(),
+          //CompleteBookingScreen(),
+          //CancelBookingScreen()
         ],
         onPageChanged: (value) {
           tabController.animateTo(value);
