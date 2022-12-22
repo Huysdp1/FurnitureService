@@ -11,6 +11,7 @@ import '../../../base/resizer/fetch_pixels.dart';
 import '../../../base/widget_utils.dart';
 import '../../data/data_file.dart';
 import '../../models/model_popular_service.dart';
+import '../../routes/app_routes.dart';
 import '../dialog/color_dialog.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -226,20 +227,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Widget viewCartButton(BuildContext context) {
     return getButton(context, blueColor, "Xem hóa đơn", Colors.white, () {
-      showModalBottomSheet(
-          backgroundColor: backGroundColor,
-          isDismissible: false,
-          isScrollControlled: true,
-          context: context,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(FetchPixels.getPixelHeight(40)),
-            ),
-          ),
-          builder: (context) {
-            DataFile.selectionServices = selectionServices;
-            return const ColorDialog();
-          });
+      Constant.sendToNext(context, Routes.cartRoute);
     }, 18,
         weight: FontWeight.w600,
         buttonHeight: FetchPixels.getPixelHeight(60),

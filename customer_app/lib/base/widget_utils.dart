@@ -1,5 +1,6 @@
 import 'package:customer_app/app/models/model_order.dart';
 import 'package:customer_app/base/resizer/fetch_pixels.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -285,6 +286,10 @@ Widget widgetOrderStatus(context, String status) {
     color = 0xFFFFF3F3;
     theme = error;
   }
+  if (status == 'false') {
+    color = 0xFFFFF3F3;
+    theme = error;
+  }
   return Wrap(
     children: [
       getButton(context, Color(color.toInt()), status, theme, () {}, 16,
@@ -375,7 +380,7 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                   width: FetchPixels.getPixelHeight(91),
                   decoration: BoxDecoration(
                     image: getDecorationAssetImage(
-                        context, modelBooking.orderImages!.first ?? "",
+                        context, "shaving.png" ?? "",
                         fit: BoxFit.cover),
                   ),
                 ),
@@ -392,16 +397,13 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                         child: getHorSpace(0),
                       ),
                       getCustomFont(
-                          modelBooking.address ?? "", 16, Colors.black, 1,
+                          modelBooking.orderId.toString() ?? "", 16, Colors.black, 1,
                           fontWeight: FontWeight.w900),
                       getVerSpace(FetchPixels.getPixelHeight(12)),
-                      getCustomFont(
-                        '${modelBooking.implementationTime}, ${Constant.parseDateNoUTC(modelBooking.implementationDate, false)}',
-                        14,
-                        textColor,
-                        1,
-                        fontWeight: FontWeight.w400,
-                      ),
+
+                      getMultilineCustomFont(
+                          modelBooking.address ?? "", 14, textColor, overflow: TextOverflow.ellipsis,
+                          fontWeight: FontWeight.w400),
                       getVerSpace(FetchPixels.getPixelHeight(12)),
                       // Row(
                       //   children: [
@@ -422,21 +424,21 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                   ),
                 ),
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        funDelete();
-                      },
-                      child: getSvgImage("trash.svg",
-                          width: FetchPixels.getPixelHeight(20),
-                          height: FetchPixels.getPixelHeight(20)),
-                    ),
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     funDelete();
+                    //   },
+                    //   child: getSvgImage("trash.svg",
+                    //       width: FetchPixels.getPixelHeight(20),
+                    //       height: FetchPixels.getPixelHeight(20)),
+                    // ),
                     getPaddingWidget(
                         EdgeInsets.only(bottom: FetchPixels.getPixelHeight(10)),
                         getCustomFont(
-                          "\${Constant.showTextMoney(modelBooking.totalPrice)}đ",
+                          "${Constant.showTextMoney(modelBooking.totalPrice)}đ",
                           16,
                           blueColor,
                           1,
@@ -447,7 +449,7 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
               ],
             ),
           ),
-          getVerSpace(FetchPixels.getPixelHeight(16)),
+          getVerSpace(FetchPixels.getPixelHeight(12)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -458,8 +460,12 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                       FetchPixels.getPixelHeight(8)),
                   getHorSpace(FetchPixels.getPixelWidth(8)),
                   getCustomFont(
-                      modelBooking.description ?? "", 14, textColor, 1,
-                      fontWeight: FontWeight.w400),
+                    '${modelBooking.implementationTime}, ${Constant.parseDateNoUTC(modelBooking.implementationDate, false)}',
+                    14,
+                    textColor,
+                    1,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ],
               ),
               widgetOrderStatus(context, modelBooking.status.toString()),

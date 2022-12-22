@@ -7,8 +7,6 @@ import '../../../base/constant.dart';
 import '../../../base/pref_data.dart';
 import '../../../base/resizer/fetch_pixels.dart';
 import '../../../base/widget_utils.dart';
-import '../../data/data_file.dart';
-import '../../models/model_booking.dart';
 import '../../routes/app_routes.dart';
 
 class AllBookingScreen extends StatefulWidget {
@@ -26,7 +24,7 @@ class _AllBookingScreenState extends State<AllBookingScreen> {
     EdgeInsets edgeInsets = EdgeInsets.symmetric(
       horizontal: FetchPixels.getDefaultHorSpace(context),
     );
-    return FutureBuilder(
+      return FutureBuilder<List<OrderModel>>(
         future: getPrefData(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -40,24 +38,25 @@ class _AllBookingScreenState extends State<AllBookingScreen> {
                 ? getPaddingWidget(edgeInsets, nullListView(context))
                 : allBookingList(),
           );
-        });
+        }
+        );
   }
 
-  getPrefData() async {
+   Future<List<OrderModel>> getPrefData() async {
     String getModel = await PrefData.getOrderModel();
     if (getModel.isNotEmpty) {
       orderList = OrderModel.fromList(
           json.decode(getModel).cast<Map<String, dynamic>>());
-      print(orderList.first.toJson());
       setState(() {});
+      return orderList;
     }
+    return [];
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    //getPrefData();
+    getPrefData();
   }
 
   ListView allBookingList() {
