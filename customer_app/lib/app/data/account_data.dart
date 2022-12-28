@@ -16,6 +16,7 @@ class AccountData{
     );
 
     if(response.statusCode == 200){
+      PrefData.setAddressModel(response.body);
       final parsed = json.decode(response.body).cast<Map<String, dynamic>>();
       return  AddressModel.fromList(parsed);
     }else{
@@ -24,17 +25,30 @@ class AccountData{
   }
 
   //Add new address of customer from api
-  Future<int> generateNewAddress(AddressModel newAddress,
+  Future<AddressModel> generateNewAddress(AddressModel newAddress,
       ) async{
     final response = await http.post(
       Uri.parse('${PrefData.apiUrl}/api/customer/addNewAddress'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(newAddress.toJson())
+      body: jsonEncode({
+        "customerId": 2,
+        "homeNumber": newAddress.homeNumber,
+        "street": newAddress.street,
+        "ward": newAddress.ward,
+        "district": newAddress.district,
+        "city": newAddress.city,
+        "customerNameOrder": newAddress.customerNameOrder,
+        "customerPhoneOrder": newAddress.customerPhoneOrder,
+        "isDefault": false
+      })
     );
-
-    return response.statusCode;
+    if(response.statusCode == 200){
+      return AddressModel.fromJson(jsonDecode(response.body.toString()));
+    }else{
+      throw Exception('Lấy dữ liệu thất bại');
+    }
   }
   Future<void> setDefaultAddress(cusId,addressId
       ) async{
@@ -45,7 +59,6 @@ class AccountData{
         },
     );
     if(response.statusCode == 200){
-      print('success!');
     }else{
       throw Exception('Lấy dữ liệu thất bại');
     }
@@ -60,7 +73,6 @@ class AccountData{
       body: jsonEncode(addressModel.toJson())
     );
     if(response.statusCode == 200){
-      print('success!');
     }else{
       throw Exception('Lấy dữ liệu thất bại');
     }
@@ -73,9 +85,11 @@ class AccountData{
       },
     );
     if(response.statusCode == 200){
-      print('success!');
     }else{
       throw Exception('Lấy dữ liệu thất bại');
     }
   }
+
+
+
 }

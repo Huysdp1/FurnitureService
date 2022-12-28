@@ -7,10 +7,10 @@ import 'package:http/http.dart' as http;
 
 class ServiceData{
   //Get list service  from api
-  Future<List<ServiceModel>> fetchServicesAndCategories(
+  Future<List<ServiceModel>> fetchServicesAndCategories(id
       ) async{
     final response = await http.get(
-      Uri.parse('${PrefData.apiUrl}/api/customer/getServiceAndCategoryInfor'),
+      Uri.parse('${PrefData.apiUrl}/api/manager/getAllServiceByCategory/categoryId/$id'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

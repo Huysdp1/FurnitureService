@@ -28,21 +28,24 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
   Widget build(BuildContext context) {
     FetchPixels(context);
     return WillPopScope(
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: backGroundColor,
-          bottomNavigationBar: addAddressButton(context),
-          body: SafeArea(
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: FetchPixels.getDefaultHorSpace(context)),
-              child: Column(
-                children: [
-                  getVerSpace(FetchPixels.getPixelHeight(20)),
-                  buildToolbar(context),
-                  getVerSpace(FetchPixels.getPixelHeight(30)),
-                  buildExpand(context)
-                ],
+        child: GestureDetector(
+          onTap: (){FocusManager.instance.primaryFocus?.unfocus();},
+          child: Scaffold(
+            resizeToAvoidBottomInset: true,
+            backgroundColor: backGroundColor,
+            bottomNavigationBar: addAddressButton(context),
+            body: SafeArea(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: FetchPixels.getDefaultHorSpace(context)),
+                child: Column(
+                  children: [
+                    getVerSpace(FetchPixels.getPixelHeight(20)),
+                    buildToolbar(context),
+                    getVerSpace(FetchPixels.getPixelHeight(30)),
+                    buildExpand(context)
+                  ],
+                ),
               ),
             ),
           ),
@@ -69,7 +72,17 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
               withprefix: true,
               image: "profile.svg",
               isEnable: false,
-              minLines: true),
+              minLines: false),
+
+          getVerSpace(FetchPixels.getPixelHeight(20)),
+          getDefaultTextFiledWithLabel(
+              context, "Số điện thoại", isValidated, phoneController, Colors.grey,
+              function: () {},
+              height: FetchPixels.getPixelHeight(60),
+              withprefix: true,
+              image: "call.svg",
+              isEnable: false,
+              minLines: false),
           getVerSpace(FetchPixels.getPixelHeight(20)),
           getDefaultTextFiledWithLabel(
               context, "Số nhà", isValidated, homeNumController, Colors.grey,
@@ -126,15 +139,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
               withSufix: true,
               suffiximage: "down_arrow.svg"),
 
-          getVerSpace(FetchPixels.getPixelHeight(20)),
-          getDefaultTextFiledWithLabel(
-              context, "Số điện thoại", isValidated, phoneController, Colors.grey,
-              function: () {},
-              height: FetchPixels.getPixelHeight(60),
-              withprefix: true,
-              image: "call.svg",
-              isEnable: false,
-              minLines: true),
+          getVerSpace(FetchPixels.getPixelHeight(20))
         ],
       ),
     );
@@ -170,6 +175,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
             && districtController.text.isNotEmpty
             && cityController.text.isNotEmpty
             && phoneController.text.isNotEmpty
+            && Constant.validatePhone(phoneController.text)
         ) {
           //Sua customerId thanh variable
           AddressModel newAddress = AddressModel(
@@ -183,8 +189,8 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
             customerPhoneOrder: phoneController.text
           );
            await AccountData().generateNewAddress(
-              newAddress);
-           if(mounted){Constant.backToPrev(context);}
+              newAddress).then((value) =>
+               Constant.backToPrevWithRes(context,arguments: value));
 
         }
 

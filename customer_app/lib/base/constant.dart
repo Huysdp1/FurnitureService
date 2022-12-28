@@ -97,6 +97,14 @@ class Constant {
     return null;
   }
 
+  static bool validatePhone(String txt) {
+    if (RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)').hasMatch(txt)) {
+      return true;
+    }
+    return false;
+  }
+
+
   static String? showTextMoney(dynamic txt) {
     String converted = txt.toString().replaceAllMapped(
         RegExp(r"(?<=\d)(?=(\d\d\d)+(?!\d))"), (match) => "${match.group(0)}.");

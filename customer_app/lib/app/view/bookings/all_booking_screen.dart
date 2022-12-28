@@ -19,6 +19,33 @@ class AllBookingScreen extends StatefulWidget {
 class _AllBookingScreenState extends State<AllBookingScreen> {
   List<OrderModel> orderList = [];
 
+
+  Future<List<OrderModel>> getPrefData() async {
+    String getModel = await PrefData.getOrderModel();
+    if (getModel.isNotEmpty) {
+      orderList = OrderModel.fromList(
+          json.decode(getModel).cast<Map<String, dynamic>>());
+      if (mounted) {
+        setState(() {});
+      }
+    }
+    return orderList;
+  }
+
+  @override
+  void initState() {
+
+    PrefData.getOrderModel().then((value) {
+      if (value.isNotEmpty) {
+        orderList = OrderModel.fromList(
+            json.decode(value).cast<Map<String, dynamic>>());
+        if (mounted) {
+          setState(() {});
+        }
+      }});
+
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     EdgeInsets edgeInsets = EdgeInsets.symmetric(
@@ -42,22 +69,7 @@ class _AllBookingScreenState extends State<AllBookingScreen> {
         );
   }
 
-   Future<List<OrderModel>> getPrefData() async {
-    String getModel = await PrefData.getOrderModel();
-    if (getModel.isNotEmpty) {
-      orderList = OrderModel.fromList(
-          json.decode(getModel).cast<Map<String, dynamic>>());
-      setState(() {});
-      return orderList;
-    }
-    return [];
-  }
 
-  @override
-  void initState() {
-    super.initState();
-    getPrefData();
-  }
 
   ListView allBookingList() {
     return ListView.builder(

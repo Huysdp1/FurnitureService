@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:customer_app/app/data/service_data.dart';
+import 'package:customer_app/app/models/model_address.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../base/color_data.dart';
@@ -8,6 +9,7 @@ import '../../../../base/constant.dart';
 import '../../../../base/pref_data.dart';
 import '../../../../base/resizer/fetch_pixels.dart';
 import '../../../../base/widget_utils.dart';
+import '../../../data/account_data.dart';
 import '../../../data/data_file.dart';
 import '../../../models/model_category.dart';
 import '../../../models/model_popular_service.dart';
@@ -23,34 +25,62 @@ class TabHome extends StatefulWidget {
 class _TabHomeState extends State<TabHome> {
   TextEditingController searchController = TextEditingController();
   List<ModelPopularService> popularServiceLists = DataFile.popularServiceList;
+  List<CategoryModel> categoryList = [];
+  late AddressModel addressModel;
   ValueNotifier selectedPage = ValueNotifier(0);
-  static List<CategoryModel> categoryLists =[];
-  Future loadAPIData() async{
-     await ServiceData().fetchCategories();
+  Future loadCateData() async {
+    await ServiceData().fetchCategories();
   }
+
+  Future loadAddressData() async {
+    await AccountData().fetchCustomerAddress(2);
+  }
+
   final _controller = PageController();
-  Future<List<CategoryModel>> getPrefData() async {
-    loadAPIData().then((value) async{
-    String getModel = await PrefData.getCategoryModel();
-    if(getModel.isNotEmpty) {
-      categoryLists = CategoryModel.fromList(json.decode(getModel).cast<Map<String, dynamic>>());
-      if (mounted) {
-        setState(() {
-        });
+  Future<AddressModel> getPrefAddressData() async {
+    loadAddressData().then((value) async {
+      String getModel = await PrefData.getAddressModel();
+      if (getModel.isNotEmpty) {
+        addressModel = AddressModel.fromList(
+                json.decode(getModel).cast<Map<String, dynamic>>())
+            .firstWhere((element) => element.isDefault == true);
+        if (mounted) {
+          setState(() {});
+        }
       }
-    }}
-    );
-    return categoryLists;
+    });
+    return addressModel;
   }
+
+  Future<List<CategoryModel>> getPrefData() async {
+    loadCateData().then((value) async {
+      String getModel = await PrefData.getCategoryModel();
+      if (getModel.isNotEmpty) {
+        categoryList = CategoryModel.fromList(
+            json.decode(getModel).cast<Map<String, dynamic>>());
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    });
+    return categoryList;
+  }
+
   @override
   void initState() {
+    // SharedPreferences.getInstance().then((SharedPreferences sp) {
+    //   selection = sp;
+    //   setState(() {});
+    // });
     super.initState();
   }
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     double horSpace = FetchPixels.getDefaultHorSpace(context);
@@ -65,19 +95,45 @@ class _TabHomeState extends State<TabHome> {
               getSvgImage(
                 "menu.svg",
               ),
-              Row(
-                children: [
-                  getSvgImage("location.svg"),
-                  getHorSpace(FetchPixels.getPixelWidth(4)),
-                  getCustomFont(
-                    "Shiloh, Hawaii",
-                    14,
-                    Colors.black,
-                    1,
-                    fontWeight: FontWeight.w400,
-                  )
-                ],
-              ),
+              FutureBuilder<AddressModel>(
+                  future: getPrefAddressData(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Row(
+                        children: [
+                          getSvgImage("location.svg"),
+                          getHorSpace(FetchPixels.getPixelWidth(4)),
+                          getCustomFont(
+                            "",
+                            14,
+                            Colors.black,
+                            1,
+                            fontWeight: FontWeight.w400,
+                          )
+                        ],
+                      );
+                    }
+                    return SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          getSvgImage("location.svg"),
+                          getHorSpace(FetchPixels.getPixelWidth(4)),
+                          Expanded(
+                            child: getMultilineCustomFont(
+                              "${addressModel.homeNumber}, ${addressModel.street}, ${addressModel.ward}, ${addressModel.district}, ${addressModel.city}",
+                              14,
+                              Colors.black,
+                              overflow: TextOverflow.fade,
+                              fontWeight: FontWeight.w400,
+                              maxLines: 4
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
               GestureDetector(
                 onTap: () {
                   Constant.sendToNext(context, Routes.notificationRoutes);
@@ -129,25 +185,28 @@ class _TabHomeState extends State<TabHome> {
               ),
               getVerSpace(FetchPixels.getPixelHeight(16)),
               FutureBuilder(
-                future: getPrefData(),
-                builder: (context,snapshot) {
-                  if(!snapshot.hasData){
-                    return const Center(child: CircularProgressIndicator(),);
-                  }
-                  return SizedBox(
-                    height: FetchPixels.getPixelHeight(132),
-                    child: ListView.builder(
+                  future: getPrefData(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    return SizedBox(
+                        height: FetchPixels.getPixelHeight(132),
+                        child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: categoryLists.length,
+                          itemCount: categoryList.length,
                           primary: false,
                           shrinkWrap: true,
                           physics: const BouncingScrollPhysics(),
                           itemBuilder: (context, index) {
-                            CategoryModel modelCategory =  categoryLists[index];
+                            CategoryModel modelCategory = categoryList[index];
                             return GestureDetector(
                               onTap: () {
-                                 PrefData.setDefIndex(index);
-                                 Constant.sendToNext(context, Routes.detailRoute);
+                                PrefData.setDefIndex(categoryList[index].categoryId!);
+                                Constant.sendToNext(
+                                    context, Routes.detailRoute);
                               },
                               child: Container(
                                 margin: EdgeInsets.only(
@@ -169,24 +228,27 @@ class _TabHomeState extends State<TabHome> {
                                     borderRadius: BorderRadius.circular(
                                         FetchPixels.getPixelHeight(12))),
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    getSvgImage(DataFile.categoryImage[index] ?? "",
+                                    getSvgImage(
+                                        DataFile.categoryImage[index] ?? "",
                                         width: FetchPixels.getPixelHeight(44),
                                         height: FetchPixels.getPixelHeight(44)),
                                     getVerSpace(FetchPixels.getPixelHeight(10)),
                                     getCustomFont(
-                                        modelCategory.categoryName ?? "", 14, Colors.black, 1,
+                                        modelCategory.categoryName ?? "",
+                                        14,
+                                        Colors.black,
+                                        1,
                                         fontWeight: FontWeight.w400),
                                   ],
                                 ),
                               ),
                             );
                           },
-                        )
-                  );
-                }
-              ),
+                        ));
+                  }),
               getPaddingWidget(
                 EdgeInsets.symmetric(horizontal: FetchPixels.getPixelWidth(20)),
                 Row(

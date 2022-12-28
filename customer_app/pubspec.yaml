@@ -48,12 +48,14 @@ dependencies:
   flutter_masked_text2: ^0.9.1
   flutter_svg: ^1.0.3
   cupertino_icons: ^1.0.2
+  badges: ^2.0.3
   # firebase
   firebase_analytics: ^10.0.5
   firebase_storage: ^11.0.5
   cloud_firestore: ^4.0.5
   firebase_core: ^2.2.0
   firebase_auth: ^4.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

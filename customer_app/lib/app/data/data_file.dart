@@ -55,21 +55,6 @@ class DataFile {
     "plastic_bin.svg",
   ];
   static List<CategoryModel> categoryList = [
-    // ModelCategory("cleaning.svg", "Vệ sinh"),
-    // ModelCategory("wrench.svg", "Sữa chữa"),
-    // ModelCategory("paint_roller.svg", "Bảo trì"),
-    // ModelCategory("sloon.svg", "Salon"),
-    // ModelCategory("iron.svg", "Ironing"),
-    // ModelCategory("laundry.svg", "Washing"),
-    // ModelCategory("perfume.svg", "Beauty"),
-    // ModelCategory("car_toy.svg", "Vehicle Wash"),
-    // ModelCategory("pipe.svg", "Plumbing"),
-    // ModelCategory("health_insurance.svg", "Health"),
-    // ModelCategory("grill.svg", "Cooking Shef"),
-    // ModelCategory("pipe.svg", "Plumbing"),
-    // ModelCategory("dump_truck.svg", "Transport"),
-    // ModelCategory("watering_plants.svg", "Gardening"),
-    // ModelCategory("plastic_bin.svg", "Trashing")
   ];
 
   static List<ModelSalon> salonProductList = [
@@ -103,7 +88,7 @@ class DataFile {
   ];
 
   static List<ModelCard> cardList = [
-    ModelCard('location_select.svg', "Thanh toán sau", "Thanh toán bằng tiền mặt hoặc ví điện tử sau khi hoàn thành dịch vụ"),
+    ModelCard('location_select.svg', "Tiền mặt", "Thanh toán bằng tiền mặt sau khi dịch vụ hoàn tất"),
     ModelCard("paypal.svg", "Paypal", "xxxx xxxx xxxx 5416"),
     ModelCard("mastercard.svg", "Master Card", "xxxx xxxx xxxx 8624"),
     ModelCard("visa.svg", "Visa", "xxxx xxxx xxxx 4565")
@@ -124,13 +109,6 @@ class DataFile {
         20.00, "By Mendy Wilson", "Active", 0xFFEEFCF0, success),
     ModelBooking("booking2.png", "Painting", "22 April, 2022, 08:00 am", "4.2",
         50.00, "By Jenny Winget", "Completed", 0xFFF0F8FF, completed),
-  ];
-
-  static List<ModelAddress> addressList = [
-    ModelAddress("Alena Gomez",
-        "3891 Ranchview Dr. Richardson, California 62639", "(907) 555-0101"),
-    ModelAddress("Romeo chaless", "4140 Parker Rd. Allentown, New Mexico 31134",
-        "(907) 555-0101"),
   ];
 
   static List<ModelNotification> notificationList = [

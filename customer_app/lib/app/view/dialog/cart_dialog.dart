@@ -1,4 +1,5 @@
 
+import 'package:customer_app/app/models/model_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../../base/color_data.dart';
@@ -6,21 +7,24 @@ import '../../../base/constant.dart';
 import '../../../base/resizer/fetch_pixels.dart';
 import '../../../base/widget_utils.dart';
 import '../../data/data_file.dart';
-import '../../models/model_cart.dart';
-import '../../models/model_color.dart';
-import '../../routes/app_routes.dart';
 
-class ColorDialog extends StatefulWidget {
-  const ColorDialog({Key? key}) : super(key: key);
+class CartDialog extends StatefulWidget {
+  const CartDialog({Key? key}) : super(key: key);
 
   @override
-  State<ColorDialog> createState() => _ColorDialogState();
+  State<CartDialog> createState() => _CartDialogState();
 }
 
-class _ColorDialogState extends State<ColorDialog> {
-  var total = 0.00;
-  static List<ModelColor> hairColorLists = DataFile.hairColorList;
+class _CartDialogState extends State<CartDialog> {
+  var total = 0;
+  @override
+  void initState() {
+    for(var e in DataFile.selectionServices){
+      total = total + (e.quantity! * int.parse(e.price!));
+    }
 
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     FetchPixels(context);
@@ -35,7 +39,7 @@ class _ColorDialogState extends State<ColorDialog> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    getCustomFont("Hair Color", 20, Colors.black, 1,
+                    getCustomFont("Dịch vụ đã chọn", 20, Colors.black, 1,
                          fontWeight: FontWeight.w900),
                     GestureDetector(
                         onTap: () {
@@ -61,9 +65,9 @@ class _ColorDialogState extends State<ColorDialog> {
   }
 
   Widget doneButton(BuildContext context) {
-    return getButton(context, blueColor, "Done", Colors.white, () {
+    return getButton(context, blueColor, "Xong", Colors.white, () {
       Constant.backToPrev(context);
-      Constant.sendToNext(context, Routes.cartRoute);
+      //Constant.sendToNext(context, Routes.cartRoute);
     }, 18,
         weight: FontWeight.w600,
         buttonHeight: FetchPixels.getPixelHeight(60),
@@ -72,16 +76,16 @@ class _ColorDialogState extends State<ColorDialog> {
 
   Container totalContainer() {
     return Container(
-      child: total == 0.00
+      child: total == 0
           ? Container()
           : Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    getCustomFont("Total", 24, Colors.black, 1,
+                    getCustomFont("Tổng", 24, Colors.black, 1,
                          fontWeight: FontWeight.w900),
-                    getCustomFont("\$$total", 24, Colors.black, 1,
+                    getCustomFont("${Constant.showTextMoney(total)}đ", 24, Colors.black, 1,
                         fontWeight: FontWeight.w900, )
                   ],
                 ),
@@ -98,9 +102,9 @@ class _ColorDialogState extends State<ColorDialog> {
       physics: const BouncingScrollPhysics(),
       padding: EdgeInsets.zero,
       scrollDirection: Axis.vertical,
-      itemCount: hairColorLists.length,
+      itemCount: DataFile.selectionServices.length,
       itemBuilder: (context, index) {
-        ModelColor modelColor = hairColorLists[index];
+        ServiceModel serviceModel = DataFile.selectionServices[index];
         return Container(
           margin: EdgeInsets.only(bottom: FetchPixels.getPixelHeight(20)),
           width: FetchPixels.getPixelWidth(374),
@@ -128,7 +132,7 @@ class _ColorDialogState extends State<ColorDialog> {
                     borderRadius:
                         BorderRadius.circular(FetchPixels.getPixelHeight(10)),
                     image: getDecorationAssetImage(
-                        context, modelColor.image ?? "")),
+                        context, 'shaving.png' ?? "")),
               ),
               Expanded(
                 child: Container(
@@ -136,25 +140,25 @@ class _ColorDialogState extends State<ColorDialog> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      getCustomFont(modelColor.name ?? '', 16, Colors.black, 1,
+                      getCustomFont(serviceModel.serviceName ?? '', 16, Colors.black, 1,
                           fontWeight: FontWeight.w900, ),
                       getVerSpace(FetchPixels.getPixelHeight(4)),
                       getCustomFont(
-                          modelColor.productName ?? "", 14, textColor, 1,
+                          serviceModel.categoryName ?? "", 14, textColor, 1,
                            fontWeight: FontWeight.w400),
                       getVerSpace(FetchPixels.getPixelHeight(6)),
-                      Row(
-                        children: [
-                          getSvgImage("star.svg",
-                              height: FetchPixels.getPixelHeight(16),
-                              width: FetchPixels.getPixelHeight(16)),
-                          getHorSpace(FetchPixels.getPixelWidth(6)),
-                          getCustomFont(
-                              modelColor.rating ?? "", 14, Colors.black, 1,
-                              fontWeight: FontWeight.w400,
-                             )
-                        ],
-                      )
+                      // Row(
+                      //   children: [
+                      //     getSvgImage("star.svg",
+                      //         height: FetchPixels.getPixelHeight(16),
+                      //         width: FetchPixels.getPixelHeight(16)),
+                      //     getHorSpace(FetchPixels.getPixelWidth(6)),
+                      //     getCustomFont(
+                      //         modelColor.rating ?? "", 14, Colors.black, 1,
+                      //         fontWeight: FontWeight.w400,
+                      //        )
+                      //   ],
+                      // )
                     ],
                   ),
                 ),
@@ -162,19 +166,11 @@ class _ColorDialogState extends State<ColorDialog> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  if (modelColor.quantity == 0)
-                    getButton(context, Colors.transparent, "Add", blueColor,
-                        () {
-                      modelColor.quantity = (modelColor.quantity! + 1);
-                      total = total + (modelColor.price! * 1);
-                      DataFile.cartList[index.toString()] = ModelCart(
-                          modelColor.image,
-                          modelColor.name,
-                          modelColor.productName,
-                          modelColor.rating,
-                          modelColor.price,
-                          modelColor.quantity);
-
+                  if (serviceModel.quantity==0)
+                    getButton(context, Colors.transparent, "Thêm", blueColor, () {
+                      serviceModel.quantity = 1;
+                      total = total + (int.parse(serviceModel.price!) * 1);
+                      DataFile.selectionServices.add(serviceModel);
                       setState(() {});
                     }, 14,
                         weight: FontWeight.w600,
@@ -184,8 +180,8 @@ class _ColorDialogState extends State<ColorDialog> {
                         borderColor: blueColor,
                         borderWidth: 1.5,
                         isBorder: true,
-                        borderRadius: BorderRadius.circular(
-                            FetchPixels.getPixelHeight(10)))
+                        borderRadius:
+                        BorderRadius.circular(FetchPixels.getPixelHeight(10)))
                   else
                     Row(
                       children: [
@@ -194,40 +190,49 @@ class _ColorDialogState extends State<ColorDialog> {
                               width: FetchPixels.getPixelHeight(30),
                               height: FetchPixels.getPixelHeight(30)),
                           onTap: () {
-                            modelColor.quantity = (modelColor.quantity! + 1);
-                            total = total + (modelColor.price! * 1);
-                            DataFile.cartList[index.toString()]!.quantity =
-                                modelColor.quantity;
+                            DataFile.selectionServices.firstWhere((element) => element.serviceId == serviceModel.serviceId).quantity
+                            = (DataFile.selectionServices.firstWhere((element) => element.serviceId == serviceModel.serviceId).quantity! + 1);
+                            total = total + (int.parse(serviceModel.price!) * 1);
                             setState(() {});
                           },
                         ),
                         getHorSpace(FetchPixels.getPixelWidth(10)),
-                        getCustomFont(modelColor.quantity.toString(), 14,
-                            Colors.black, 1,
-                            fontWeight: FontWeight.w400,
-                            ),
+                        getCustomFont(
+                          DataFile.selectionServices.firstWhere((element) => element.serviceId == serviceModel.serviceId).quantity.toString(),
+                          14,
+                          Colors.black,
+                          1,
+                          fontWeight: FontWeight.w400,
+                        ),
                         getHorSpace(FetchPixels.getPixelWidth(10)),
                         GestureDetector(
                           child: getSvgImage("minus.svg",
                               width: FetchPixels.getPixelHeight(30),
                               height: FetchPixels.getPixelHeight(30)),
                           onTap: () {
-                            modelColor.quantity = (modelColor.quantity! - 1);
-                            total = total - (modelColor.price! * 1);
-                            if (modelColor.quantity! > 0) {
-                              DataFile.cartList[index.toString()]!.quantity =
-                                  modelColor.quantity;
-                            } else {
-                              DataFile.cartList.remove(index.toString());
+                            if(DataFile.selectionServices.firstWhere((element) => element.serviceId == serviceModel.serviceId).quantity! > 1) {
+                              DataFile.selectionServices
+                                  .firstWhere((element) =>
+                              element.serviceId == serviceModel.serviceId)
+                                  .quantity
+                              = (DataFile.selectionServices
+                                  .firstWhere((element) =>
+                              element.serviceId == serviceModel.serviceId)
+                                  .quantity! - 1);
+                            }else{
+                              DataFile.selectionServices
+                                  .removeWhere((element) =>
+                              element.serviceId == serviceModel.serviceId);
                             }
+                            total = total - (int.parse(serviceModel.price!) * 1);
                             setState(() {});
                           },
                         ),
                       ],
                     ),
                   getVerSpace(FetchPixels.getPixelHeight(40)),
-                  getCustomFont("\$${modelColor.price}", 16, blueColor, 1,
-                       fontWeight: FontWeight.w900)
+                  getCustomFont("${Constant.showTextMoney(serviceModel.price)}đ", 16, blueColor, 1,
+                      fontWeight: FontWeight.w900)
                 ],
               )
             ],

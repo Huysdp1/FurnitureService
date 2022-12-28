@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../base/color_data.dart';
 import '../../../../base/constant.dart';
@@ -65,9 +66,13 @@ class _TabProfileState extends State<TabProfile> {
   }
 
   Widget logoutButton(BuildContext context) {
-    return getButton(context, blueColor, "Logout", Colors.white, () {
+    return getButton(context, blueColor, "Logout", Colors.white, () async {
       PrefData.setLogIn(false);
-      Constant.sendToNext(context, Routes.loginRoute);
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      await preferences.clear();
+      if(mounted){
+        Constant.sendToNext(context, Routes.loginRoute);
+      }
       // Constant.closeApp();
     }, 18,
         weight: FontWeight.w600,

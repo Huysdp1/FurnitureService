@@ -40,11 +40,11 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
                     width: FetchPixels.getPixelHeight(71.37),
                     height: FetchPixels.getPixelHeight(99.92)),
                 getVerSpace(FetchPixels.getPixelHeight(40)),
-                getCustomFont("Booking Confirmed", 22, Colors.black, 1,
+                getCustomFont("Đặt lịch thành công", 22, Colors.black, 1,
                     fontWeight: FontWeight.w900, ),
                 getVerSpace(FetchPixels.getPixelHeight(10)),
                 getMultilineCustomFont(
-                    "Your booking has been successfully confirmed!",
+                    "Lịch hẹn của bạn đã được gửi đi!\nNhân viên sẽ liên hệ lại cho bạn ngay!",
                     16,
                     Colors.black,
                     

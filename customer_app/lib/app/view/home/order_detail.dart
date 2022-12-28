@@ -1,3 +1,4 @@
+
 import 'package:customer_app/app/data/order_data.dart';
 import 'package:customer_app/app/models/model_service.dart';
 import 'package:dotted_line/dotted_line.dart';
@@ -34,9 +35,7 @@ class _OrderDetailState extends State<OrderDetail> {
   List<ListService> listSerId = [];
    createOrder() {
      for(var val in list){
-      for(int i=0; i<val.quantity!;i++){
-        listSerId.add(ListService(serviceId: val.serviceId));
-      }
+       listSerId.add(ListService(serviceId: val.serviceId,quantity: val.quantity));
     }
     CartModel fromCart = CartModel(
       customerId: 2,
@@ -55,7 +54,14 @@ class _OrderDetailState extends State<OrderDetail> {
     }
     return total;
   }
-
+  List<ServiceModel> ser = [];
+  void getPrefData(){
+    date = selection!.getString('selectDate')?? now.toString();
+    time = selection!.getString("time") ?? "8:00";
+    image = selection!.getString("image") ?? "";
+    cardname = selection!.getString("cardname") ?? "";
+    cardnumber = selection!.getString("cardnumber") ?? "";
+  }
   SharedPreferences? selection;
   DateTime now = DateTime.now();
   @override
@@ -70,17 +76,6 @@ class _OrderDetailState extends State<OrderDetail> {
     now;
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    selection!.remove("selectDate");
-    selection!.remove("time");
-    selection!.remove("image");
-    selection!.remove("cardname");
-    selection!.remove("cardnumber");
-    DataFile.selectionServices.clear();
-    super.dispose();
-  }
   String? date;
   String? time;
   String? image;
@@ -91,12 +86,7 @@ class _OrderDetailState extends State<OrderDetail> {
 
   @override
   Widget build(BuildContext context) {
-    date = selection!.getString('selectDate')?? now.toString();
-    time = selection!.getString("time") ?? "8:00";
-    image = selection!.getString("image") ?? '';
-    cardname = selection!.getString("cardname") ?? "";
-    cardnumber = selection!.getString("cardnumber") ?? "";
-
+    getPrefData();
     FetchPixels(context);
     return WillPopScope(
         child: Scaffold(
@@ -114,7 +104,7 @@ class _OrderDetailState extends State<OrderDetail> {
                     Constant.backToPrev(context);
                   },
                       title: "Proceed",
-                      
+
                       weight: FontWeight.w900,
                       istext: true,
                       fontsize: 24,
@@ -168,6 +158,12 @@ class _OrderDetailState extends State<OrderDetail> {
         await createOrder();
         setState(() {
           confirm = true;
+          selection!.remove("selectDate");
+          selection!.remove("time");
+          selection!.remove("image");
+          selection!.remove("cardname");
+          selection!.remove("cardnumber");
+          DataFile.selectionServices.clear();
         });
         showDialog(
             barrierDismissible: false,
@@ -439,8 +435,14 @@ class _OrderDetailState extends State<OrderDetail> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          getCustomFont("Địa chỉ", 16, Colors.black, 1,
-              fontWeight: FontWeight.w900, ),
+          Row(
+            children: [
+              getSvgImage("location.svg"),
+              getHorSpace(FetchPixels.getPixelWidth(4)),
+              getCustomFont("Địa chỉ", 16, Colors.black, 1,
+                  fontWeight: FontWeight.w900, ),
+            ],
+          ),
           getVerSpace(FetchPixels.getPixelHeight(8)),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -496,13 +498,10 @@ class _OrderDetailState extends State<OrderDetail> {
                   height: FetchPixels.getPixelHeight(24)),
               getHorSpace(FetchPixels.getPixelWidth(12)),
               getCustomFont(
-                  "${Constant.parseDateNoUTC(date, false)}, $time", 16, Colors.black, 1,
+                  "Thời gian hẹn: $time, ${Constant.parseDateNoUTC(date, false)}", 16, Colors.black, 1,
                    fontWeight: FontWeight.w400)
             ],
           ),
-          getSvgImage("arrow_right.svg",
-              width: FetchPixels.getPixelHeight(20),
-              height: FetchPixels.getPixelHeight(20))
         ],
       ),
     );

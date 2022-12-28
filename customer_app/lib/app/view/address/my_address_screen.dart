@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:customer_app/app/data/account_data.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,16 +23,31 @@ class MyAddressScreen extends StatefulWidget {
 class _MyAddressScreenState extends State<MyAddressScreen> {
   SharedPreferences? selection;
   List<AddressModel> addressList =[];
+  Future loadAddressData() async {
+    await AccountData().fetchCustomerAddress(2);
+  }
+
+  Future<List<AddressModel>> getPrefAddressData() async {
+    loadAddressData().then((value) async {
+      String getModel = await PrefData.getAddressModel();
+      if (getModel.isNotEmpty) {
+        addressList = AddressModel.fromList(
+            json.decode(getModel).cast<Map<String, dynamic>>());
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    });
+    return addressList;
+  }
   @override
   void initState() {
+
     SharedPreferences.getInstance().then((SharedPreferences sp) {
       selection = sp;
       setState(() {});
     });
     super.initState();
-  }
-  Future<void> getAddressList()async{
-    addressList = await AccountData().fetchCustomerAddress(2);
   }
 
 
@@ -49,7 +66,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                   });});
               },
               child: FutureBuilder<List<AddressModel>>(
-                  future: AccountData().fetchCustomerAddress(2),
+                  future: getPrefAddressData(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return const Center(child: CircularProgressIndicator());
@@ -64,14 +81,14 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                             buildToolbar(context),
                             getVerSpace(FetchPixels.getPixelHeight(30)),
                             Visibility(
-                              visible: snapshot.data!.isNotEmpty,
+                              visible: addressList.isNotEmpty,
                               child: getCustomFont(
                                   "Địa chỉ của bạn", 16, Colors.black, 1,
                                   fontWeight: FontWeight.w400),
                             ),
-                            buildExpand(context, snapshot.data!),
+                            buildExpand(context),
                             Visibility(
-                              visible: snapshot.data!.isNotEmpty,
+                              visible: addressList.isNotEmpty,
                               child: addAddressButton(context),
                             )
                           ],
@@ -89,12 +106,12 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
         });
   }
 
-  Expanded buildExpand(BuildContext context, List<AddressModel> addressList) {
+  Expanded buildExpand(BuildContext context) {
     return Expanded(
       flex: 1,
       child: (addressList.isEmpty)
           ? buildEmptyWidget(context)
-          : buildAddressList(addressList),
+          : buildAddressList(),
     );
   }
 
@@ -111,18 +128,24 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
           ),
         ),
         getVerSpace(FetchPixels.getPixelHeight(40)),
-        getCustomFont("No Address Yet!", 20, Colors.black, 1,
+        getCustomFont("Chưa có địa chỉ!", 20, Colors.black, 1,
             fontWeight: FontWeight.w900),
         getVerSpace(FetchPixels.getPixelHeight(10)),
         getCustomFont(
-          "Add your address and lets get started.",
+          "Thêm địa chỉ mới để đặt lịch dễ dàng hơn",
           16,
           Colors.black,
           1,
           fontWeight: FontWeight.w400,
         ),
         getVerSpace(FetchPixels.getPixelHeight(30)),
-        getButton(context, backGroundColor, "Add Address", blueColor, () {}, 18,
+        getButton(context, backGroundColor, "Tạo địa chỉ", blueColor, () async {
+          var re = await Constant.sendToNext(context, Routes.addAddressScreenRoute);
+          addressList.add(re);
+          setState(() {
+
+          });
+        }, 18,
             weight: FontWeight.w600,
             buttonHeight: FetchPixels.getPixelHeight(60),
             insetsGeometry:
@@ -135,7 +158,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
     );
   }
 
-  ListView buildAddressList(List<AddressModel> addressList) {
+  ListView buildAddressList() {
     return ListView.builder(
       padding: EdgeInsets.only(top: FetchPixels.getPixelHeight(20)),
       scrollDirection: Axis.vertical,
@@ -245,7 +268,6 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                     setState(() {});
                   }
                   if (value == 3) {
-                    PrefData.setDefIndex(index);
                     showDialog(
                         barrierDismissible: false,
                         builder: (context) {
@@ -357,8 +379,12 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
   Column addAddressButton(BuildContext context) {
     return Column(
       children: [
-        getButton(context, blueColor, "Thêm địa chỉ mới", Colors.white, () {
-          Constant.sendToNext(context, Routes.addAddressScreenRoute);
+        getButton(context, blueColor, "Thêm địa chỉ mới", Colors.white, () async {
+          var re = await Constant.sendToNext(context, Routes.addAddressScreenRoute);
+          addressList.add(re);
+          setState(() {
+
+          });
         }, 18,
             weight: FontWeight.w600,
             buttonHeight: FetchPixels.getPixelHeight(60),

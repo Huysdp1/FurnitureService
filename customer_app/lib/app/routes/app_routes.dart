@@ -1,4 +1,3 @@
-import 'package:customer_app/app/view/address/add_address_screen.dart';
 
 abstract class Routes {
   static const homeRoute = Paths.homepath;

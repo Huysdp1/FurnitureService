@@ -1,6 +1,6 @@
+import 'package:badges/badges.dart';
 import 'package:customer_app/app/models/model_order.dart';
 import 'package:customer_app/base/resizer/fetch_pixels.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -263,36 +263,59 @@ GestureDetector buildBookingListItem(ModelBooking modelBooking,
   );
 }
 
-Widget widgetOrderStatus(context, String status) {
+Widget widgetOrderStatus(context, int status) {
   int color = 0xFFEEFCF0;
   Color theme = success;
-  if (status == 'Đã tiếp nhận') {
+  String text = 'Đã tiếp nhận';
+  if (status == 1) {
+    text = 'Đã tiếp nhận';
     color = 0xFFEEFCF0;
     theme = success;
   }
-  if (status == 'Chờ khảo sát') {
+  if (status == 2) {
     color = 0xFFF0F8FF;
-    theme = completed;
+    theme = procced;
+    text = 'Đang khảo sát';
   }
-  if (status == 'Đang thực hiện') {
-    color = 0xFFFFF3F3;
-    theme = error;
+  if (status == 3) {
+    color = 0x80FF80;
+    theme = procced;
+    text = 'Đang thực hiện';
   }
-  if (status == 'Chờ thanh toán') {
+  if (status == 4) {
     color = 0xFFF0F8FF;
-    theme = completed;
+    theme = waiting;
+    text  = 'Chờ khảo sát';
   }
-  if (status == 'Huỷ') {
+  if (status == 5) {
     color = 0xFFFFF3F3;
     theme = error;
+    text = "Chờ thanh toán";
   }
-  if (status == 'false') {
+  if (status == 6) {
+    color = 0xFFFFF3F3;
+    theme = success;
+    text = "Hoàn tất";
+  }
+  if (status == 7) {
+    color = 0x00CC99;
+    theme = error;
+    text = "Nhân viên đang có việc";
+  }
+  if (status == 8) {
+    color = 0xFFCC99;
+    theme = error;
+    text = "Nhân viên đang chờ việc";
+  }
+  if (status == 1002) {
     color = 0xFFFFF3F3;
     theme = error;
+    text = "Huỷ";
   }
+
   return Wrap(
     children: [
-      getButton(context, Color(color.toInt()), status, theme, () {}, 16,
+      getButton(context, Color(color.toInt()), text, theme, () {}, 16,
           weight: FontWeight.w600,
           borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(37)),
           insetsGeometrypadding: EdgeInsets.symmetric(
@@ -468,7 +491,7 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                   ),
                 ],
               ),
-              widgetOrderStatus(context, modelBooking.status.toString()),
+              widgetOrderStatus(context, modelBooking.workingStatusId!),
             ],
           )
         ],
@@ -515,7 +538,7 @@ Widget getMultilineCustomFont(String text, double fontSize, Color fontColor,
     TextOverflow overflow = TextOverflow.ellipsis,
     TextDecoration decoration = TextDecoration.none,
     FontWeight fontWeight = FontWeight.normal,
-    TextAlign textAlign = TextAlign.start,
+    TextAlign textAlign = TextAlign.start, int maxLines = 2,
     txtHeight = 1.0}) {
   return Text(
     text,
@@ -524,10 +547,13 @@ Widget getMultilineCustomFont(String text, double fontSize, Color fontColor,
         fontSize: fontSize,
         fontStyle: FontStyle.normal,
         color: fontColor,
+        overflow: overflow,
         fontFamily: fontFamily,
         height: txtHeight,
         fontWeight: fontWeight),
     textAlign: textAlign,
+    overflow: overflow,
+    maxLines: maxLines,
     textScaleFactor: FetchPixels.getTextScale(),
   );
 }
@@ -704,7 +730,8 @@ Widget getDefaultTextFiledWithLabel(
           height: height,
           margin: margin,
           alignment: alignmentGeometry,
-          decoration: BoxDecoration(
+          decoration:
+          BoxDecoration(
               color: Colors.white,
               boxShadow: const [
                 BoxShadow(
@@ -713,7 +740,8 @@ Widget getDefaultTextFiledWithLabel(
                     offset: Offset(0.0, 4.0)),
               ],
               borderRadius:
-                  BorderRadius.circular(FetchPixels.getPixelHeight(12))),
+              BorderRadius.circular(FetchPixels.getPixelHeight(12)))
+          ,
           child: Focus(
               onFocusChange: (hasFocus) {
                 if (hasFocus) {
@@ -748,12 +776,14 @@ Widget getDefaultTextFiledWithLabel(
                         autofocus: false,
                         focusNode: myFocusNode,
                         obscureText: isPass,
-                        showCursor: false,
+                        showCursor: myFocusNode.hasFocus,
+                        cursorColor: Colors.black,
                         onTap: () {
                           function();
                         },
                         style: TextStyle(
                           color: Colors.black,
+                          decoration: TextDecoration.none,
                           fontWeight: FontWeight.w400,
                           fontSize: FetchPixels.getPixelHeight(16),
                         ),
@@ -858,6 +888,7 @@ Widget getCardDateTextField(
                   focusNode: myFocusNode,
                   obscureText: isPass,
                   showCursor: false,
+
                   onTap: () {
                     function();
                   },
@@ -1250,6 +1281,7 @@ Widget getSearchWidget(
 Widget gettoolbarMenu(BuildContext context, String image, Function function,
     {bool istext = false,
     double? fontsize,
+      int counter = 0,
     String? title,
     Color? textColor,
     FontWeight? weight,
@@ -1281,10 +1313,17 @@ Widget gettoolbarMenu(BuildContext context, String image, Function function,
               onTap: () {
                 rightFunction!();
               },
-              child: getSvgImage(rightimage!,
+              child: counter>0 ? Badge(
+                badgeColor: Colors.lightBlueAccent,
+                badgeContent: Text(counter.toString()),
+                animationType: BadgeAnimationType.slide,
+                child: getSvgImage(rightimage!,
+                    height: FetchPixels.getPixelHeight(24),
+                    width: FetchPixels.getPixelHeight(24)),
+              ): getSvgImage(rightimage!,
                   height: FetchPixels.getPixelHeight(24),
-                  width: FetchPixels.getPixelHeight(24)))
-          : Container(),
+                  width: FetchPixels.getPixelHeight(24)),
+      ) : Container(),
     ],
   );
 }

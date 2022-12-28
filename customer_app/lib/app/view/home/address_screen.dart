@@ -1,6 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:customer_app/app/data/account_data.dart';
 import 'package:customer_app/app/data/data_file.dart';
 import 'package:customer_app/app/models/model_address.dart';
+import 'package:customer_app/base/pref_data.dart';
 import 'package:dotted_line/dotted_line.dart';
 
 import 'package:flutter/material.dart';
@@ -19,20 +23,35 @@ class AddressScreen extends StatefulWidget {
   State<AddressScreen> createState() => _AddressScreenState();
 }
 
-int? select;
+
 
 class _AddressScreenState extends State<AddressScreen> {
   SharedPreferences? selection;
-  @override
-  void initState() {
-    super.initState();
+  FutureOr onGoBack() async{
+    await AccountData().fetchCustomerAddress(2);
+    setState(() {
+      getPrefData();
+    });
+  }
+  getPrefData() async {
+    String getModel = await PrefData.getAddressModel();
+    if (getModel.isNotEmpty) {
+      DataFile.selectionAddress = AddressModel.fromList(
+          json.decode(getModel).cast<Map<String, dynamic>>()).firstWhere((element) => element.isDefault!);
+      setState(() {});
+    }
+  }
 
+  @override
+  initState()  {
+    super.initState();
+    getPrefData();
     SharedPreferences.getInstance().then((SharedPreferences sp) {
       selection = sp;
       setState(() {});
     });
-  }
 
+  }
   @override
   Widget build(BuildContext context) {
     FetchPixels(context);
@@ -45,24 +64,26 @@ class _AddressScreenState extends State<AddressScreen> {
             child: Container(
               padding: EdgeInsets.symmetric(
                   horizontal: FetchPixels.getPixelWidth(20)),
-              child: Column(
-                children: [
-                  getVerSpace(FetchPixels.getPixelHeight(20)),
-                  gettoolbarMenu(context, "back.svg", () {
-                    Constant.backToPrev(context);
-                  },
-                      title: "Tiếp tục",
-                      weight: FontWeight.w900,
-                      istext: true,
-                      fontsize: 24,
-                      textColor: Colors.black),
-                  getVerSpace(FetchPixels.getPixelHeight(30)),
-                  processTracker(),
-                  getVerSpace(FetchPixels.getPixelHeight(30)),
-                  addressList(),
-                  getVerSpace(FetchPixels.getPixelHeight(30)),
-                  newAddressButton(context)
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    getVerSpace(FetchPixels.getPixelHeight(20)),
+                    gettoolbarMenu(context, "back.svg", () {
+                      Constant.backToPrev(context);
+                    },
+                        title: "Chọn địa chỉ",
+                        weight: FontWeight.w900,
+                        istext: true,
+                        fontsize: 24,
+                        textColor: Colors.black),
+                    getVerSpace(FetchPixels.getPixelHeight(30)),
+                    processTracker(),
+                    getVerSpace(FetchPixels.getPixelHeight(30)),
+                    addressList(),
+                    getVerSpace(FetchPixels.getPixelHeight(30)),
+                    newAddressButton(context)
+                  ],
+                ),
               ),
             ),
           ),
@@ -92,7 +113,8 @@ class _AddressScreenState extends State<AddressScreen> {
   Widget newAddressButton(BuildContext context) {
     return getButton(
         context, const Color(0xFFF2F4F8), "+ Add New Address", blueColor, () {
-      Constant.sendToNext(context, Routes.addAddressScreenRoute);
+            //Constant.sendToNext(context, Routes.addAddressScreenRoute);
+            Navigator.pushNamed(context, Routes.addAddressScreenRoute).then((value) => onGoBack());
     }, 18,
         weight: FontWeight.w600,
         buttonWidth: FetchPixels.getPixelWidth(224),
@@ -128,12 +150,15 @@ class _AddressScreenState extends State<AddressScreen> {
                 itemCount: snapshot.data!.length,
                 shrinkWrap: true,
                 primary: true,
+                  physics:
+                  const NeverScrollableScrollPhysics(),
+                  scrollDirection:
+                  Axis.vertical,
                 itemBuilder: ((context, index) {
                   AddressModel modelAddress = snapshot.data![index];
                   return GestureDetector(
                     onTap: () {
                       setState(() {
-                        select = index;
                         DataFile.selectionAddress = modelAddress;
                       });
                     },
@@ -167,6 +192,13 @@ class _AddressScreenState extends State<AddressScreen> {
                                     fontWeight: FontWeight.w900),
                               ),
                               getVerSpace(FetchPixels.getPixelHeight(10)),
+                              getVerSpace(FetchPixels.getPixelHeight(10)),
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: getCustomFont(
+                                    modelAddress.customerPhoneOrder ?? '', 16, Colors.black, 1,
+                                    fontWeight: FontWeight.w400),
+                              ),
                               Align(
                                 alignment: Alignment.topLeft,
                                 child: SizedBox(
@@ -178,17 +210,11 @@ class _AddressScreenState extends State<AddressScreen> {
                                         fontWeight: FontWeight.w400,
                                         txtHeight: 1.4)),
                               ),
-                              getVerSpace(FetchPixels.getPixelHeight(10)),
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: getCustomFont(
-                                    modelAddress.customerPhoneOrder ?? '', 16, Colors.black, 1,
-                                    fontWeight: FontWeight.w400),
-                              )
+
                             ],
                           ),
                           getSvgImage(
-                              select == index ? "selected.svg" : "unselected.svg",
+                              DataFile.selectionAddress.addressId == modelAddress.addressId ? "selected.svg" : "unselected.svg",
                               height: FetchPixels.getPixelHeight(24),
                               width: FetchPixels.getPixelHeight(24))
                         ],
@@ -200,117 +226,9 @@ class _AddressScreenState extends State<AddressScreen> {
               }
             }
           ),
-          // child: Stack(
-          //   alignment: Alignment.topRight,
-          //   children: [
-          //     Container(
-          //       padding: EdgeInsets.symmetric(
-          //           vertical: FetchPixels.getPixelHeight(16),
-          //           horizontal: FetchPixels.getPixelWidth(16)),
-          //       child: Column(
-          //         children: [
-          //           Align(
-          //             alignment: Alignment.topLeft,
-          //             child: getCustomFont("Alena Gomez", 16, Colors.black, 1,
-          //                 fontWeight: FontWeight.w900),
-          //           ),
-          //           getVerSpace(FetchPixels.getPixelHeight(10)),
-          //           Align(
-          //             alignment: Alignment.topLeft,
-          //             child: SizedBox(
-          //                 width: FetchPixels.getPixelWidth(280),
-          //                 child: getMultilineCustomFont(
-          //                     "3891 Ranchview Dr. Richardson, California 62639",
-          //                     16,
-          //                     Colors.black,
-          //                     fontWeight: FontWeight.w400,
-          //                     txtHeight: 1.4)),
-          //           ),
-          //           getVerSpace(FetchPixels.getPixelHeight(10)),
-          //           Align(
-          //             alignment: Alignment.topLeft,
-          //             child: getCustomFont(
-          //                 "(907) 555-0101", 16, Colors.black, 1,
-          //                 fontWeight: FontWeight.w400),
-          //           )
-          //         ],
-          //       ),
-          //     ),
-          //     Positioned(
-          //       child: getPaddingWidget(
-          //         EdgeInsets.only(
-          //             right: FetchPixels.getPixelHeight(16),
-          //             top: FetchPixels.getPixelHeight(16)),
-          //         getSvgImage("selected.svg",
-          //             width: FetchPixels.getPixelHeight(24),
-          //             height: FetchPixels.getPixelHeight(24)),
-          //       ),
-          //     ),
-          //   ],
-          // ),
         ),
         getVerSpace(FetchPixels.getPixelHeight(20)),
-        // Container(
-        //   width: FetchPixels.getPixelWidth(374),
-        //   decoration: BoxDecoration(
-        //       color: Colors.white,
-        //       boxShadow: const [
-        //         BoxShadow(
-        //             color: Colors.black12,
-        //             blurRadius: 10,
-        //             offset: Offset(0.0, 4.0)),
-        //       ],
-        //       borderRadius:
-        //           BorderRadius.circular(FetchPixels.getPixelHeight(12))),
-        //   child: Stack(
-        //     alignment: Alignment.topRight,
-        //     children: [
-        //       Container(
-        //         padding: EdgeInsets.symmetric(
-        //             vertical: FetchPixels.getPixelHeight(16),
-        //             horizontal: FetchPixels.getPixelWidth(16)),
-        //         child: Column(
-        //           children: [
-        //             Align(
-        //               alignment: Alignment.topLeft,
-        //               child: getCustomFont("Alena Gomez", 16, Colors.black, 1,
-        //                   fontWeight: FontWeight.w900),
-        //             ),
-        //             getVerSpace(FetchPixels.getPixelHeight(10)),
-        //             Align(
-        //               alignment: Alignment.topLeft,
-        //               child: SizedBox(
-        //                   width: FetchPixels.getPixelWidth(280),
-        //                   child: getMultilineCustomFont(
-        //                       "4140 Parker Rd. Allentown, New Mexico 31134",
-        //                       16,
-        //                       Colors.black,
-        //                       fontWeight: FontWeight.w400,
-        //                       txtHeight: 1.4)),
-        //             ),
-        //             getVerSpace(FetchPixels.getPixelHeight(10)),
-        //             Align(
-        //               alignment: Alignment.topLeft,
-        //               child: getCustomFont(
-        //                   "(907) 555-0101", 16, Colors.black, 1,
-        //                   fontWeight: FontWeight.w400),
-        //             )
-        //           ],
-        //         ),
-        //       ),
-        //       Positioned(
-        //         child: getPaddingWidget(
-        //           EdgeInsets.only(
-        //               right: FetchPixels.getPixelHeight(16),
-        //               top: FetchPixels.getPixelHeight(16)),
-        //           getSvgImage("unselected.svg",
-        //               width: FetchPixels.getPixelHeight(24),
-        //               height: FetchPixels.getPixelHeight(24)),
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
+
       ],
     );
   }

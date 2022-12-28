@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:customer_app/app/data/data_file.dart';
 import 'package:customer_app/app/data/order_data.dart';
 import 'package:customer_app/app/models/model_order.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +10,7 @@ import '../../../../base/pref_data.dart';
 import '../../../../base/resizer/fetch_pixels.dart';
 import '../../../../base/widget_utils.dart';
 import '../../../routes/app_routes.dart';
-import '../../bookings/active_booking_screen.dart';
 import '../../bookings/all_booking_screen.dart';
-import '../../bookings/cancel_booking_screen.dart';
-import '../../bookings/complete_booking_screen.dart';
 
 class TabBookings extends StatefulWidget {
   const TabBookings({Key? key}) : super(key: key);
@@ -28,12 +24,11 @@ class _TabBookingsState extends State<TabBookings>
   final PageController _controller = PageController(
     initialPage: 0,
   );
-  static List<OrderModel> orderList = [];
+  List<OrderModel>? orderList;
   Future loadAPIData() async {
-    await OrderData().fetchOrdersOfCustomer(3);
+    await OrderData().fetchOrdersOfCustomer(2);
   }
-
-  Future<List<OrderModel>> getPrefData() async {
+  Future<List<OrderModel>?> getPrefData() async {
     loadAPIData().then((value) async {
       String getModel = await PrefData.getOrderModel();
       if (getModel.isNotEmpty) {
@@ -53,7 +48,6 @@ class _TabBookingsState extends State<TabBookings>
   @override
   void initState() {
     tabController = TabController(length: 4, vsync: this);
-    setState(() {});
     super.initState();
   }
 
@@ -68,7 +62,7 @@ class _TabBookingsState extends State<TabBookings>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: backGroundColor,
-      body: FutureBuilder(
+      body: FutureBuilder<List<OrderModel>?>(
           future: getPrefData(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -84,7 +78,7 @@ class _TabBookingsState extends State<TabBookings>
                       horizontal: FetchPixels.getDefaultHorSpace(context)),
                   withoutleftIconToolbar(context,
                       isrightimage: true,
-                      title: "Bookings",
+                      title: "Lịch sử",
                       weight: FontWeight.w900,
                       textColor: Colors.black,
                       fontsize: 24,

@@ -33,7 +33,11 @@ class ServiceModel {
     if(json["price"] is String) {
       price = json["price"];
     }
-    quantity = 0;
+    if(json["quantity"] is int) {
+      quantity = json["quantity"] ?? 0;
+    }else{
+      quantity = 0;
+    }
   }
 
   static List<ServiceModel> fromList(List<Map<String, dynamic>> list) {
@@ -41,15 +45,16 @@ class ServiceModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["serviceId"] = serviceId;
-    _data["categoryId"] = categoryId;
-    _data["categoryName"] = categoryName;
-    _data["serviceName"] = serviceName;
-    _data["serviceDescription"] = serviceDescription;
-    _data["type"] = type;
-    _data["price"] = price;
-    return _data;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["serviceId"] = serviceId;
+    data["categoryId"] = categoryId;
+    data["categoryName"] = categoryName;
+    data["serviceName"] = serviceName;
+    data["serviceDescription"] = serviceDescription;
+    data["type"] = type;
+    data["price"] = price;
+    data["quantity"] = quantity;
+    return data;
   }
 
   ServiceModel copyWith({
@@ -60,6 +65,7 @@ class ServiceModel {
     String? serviceDescription,
     String? type,
     String? price,
+    int? quantity,
   }) => ServiceModel(
     serviceId: serviceId ?? this.serviceId,
     categoryId: categoryId ?? this.categoryId,
@@ -68,5 +74,6 @@ class ServiceModel {
     serviceDescription: serviceDescription ?? this.serviceDescription,
     type: type ?? this.type,
     price: price ?? this.price,
+    quantity: quantity ?? this.quantity
   );
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:customer_app/app/data/service_data.dart';
 import 'package:customer_app/app/models/model_category.dart';
 import 'package:customer_app/app/models/model_service.dart';
+import 'package:customer_app/app/view/dialog/cart_dialog.dart';
 import 'package:flutter/material.dart';
 import '../../../base/color_data.dart';
 import '../../../base/constant.dart';
@@ -12,7 +13,7 @@ import '../../../base/widget_utils.dart';
 import '../../data/data_file.dart';
 import '../../models/model_popular_service.dart';
 import '../../routes/app_routes.dart';
-import '../dialog/color_dialog.dart';
+
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({Key? key}) : super(key: key);
@@ -28,21 +29,20 @@ class _DetailScreenState extends State<DetailScreen> {
   List<ServiceModel> selectionServices =[];
   List<CategoryModel> categoryLists = [];
   // SharedPreferences? selection;
-  var index = 0;
+  var cateId = 0;
 
   getPrefData() async {
-    index = await PrefData.getDefIndex();
+    cateId = await PrefData.getDefIndex();
     String getModel = await PrefData.getCategoryModel();
     if (getModel.isNotEmpty) {
       categoryLists = CategoryModel.fromList(
           json.decode(getModel).cast<Map<String, dynamic>>());
       setState(() {});
     }
-    serviceList = await ServiceData().fetchServicesAndCategories();
+    serviceList = await ServiceData().fetchServicesAndCategories(cateId);
     if(serviceList.isNotEmpty){
     setState(() {
     });}
-
   }
 
   @override
@@ -62,8 +62,40 @@ class _DetailScreenState extends State<DetailScreen> {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: backGroundColor,
+          appBar: AppBar(
+            backgroundColor: Colors.white.withOpacity(1),
+            automaticallyImplyLeading: false,
+            title: getPaddingWidget(
+                EdgeInsets.zero,
+                gettoolbarMenu(context, "back.svg", () {
+                  Constant.backToPrev(context);
+                },
+                    title: "Chi tiết",
+                    weight: FontWeight.w900,
+                    textColor: Colors.black,
+                    fontsize: 24,
+                    istext: true,
+                    isrightimage: true,
+                    rightimage: "clipboard.svg",
+                    counter: DataFile.selectionServices.length,
+                    rightFunction: () {
+                      showModalBottomSheet(
+                          backgroundColor: backGroundColor,
+                          isDismissible: false,
+                          isScrollControlled: true,
+                          context: context,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(FetchPixels.getPixelHeight(40)),
+                            ),
+                          ),
+                          builder: (context) {
+                            return const CartDialog();
+                          });
+                    })),
+          ),
           body: SafeArea(
-            child: buildPage(edgeInsets, context, index, defSpace),
+            child: buildPage(edgeInsets, context, cateId, defSpace),
           ),
         ),
         onWillPop: () async {
@@ -73,33 +105,21 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   ListView buildPage(
-      EdgeInsets edgeInsets, BuildContext context, int index, double defSpace) {
+      EdgeInsets edgeInsets, BuildContext context, int id, double defSpace) {
     return ListView(
       primary: true,
       shrinkWrap: true,
       children: [
         getVerSpace(FetchPixels.getPixelHeight(20)),
-        getPaddingWidget(
-            edgeInsets,
-            gettoolbarMenu(context, "back.svg", () {
-              Constant.backToPrev(context);
-            },
-                title: "Chi tiết",
-                weight: FontWeight.w900,
-                textColor: Colors.black,
-                fontsize: 24,
-                istext: true,
-                isrightimage: true,
-                rightimage: "more.svg",
-                rightFunction: () {})),
+        getPaddingWidget(edgeInsets, productImage(cateId)),
         getVerSpace(FetchPixels.getPixelHeight(20)),
-        getPaddingWidget(edgeInsets, productImage(index)),
+        dropdownButton(),
         getVerSpace(FetchPixels.getPixelHeight(20)),
         getPaddingWidget(edgeInsets, productDescription(context)),
         getVerSpace(FetchPixels.getPixelHeight(29)),
         getPaddingWidget(
             edgeInsets,
-            getCustomFont("Các dịch vụ ${categoryLists[index].categoryName!.toLowerCase()}:", 16, Colors.black, 1,
+            getCustomFont("Các dịch vụ ${categoryLists.firstWhere((element) => element.categoryId==id).categoryName!.toLowerCase()}:", 16, Colors.black, 1,
                 fontWeight: FontWeight.w900)),
         getVerSpace(FetchPixels.getPixelHeight(15)),
         buildListView(defSpace),
@@ -151,7 +171,7 @@ class _DetailScreenState extends State<DetailScreen> {
               packageImage(context, serviceModel),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.only(left: FetchPixels.getPixelWidth(16)),
+                  padding: EdgeInsets.only(left: FetchPixels.getPixelWidth(10),right: FetchPixels.getPixelWidth(2)),
                   child: packageDescription(serviceModel),
                 ),
               ),
@@ -163,71 +183,10 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  // Expanded packageList(BuildContext context) {
-  //   return Expanded(
-  //     child: SingleChildScrollView(
-  //       physics: const BouncingScrollPhysics(),
-  //       child: ConstrainedBox(
-  //         constraints: const BoxConstraints(),
-  //         child: Column(
-  //           children: [
-  //             ListView.builder(
-  //               shrinkWrap: true,
-  //               physics: const BouncingScrollPhysics(),
-  //               padding: EdgeInsets.zero,
-  //               scrollDirection: Axis.vertical,
-  //               itemCount: salonProductLists.length,
-  //               itemBuilder: (context, index) {
-  //                 ModelSalon modelSalon = salonProductLists[index];
-  //                 return Container(
-  //                   margin:
-  //                       EdgeInsets.only(bottom: FetchPixels.getPixelHeight(20)),
-  //                   width: FetchPixels.getPixelWidth(374),
-  //                   padding: EdgeInsets.only(
-  //                       left: FetchPixels.getPixelWidth(16),
-  //                       right: FetchPixels.getPixelWidth(16),
-  //                       top: FetchPixels.getPixelHeight(16),
-  //                       bottom: FetchPixels.getPixelHeight(16)),
-  //                   decoration: BoxDecoration(
-  //                       color: Colors.white,
-  //                       boxShadow: const [
-  //                         BoxShadow(
-  //                             color: Colors.black12,
-  //                             blurRadius: 10,
-  //                             offset: Offset(0.0, 4.0)),
-  //                       ],
-  //                       borderRadius: BorderRadius.circular(
-  //                           FetchPixels.getPixelHeight(12))),
-  //                   child: Row(
-  //                     children: [
-  //                       packageImage(context, modelSalon),
-  //                       Expanded(
-  //                         child: Container(
-  //                           padding: EdgeInsets.only(
-  //                               left: FetchPixels.getPixelWidth(16)),
-  //                           child: packageDescription(modelSalon),
-  //                         ),
-  //                       ),
-  //                       addButton(modelSalon, context, index)
-  //                     ],
-  //                   ),
-  //                 );
-  //               },
-  //             ),
-  //             getVerSpace(FetchPixels.getPixelHeight(10)),
-  //             totalContainer(),
-  //             viewCartButton(context),
-  //             getVerSpace(FetchPixels.getPixelHeight(30))
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget viewCartButton(BuildContext context) {
-    return getButton(context, blueColor, "Xem hóa đơn", Colors.white, () {
-      Constant.sendToNext(context, Routes.cartRoute);
+    return getButton(context, blueColor, "Tiếp tục", Colors.white, () {
+      DataFile.selectionServices.addAll(selectionServices);
+      Constant.sendToNext(context, Routes.addressRoute);
     }, 18,
         weight: FontWeight.w600,
         buttonHeight: FetchPixels.getPixelHeight(60),
@@ -266,11 +225,12 @@ class _DetailScreenState extends State<DetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if (serviceModel.quantity == 0)
+        if (!DataFile.selectionServices.any((element) => element.serviceId == serviceModel.serviceId)
+        )
           getButton(context, Colors.transparent, "Thêm", blueColor, () {
-            serviceModel.quantity = (serviceModel.quantity! + 1);
+            serviceModel.quantity = 1;
             total = total + (int.parse(serviceModel.price!) * 1);
-            selectionServices.add(serviceModel);
+            DataFile.selectionServices.add(serviceModel);
             setState(() {});
           }, 14,
               weight: FontWeight.w600,
@@ -290,16 +250,15 @@ class _DetailScreenState extends State<DetailScreen> {
                     width: FetchPixels.getPixelHeight(30),
                     height: FetchPixels.getPixelHeight(30)),
                 onTap: () {
-                  serviceModel.quantity = (serviceModel.quantity! + 1);
+                  DataFile.selectionServices.firstWhere((element) => element.serviceId == serviceModel.serviceId).quantity
+                  = (DataFile.selectionServices.firstWhere((element) => element.serviceId == serviceModel.serviceId).quantity! + 1);
                   total = total + (int.parse(serviceModel.price!) * 1);
-                  // DataFile.cartList[index.toString()]!.quantity =
-                  //     modelSalon.quantity;
                   setState(() {});
                 },
               ),
               getHorSpace(FetchPixels.getPixelWidth(10)),
               getCustomFont(
-                serviceModel.quantity.toString(),
+                DataFile.selectionServices.firstWhere((element) => element.serviceId == serviceModel.serviceId).quantity.toString(),
                 14,
                 Colors.black,
                 1,
@@ -311,11 +270,21 @@ class _DetailScreenState extends State<DetailScreen> {
                     width: FetchPixels.getPixelHeight(30),
                     height: FetchPixels.getPixelHeight(30)),
                 onTap: () {
-                  serviceModel.quantity = (serviceModel.quantity! - 1);
-                  total = total - (int.parse(serviceModel.price!) * 1);
-                  if(serviceModel.quantity ==0) {
-                    selectionServices.remove(serviceModel);
+                  if(DataFile.selectionServices.firstWhere((element) => element.serviceId == serviceModel.serviceId).quantity! > 1) {
+                    DataFile.selectionServices
+                        .firstWhere((element) =>
+                    element.serviceId == serviceModel.serviceId)
+                        .quantity
+                    = (DataFile.selectionServices
+                        .firstWhere((element) =>
+                    element.serviceId == serviceModel.serviceId)
+                        .quantity! - 1);
+                  }else{
+                    DataFile.selectionServices
+                        .removeWhere((element) =>
+                    element.serviceId == serviceModel.serviceId);
                   }
+                  total = total - (int.parse(serviceModel.price!) * 1);
                   setState(() {});
                 },
               ),
@@ -336,14 +305,16 @@ class _DetailScreenState extends State<DetailScreen> {
           serviceModel.serviceName ?? '',
           16,
           Colors.black,
-          1,
-          fontWeight: FontWeight.w900,
+          2,
+          overflow: TextOverflow.ellipsis,
+          fontWeight: FontWeight.w700,
         ),
-        getVerSpace(FetchPixels.getPixelHeight(4)),
-        getCustomFont(serviceModel.categoryName ?? "", 14, textColor, 1,
-            fontWeight: FontWeight.w400),
+        // getVerSpace(FetchPixels.getPixelHeight(4)),
+        // getCustomFont(serviceModel.categoryName ?? "", 14, textColor, 1,
+        //     fontWeight: FontWeight.w400),
         getVerSpace(FetchPixels.getPixelHeight(6)),
-        getCustomFont(serviceModel.serviceDescription ?? "", 14, textColor, 1,
+        getCustomFont("Mô tả: ${serviceModel.serviceDescription}", 14, textColor, 3,
+            overflow: TextOverflow.ellipsis,
             fontWeight: FontWeight.w400),
         // Row(
         //   children: [
@@ -366,8 +337,8 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Container packageImage(BuildContext context, ServiceModel model) {
     return Container(
-      height: FetchPixels.getPixelHeight(104),
-      width: FetchPixels.getPixelHeight(104),
+      height: FetchPixels.getPixelHeight(96),
+      width: FetchPixels.getPixelHeight(96),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(10)),
           color: listColor,
@@ -379,7 +350,7 @@ class _DetailScreenState extends State<DetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        getCustomFont("Dịch vụ ${categoryLists[index].categoryName!.toLowerCase()}", 24, Colors.black, 1,
+        getCustomFont("Dịch vụ ${categoryLists.firstWhere((element) => element.categoryId==cateId).categoryName!.toLowerCase()}", 24, Colors.black, 1,
             fontWeight: FontWeight.w900),
         getVerSpace(FetchPixels.getPixelHeight(17)),
         // Row(
@@ -440,5 +411,41 @@ class _DetailScreenState extends State<DetailScreen> {
     // getAssetImage(popularServiceLists[index].image ?? "",
     // FetchPixels.getPixelWidth(374), FetchPixels.getPixelHeight(225),
     // boxFit: BoxFit.fill),);
+  }
+  Widget dropdownButton(){
+    return Row(
+      children: [
+        getHorSpace(FetchPixels.getPixelWidth(20)),
+        getCustomFont("Phân loại:", 18, Colors.black, 1,
+            fontWeight: FontWeight.w900),
+        getHorSpace(FetchPixels.getPixelWidth(16)),
+        DropdownButton(
+          // Initial Value
+          value: cateId,
+          // Down Arrow Icon
+          icon: const Icon(Icons.keyboard_arrow_down),
+          // Array list of items
+          items: categoryLists.map((CategoryModel items) {
+            return DropdownMenuItem(
+              value: items.categoryId,
+              child: SizedBox(
+                width:
+                MediaQuery.of(context).size.width / 5,
+                child: getCustomFont(items.categoryName?? "", 16, Colors.black, 1,
+                    fontWeight: FontWeight.w400),
+              ),
+            );
+          }).toList(),
+          // After selecting the desired option,it will
+          // change button value to selected value
+          onChanged: (newValue) async {
+            setState(() {
+              PrefData.setDefIndex(newValue!);
+              getPrefData();
+            });
+          },
+        ),
+      ],
+    );
   }
 }

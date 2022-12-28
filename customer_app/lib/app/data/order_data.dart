@@ -18,7 +18,6 @@ class OrderData{
       body: json.encode(fromCart.toJson())
     );
     if(response.statusCode == 200){
-      print(response.body);
     }else{
       throw Exception(response.body.toString());
     }

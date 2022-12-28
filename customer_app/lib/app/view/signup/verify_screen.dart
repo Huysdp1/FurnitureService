@@ -45,7 +45,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
           });
         },
         verificationFailed: (FirebaseAuthException e) {
-          print(e.message);
         },
         codeSent: (String verificationId, int? resendToken) async {
           PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode.text);
@@ -119,7 +118,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
                       }
                     },
                     onChanged: (value) {
-                      print(value);
                       setState(() {
 
                       });

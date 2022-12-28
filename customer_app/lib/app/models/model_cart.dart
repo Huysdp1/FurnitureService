@@ -51,34 +51,38 @@ class CartModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["customerId"] = customerId;
-    _data["address"] = address;
-    _data["createAt"] = createAt;
-    _data["totalPrice"] = totalPrice;
-    _data["implementationDate"] = implementationDate;
-    _data["implementationTime"] = implementationTime;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["customerId"] = customerId;
+    data["address"] = address;
+    data["createAt"] = createAt;
+    data["totalPrice"] = totalPrice;
+    data["implementationDate"] = implementationDate;
+    data["implementationTime"] = implementationTime;
     if(listService != null) {
-      _data["listService"] = listService?.map((e) => e.toJson()).toList();
+      data["listService"] = listService?.map((e) => e.toJson()).toList();
     }
-    return _data;
+    return data;
   }
 }
 
 class ListService {
   int? serviceId;
-
-  ListService({this.serviceId});
+  int? quantity;
+  ListService({this.serviceId,this.quantity});
 
   ListService.fromJson(Map<String, dynamic> json) {
     if(json["serviceId"] is int) {
       serviceId = json["serviceId"];
     }
+    if(json["quantity"] is int) {
+      quantity = json["quantity"];
+    }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["serviceId"] = serviceId;
-    return _data;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["serviceId"] = serviceId;
+    data["quantity"] = quantity;
+    return data;
   }
 }

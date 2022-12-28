@@ -25,7 +25,12 @@ class _OnlineCardScreenState extends State<OnlineCardScreen> {
 
     SharedPreferences.getInstance().then((SharedPreferences sp) {
       selection = sp;
-      setState(() {});
+      setState(() {
+        select = 0;
+        selection!.setString("image", cardLists.first.image ?? '');
+        selection!.setString("cardname", cardLists.first.cardName ?? "");
+        selection!.setString("cardnumber", cardLists.first.cardNumber ?? "");
+      });
     });
   }
 

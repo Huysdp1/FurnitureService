@@ -34,14 +34,14 @@ class CategoryModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["categoryId"] = categoryId;
-    _data["categoryName"] = categoryName;
-    _data["status"] = status;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["categoryId"] = categoryId;
+    data["categoryName"] = categoryName;
+    data["status"] = status;
     if(services != null) {
-      _data["services"] = services;
+      data["services"] = services;
     }
-    return _data;
+    return data;
   }
 
   CategoryModel copyWith({

@@ -55,21 +55,24 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
     selection?.remove("phoneAddress");
 
     return WillPopScope(
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: backGroundColor,
-          bottomNavigationBar: addAddressButton(context),
-          body: SafeArea(
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: FetchPixels.getDefaultHorSpace(context)),
-              child: Column(
-                children: [
-                  getVerSpace(FetchPixels.getPixelHeight(20)),
-                  buildToolbar(context),
-                  getVerSpace(FetchPixels.getPixelHeight(30)),
-                  buildExpand(context)
-                ],
+        child: GestureDetector(
+          onTap: (){FocusManager.instance.primaryFocus?.unfocus();},
+          child: Scaffold(
+            resizeToAvoidBottomInset: true,
+            backgroundColor: backGroundColor,
+            bottomNavigationBar: addAddressButton(context),
+            body: SafeArea(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: FetchPixels.getDefaultHorSpace(context)),
+                child: Column(
+                  children: [
+                    getVerSpace(FetchPixels.getPixelHeight(20)),
+                    buildToolbar(context),
+                    getVerSpace(FetchPixels.getPixelHeight(30)),
+                    buildExpand(context)
+                  ],
+                ),
               ),
             ),
           ),
@@ -187,19 +190,32 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
           bottom: FetchPixels.getPixelHeight(30)),
       child: getButton(context, blueColor, "Lưu", Colors.white,
           () async {
-        AddressModel addressModel = AddressModel(
-            customerNameOrder: nameController.text,
-            customerPhoneOrder: phoneController.text,
-            homeNumber: homeNumController.text,
-            street: streetController.text,
-            ward: wardController.text,
-            district: districtController.text,
-            city: cityController.text,
-        );
-        await AccountData().updateAddress(addressModel, selection!.getInt('addressId'));
-        setState(() {
-        });
-        if(mounted){Constant.backToFinish(context);}
+            if(nameController.text.isNotEmpty
+                && homeNumController.text.isNotEmpty
+                && streetController.text.isNotEmpty
+                && wardController.text.isNotEmpty
+                && districtController.text.isNotEmpty
+                && cityController.text.isNotEmpty
+                && phoneController.text.isNotEmpty
+                && Constant.validatePhone(phoneController.text)
+            ) {
+              //Sua customerId thanh variable
+              AddressModel addressModel = AddressModel(
+                customerNameOrder: nameController.text,
+                customerPhoneOrder: phoneController.text,
+                homeNumber: homeNumController.text,
+                street: streetController.text,
+                ward: wardController.text,
+                district: districtController.text,
+                city: cityController.text,
+              );
+              await AccountData().updateAddress(addressModel, selection!.getInt('addressId'));
+              setState(() {
+              });
+              if(mounted){Constant.backToFinish(context);}
+
+            }
+
       }, 18,
           weight: FontWeight.w600,
           buttonHeight: FetchPixels.getPixelHeight(60),
