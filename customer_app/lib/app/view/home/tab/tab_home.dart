@@ -33,7 +33,7 @@ class _TabHomeState extends State<TabHome> {
   }
 
   Future loadAddressData() async {
-    await AccountData().fetchCustomerAddress(2);
+    await AccountData().fetchCustomerAddress();
   }
 
   final _controller = PageController();
@@ -44,6 +44,7 @@ class _TabHomeState extends State<TabHome> {
         addressModel = AddressModel.fromList(
                 json.decode(getModel).cast<Map<String, dynamic>>())
             .firstWhere((element) => element.isDefault == true);
+        DataFile.defaultAddress = addressModel;
         if (mounted) {
           setState(() {});
         }
@@ -72,6 +73,7 @@ class _TabHomeState extends State<TabHome> {
     //   selection = sp;
     //   setState(() {});
     // });
+    addressModel = DataFile.defaultAddress;
     super.initState();
   }
 
@@ -99,6 +101,28 @@ class _TabHomeState extends State<TabHome> {
                   future: getPrefAddressData(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
+                      if (addressModel.homeNumber != null) {
+                        return SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              getSvgImage("location.svg"),
+                              getHorSpace(FetchPixels.getPixelWidth(4)),
+                              Expanded(
+                                child: getMultilineCustomFont(
+                                    "${addressModel.homeNumber}, ${addressModel.street}, ${addressModel.ward}, ${addressModel.district}, ${addressModel.city}",
+                                    14,
+                                    Colors.black,
+                                    overflow: TextOverflow.fade,
+                                    fontWeight: FontWeight.w400,
+                                    maxLines: 4
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
                       return Row(
                         children: [
                           getSvgImage("location.svg"),

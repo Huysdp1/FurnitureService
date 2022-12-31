@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../app/models/model_address.dart';
 import '../app/models/model_booking.dart';
+import '../app/routes/app_routes.dart';
 import 'color_data.dart';
 import 'constant.dart';
 
@@ -263,6 +265,54 @@ GestureDetector buildBookingListItem(ModelBooking modelBooking,
   );
 }
 
+ListView bookingListWidget(List<OrderModel> orderList, List<AddressModel> addressList) {
+  return ListView.builder(
+    padding: EdgeInsets.zero,
+    itemCount: orderList.length,
+    itemBuilder: (context, index) {
+      OrderModel orderModel = orderList[index];
+      orderModel.addressM = addressList.firstWhere((element) => element.addressId == int.tryParse(orderModel.address!));
+      return buildOrderListItem(orderModel, context, index, () {
+        Constant.sendToNext(context, Routes.bookingRoute);
+      }, () {
+      });
+    },
+  );
+}
+
+Column nullListView(BuildContext context) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      getSvgImage("clipboard.svg",
+          height: FetchPixels.getPixelHeight(124),
+          width: FetchPixels.getPixelHeight(124)),
+      getVerSpace(FetchPixels.getPixelHeight(40)),
+      getCustomFont("Trống!", 20, Colors.black, 1,
+          fontWeight: FontWeight.w900),
+      getVerSpace(FetchPixels.getPixelHeight(10)),
+      getCustomFont(
+        "Đến đặt lịch ngay.",
+        16,
+        Colors.black,
+        1,
+        fontWeight: FontWeight.w400,
+      ),
+      getVerSpace(FetchPixels.getPixelHeight(30)),
+      getButton(
+          context, backGroundColor, "Đặt lịch", blueColor, () {}, 18,
+          weight: FontWeight.w600,
+          buttonHeight: FetchPixels.getPixelHeight(60),
+          insetsGeometry: EdgeInsets.symmetric(
+              horizontal: FetchPixels.getPixelWidth(106)),
+          borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(14)),
+          isBorder: true,
+          borderColor: blueColor,
+          borderWidth: 1.5)
+    ],
+  );
+}
+
 Widget widgetOrderStatus(context, int status) {
   int color = 0xFFEEFCF0;
   Color theme = success;
@@ -351,49 +401,6 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
           borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(12))),
       child: Column(
         children: [
-          // Expanded(child:
-          //   Row(
-          //     children: [
-          //       Container(
-          //         height: FetchPixels.getPixelHeight(91),
-          //         width: FetchPixels.getPixelHeight(91),
-          //         decoration: BoxDecoration(
-          //           image: getDecorationAssetImage(
-          //               context, modelBooking.image ?? ""),
-          //         ),
-          //       ),
-          //       Expanded(child: Column(
-          //         crossAxisAlignment: CrossAxisAlignment.start,
-          //         children: [
-          //           getCustomFont(
-          //               modelBooking.name ?? "", 16, Colors.black, 1,
-          //               fontWeight: FontWeight.w900),
-          //           getVerSpace(FetchPixels.getPixelHeight(6)),
-          //           getCustomFont(
-          //             modelBooking.date ?? "",
-          //             14,
-          //             textColor,
-          //             1,
-          //             fontWeight: FontWeight.w400,
-          //           ),
-          //           getVerSpace(FetchPixels.getPixelHeight(6)),
-          //           Row(
-          //             children: [
-          //               getSvgImage("star.svg",
-          //                   height: FetchPixels.getPixelHeight(16),
-          //                   width: FetchPixels.getPixelHeight(16)),
-          //               getHorSpace(FetchPixels.getPixelWidth(6)),
-          //               getCustomFont(
-          //                   modelBooking.rating ?? "", 14, Colors.black, 1,
-          //                   fontWeight: FontWeight.w400),
-          //             ],
-          //           )
-          //         ],
-          //       ),flex: 1,)
-          //     ],
-          //   )
-          //   ,flex: 1,),
-
           Expanded(
             flex: 1,
             child: Row(
@@ -420,10 +427,12 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                         child: getHorSpace(0),
                       ),
                       getCustomFont(
-                          modelBooking.orderId.toString() ?? "", 16, Colors.black, 1,
-                          fontWeight: FontWeight.w900),
+                          modelBooking.addressM?.customerNameOrder ?? modelBooking.orderId.toString(), 16, Colors.black, 1,
+                          fontWeight: FontWeight.w700),
                       getVerSpace(FetchPixels.getPixelHeight(12)),
-
+                      modelBooking.addressM?.addressId != null ? getMultilineCustomFont(
+                          "${modelBooking.addressM?.homeNumber},${modelBooking.addressM?.street},${modelBooking.addressM?.ward},${modelBooking.addressM?.district},${modelBooking.addressM?.city}", 14, textColor, overflow: TextOverflow.ellipsis,
+                          fontWeight: FontWeight.w400):
                       getMultilineCustomFont(
                           modelBooking.address ?? "", 14, textColor, overflow: TextOverflow.ellipsis,
                           fontWeight: FontWeight.w400),
@@ -483,7 +492,7 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                       FetchPixels.getPixelHeight(8)),
                   getHorSpace(FetchPixels.getPixelWidth(8)),
                   getCustomFont(
-                    '${modelBooking.implementationTime}, ${Constant.parseDateNoUTC(modelBooking.implementationDate, false)}',
+                    'Dự kiến: ${modelBooking.implementationTime}, ${Constant.parseDateNoUTC(modelBooking.implementationDate, false)}',
                     14,
                     textColor,
                     1,
@@ -493,7 +502,7 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
               ),
               widgetOrderStatus(context, modelBooking.workingStatusId!),
             ],
-          )
+          ),
         ],
       ),
     ),

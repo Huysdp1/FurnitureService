@@ -28,7 +28,7 @@ class AddressScreen extends StatefulWidget {
 class _AddressScreenState extends State<AddressScreen> {
   SharedPreferences? selection;
   FutureOr onGoBack() async{
-    await AccountData().fetchCustomerAddress(2);
+    await AccountData().fetchCustomerAddress();
     setState(() {
       getPrefData();
     });
@@ -138,7 +138,7 @@ class _AddressScreenState extends State<AddressScreen> {
               borderRadius:
                   BorderRadius.circular(FetchPixels.getPixelHeight(12))),
           child: FutureBuilder<List<AddressModel>>(
-            future: AccountData().fetchCustomerAddress(2),
+            future: AccountData().fetchCustomerAddress(),
             builder: (context,snapshot) {
               if(!snapshot.hasData){
                 return const Center(child: CircularProgressIndicator(),);

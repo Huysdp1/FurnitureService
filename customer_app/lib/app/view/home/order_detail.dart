@@ -46,7 +46,7 @@ class _OrderDetailState extends State<OrderDetail> {
       totalPrice: total.toString(),
       listService: listSerId
     );
-     OrderData().createOrderCustomer(2, fromCart);
+     OrderData().createOrderCustomer(fromCart);
   }
   int cartTotalPrice() {
     for (var value in DataFile.selectionServices) {
@@ -56,11 +56,11 @@ class _OrderDetailState extends State<OrderDetail> {
   }
   List<ServiceModel> ser = [];
   void getPrefData(){
-    date = selection!.getString('selectDate')?? now.toString();
-    time = selection!.getString("time") ?? "8:00";
-    image = selection!.getString("image") ?? "";
-    cardname = selection!.getString("cardname") ?? "";
-    cardnumber = selection!.getString("cardnumber") ?? "";
+    date = selection?.getString('selectDate')?? now.toString();
+    time = selection?.getString("time") ?? "8:00";
+    image = selection?.getString("image") ?? "";
+    cardname = selection?.getString("cardname") ?? "";
+    cardnumber = selection?.getString("cardnumber") ?? "";
   }
   SharedPreferences? selection;
   DateTime now = DateTime.now();

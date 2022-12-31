@@ -24,17 +24,7 @@ class _BookingDetailState extends State<BookingDetail> {
   }
 
   getPrefData() async {
-    String getModel = await PrefData.getBookingModel();
-    if (getModel.isNotEmpty) {
-      ModelBooking modelBooking = ModelBooking.fromJson(jsonDecode(getModel));
-      name = modelBooking.name;
-      date = modelBooking.date;
-      rating = modelBooking.rating;
-      tag = modelBooking.tag;
-      owner = modelBooking.owner;
-      price = modelBooking.price;
-      setState(() {});
-    }
+
   }
 
   String? name;

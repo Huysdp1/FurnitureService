@@ -9,7 +9,7 @@ class PrefData {
   static String getDefaultCode = "${prefName}code";
   static String getDefaultCountry = "${prefName}country";
   static String defIndexVal = "${prefName}index";
-  static String modelBooking = "${prefName}bookingModel";
+  static String cusIdVal = "${prefName}customerId";
   static String modelOrder = "${prefName}orderModel";
   static String modelCategory = "${prefName}categoryModel";
   static String modelAddress = "${prefName}addressModel";
@@ -25,10 +25,6 @@ class PrefData {
     preferences.setBool(isLoggedIn, avail);
   }
 
-  static setBookingModel(String avail) async {
-    SharedPreferences preferences = await getPrefInstance();
-    preferences.setString(modelBooking, avail);
-  }
 
   static setOrderModel(String avail) async {
     SharedPreferences preferences = await getPrefInstance();
@@ -49,6 +45,11 @@ class PrefData {
     preferences.setInt(defIndexVal, avail);
   }
 
+  static setCusId(int avail) async {
+    SharedPreferences preferences = await getPrefInstance();
+    preferences.setInt(cusIdVal, avail);
+  }
+
   static setDefCode(String avail) async {
     SharedPreferences preferences = await getPrefInstance();
     preferences.setString(getDefaultCode, avail);
@@ -65,11 +66,6 @@ class PrefData {
     return isIntroAvailable;
   }
 
-  static Future<String> getBookingModel() async {
-    SharedPreferences preferences = await getPrefInstance();
-    String isIntroAvailable = preferences.getString(modelBooking) ?? "";
-    return isIntroAvailable;
-  }
   static Future<String> getCategoryModel() async {
     SharedPreferences preferences = await getPrefInstance();
     String isIntroAvailable = preferences.getString(modelCategory) ?? "";
@@ -90,6 +86,12 @@ class PrefData {
   static Future<int> getDefIndex() async {
     SharedPreferences preferences = await getPrefInstance();
     int isIntroAvailable = preferences.getInt(defIndexVal) ?? 0;
+    return isIntroAvailable;
+  }
+
+  static Future<int> getCusId() async {
+    SharedPreferences preferences = await getPrefInstance();
+    int isIntroAvailable = preferences.getInt(cusIdVal) ?? -1;
     return isIntroAvailable;
   }
 

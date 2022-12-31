@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:customer_app/app/data/order_data.dart';
 import 'package:customer_app/app/models/model_order.dart';
@@ -6,11 +5,13 @@ import 'package:flutter/material.dart';
 
 import '../../../../base/color_data.dart';
 import '../../../../base/constant.dart';
-import '../../../../base/pref_data.dart';
 import '../../../../base/resizer/fetch_pixels.dart';
 import '../../../../base/widget_utils.dart';
 import '../../../routes/app_routes.dart';
+import '../../bookings/active_booking_screen.dart';
 import '../../bookings/all_booking_screen.dart';
+import '../../bookings/cancel_booking_screen.dart';
+import '../../bookings/complete_booking_screen.dart';
 
 class TabBookings extends StatefulWidget {
   const TabBookings({Key? key}) : super(key: key);
@@ -24,22 +25,8 @@ class _TabBookingsState extends State<TabBookings>
   final PageController _controller = PageController(
     initialPage: 0,
   );
-  List<OrderModel>? orderList;
-  Future loadAPIData() async {
-    await OrderData().fetchOrdersOfCustomer(2);
-  }
-  Future<List<OrderModel>?> getPrefData() async {
-    loadAPIData().then((value) async {
-      String getModel = await PrefData.getOrderModel();
-      if (getModel.isNotEmpty) {
-        orderList = OrderModel.fromList(
-            json.decode(getModel).cast<Map<String, dynamic>>());
-        if (mounted) {
-          setState(() {});
-        }
-      }
-    });
-    return orderList;
+  Future<List<OrderModel>?> loadAPIData() async {
+    return await OrderData().fetchOrdersOfCustomer();
   }
 
   late TabController tabController;
@@ -63,7 +50,7 @@ class _TabBookingsState extends State<TabBookings>
       resizeToAvoidBottomInset: false,
       backgroundColor: backGroundColor,
       body: FutureBuilder<List<OrderModel>?>(
-          future: getPrefData(),
+          future: loadAPIData(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(
@@ -103,11 +90,11 @@ class _TabBookingsState extends State<TabBookings>
         physics: const BouncingScrollPhysics(),
         controller: _controller,
         scrollDirection: Axis.horizontal,
-        children: const [
+        children:  const [
           AllBookingScreen(),
-          //ActiveBookingScreen(),
-          //CompleteBookingScreen(),
-          //CancelBookingScreen()
+          ActiveBookingScreen(),
+          CompleteBookingScreen(),
+          CancelBookingScreen()
         ],
         onPageChanged: (value) {
           tabController.animateTo(value);
@@ -118,7 +105,7 @@ class _TabBookingsState extends State<TabBookings>
     );
   }
 
-  List<String> tabsList = ["All", "Active", "Completed", "Cancelled"];
+  List<String> tabsList = ["Tất cả", "Đang xử lí", "Hoàn tất", "Đã hủy"];
 
   Widget tabBar() {
     return getPaddingWidget(
@@ -158,81 +145,6 @@ class _TabBookingsState extends State<TabBookings>
                 )),
           );
         }),
-        // Tab(
-        //   child: Container(
-        //       alignment: Alignment.center,
-        //       child: Column(
-        //         children: [
-        //           getCustomFont(
-        //               "All", 16, position == 0 ? blueColor : Colors.black, 1,
-        //               fontWeight: FontWeight.w400,
-        //               overflow: TextOverflow.visible),
-        //           getVerSpace(FetchPixels.getPixelHeight(7)),
-        //           Container(
-        //             height: FetchPixels.getPixelHeight(2),
-        //             color:
-        //                 position == 0 ? blueColor : const Color(0xFFE5E8F1),
-        //           )
-        //         ],
-        //       )),
-        // ),
-        // Tab(
-        //   child: Container(
-        //       alignment: Alignment.center,
-        //       child: Column(
-        //         children: [
-        //           getCustomFont("Active", 16,
-        //               position == 1 ? blueColor : Colors.black, 1,
-        //
-        //               fontWeight: FontWeight.w400,
-        //               overflow: TextOverflow.visible),
-        //           getVerSpace(FetchPixels.getPixelHeight(7)),
-        //           Container(
-        //             height: FetchPixels.getPixelHeight(2),
-        //             color:
-        //                 position == 1 ? blueColor : const Color(0xFFE5E8F1),
-        //           )
-        //         ],
-        //       )),
-        // ),
-        // Tab(
-        //   child: Container(
-        //       alignment: Alignment.center,
-        //       child: Column(
-        //         children: [
-        //           getCustomFont("Completed", 16,
-        //               position == 2 ? blueColor : Colors.black, 1,
-        //
-        //               fontWeight: FontWeight.w400,
-        //               overflow: TextOverflow.visible),
-        //           getVerSpace(FetchPixels.getPixelHeight(7)),
-        //           Container(
-        //             height: FetchPixels.getPixelHeight(2),
-        //             color:
-        //                 position == 2 ? blueColor : const Color(0xFFE5E8F1),
-        //           )
-        //         ],
-        //       )),
-        // ),
-        // Tab(
-        //   child: Container(
-        //       alignment: Alignment.center,
-        //       child: Column(
-        //         children: [
-        //           getCustomFont("Cancelled", 16,
-        //               position == 3 ? blueColor : Colors.black, 1,
-        //
-        //               fontWeight: FontWeight.w400,
-        //               overflow: TextOverflow.visible),
-        //           getVerSpace(FetchPixels.getPixelHeight(7)),
-        //           Container(
-        //             height: FetchPixels.getPixelHeight(2),
-        //             color:
-        //                 position == 3 ? blueColor : const Color(0xFFE5E8F1),
-        //           )
-        //         ],
-        //       )),
-        // )
       ),
     );
   }

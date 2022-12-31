@@ -1,4 +1,6 @@
 
+import 'package:customer_app/app/models/model_address.dart';
+
 class OrderModel {
   int? orderId;
   int? customerId;
@@ -16,8 +18,8 @@ class OrderModel {
   List<dynamic>? assigns;
   List<dynamic>? orderImages;
   List<OrderServices>? orderServices;
-
-  OrderModel({this.orderId, this.customerId, this.workingStatusId, this.address, this.totalPrice, this.implementationDate, this.implementationTime, this.createAt, this.updateAt, this.description, this.status, this.customer, this.workingStatus, this.assigns, this.orderImages, this.orderServices});
+  AddressModel? addressM;
+  OrderModel({this.orderId, this.customerId, this.workingStatusId, this.address, this.totalPrice, this.implementationDate, this.implementationTime, this.createAt, this.updateAt, this.description, this.status, this.customer, this.workingStatus, this.assigns, this.orderImages, this.orderServices, this.addressM});
 
   OrderModel.fromJson(Map<String, dynamic> json) {
     if(json["orderId"] is num) {

@@ -1,4 +1,3 @@
-
 import 'package:customer_app/app/models/model_address.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +28,13 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     FetchPixels(context);
     return WillPopScope(
         child: GestureDetector(
-          onTap: (){FocusManager.instance.primaryFocus?.unfocus();},
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+          },
           child: Scaffold(
             resizeToAvoidBottomInset: true,
             backgroundColor: backGroundColor,
@@ -73,10 +78,9 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
               image: "profile.svg",
               isEnable: false,
               minLines: false),
-
           getVerSpace(FetchPixels.getPixelHeight(20)),
-          getDefaultTextFiledWithLabel(
-              context, "Số điện thoại", isValidated, phoneController, Colors.grey,
+          getDefaultTextFiledWithLabel(context, "Số điện thoại", isValidated,
+              phoneController, Colors.grey,
               function: () {},
               height: FetchPixels.getPixelHeight(60),
               withprefix: true,
@@ -138,7 +142,6 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
               height: FetchPixels.getPixelHeight(60),
               withSufix: true,
               suffiximage: "down_arrow.svg"),
-
           getVerSpace(FetchPixels.getPixelHeight(20))
         ],
       ),
@@ -168,32 +171,27 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
         setState(() {
           isValidated = true;
         });
-        if(nameController.text.isNotEmpty
-            && homeNumController.text.isNotEmpty
-            && streetController.text.isNotEmpty
-            && wardController.text.isNotEmpty
-            && districtController.text.isNotEmpty
-            && cityController.text.isNotEmpty
-            && phoneController.text.isNotEmpty
-            && Constant.validatePhone(phoneController.text)
-        ) {
+        if (nameController.text.isNotEmpty &&
+            homeNumController.text.isNotEmpty &&
+            streetController.text.isNotEmpty &&
+            wardController.text.isNotEmpty &&
+            districtController.text.isNotEmpty &&
+            cityController.text.isNotEmpty &&
+            phoneController.text.isNotEmpty &&
+            Constant.validatePhone(phoneController.text)) {
           //Sua customerId thanh variable
           AddressModel newAddress = AddressModel(
-            customerId: 2,
-            customerNameOrder: nameController.text,
-            homeNumber: homeNumController.text,
-            street: streetController.text,
-            ward: wardController.text,
-            district: districtController.text,
-            city: cityController.text,
-            customerPhoneOrder: phoneController.text
-          );
-           await AccountData().generateNewAddress(
-              newAddress).then((value) =>
-               Constant.backToPrevWithRes(context,arguments: value));
-
+              customerId: 2,
+              customerNameOrder: nameController.text,
+              homeNumber: homeNumController.text,
+              street: streetController.text,
+              ward: wardController.text,
+              district: districtController.text,
+              city: cityController.text,
+              customerPhoneOrder: phoneController.text);
+          await AccountData().generateNewAddress(newAddress).then(
+              (value) => Constant.backToPrevWithRes(context, arguments: value));
         }
-
       }, 18,
           weight: FontWeight.w600,
           buttonHeight: FetchPixels.getPixelHeight(60),

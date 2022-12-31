@@ -24,7 +24,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
   SharedPreferences? selection;
   List<AddressModel> addressList =[];
   Future loadAddressData() async {
-    await AccountData().fetchCustomerAddress(2);
+    await AccountData().fetchCustomerAddress();
   }
 
   Future<List<AddressModel>> getPrefAddressData() async {
@@ -264,7 +264,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                 onSelected: (value) async {
                   if (value == 1) {
                     await AccountData()
-                        .setDefaultAddress(2, modelAddress.addressId);
+                        .setDefaultAddress(modelAddress.addressId);
                     setState(() {});
                   }
                   if (value == 3) {

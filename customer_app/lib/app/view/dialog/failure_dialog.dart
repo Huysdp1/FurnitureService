@@ -1,4 +1,5 @@
 
+import 'package:customer_app/base/constant.dart';
 import 'package:flutter/material.dart';
 
 import '../../../base/color_data.dart';
@@ -44,6 +45,7 @@ class _FailureDialogState extends State<FailureDialog> {
                   txtHeight:1.3),
               getVerSpace(FetchPixels.getPixelHeight(30)),
               getButton(context, blueColor, "Ok", Colors.white, () {
+                Constant.backToPrev(context);
               }, 18,
                   weight: FontWeight.w600,
                   buttonHeight: FetchPixels.getPixelHeight(60),

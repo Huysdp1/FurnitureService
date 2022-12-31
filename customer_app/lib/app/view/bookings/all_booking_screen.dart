@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:customer_app/app/models/model_address.dart';
 import 'package:customer_app/app/models/model_order.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,18 @@ class AllBookingScreen extends StatefulWidget {
 
 class _AllBookingScreenState extends State<AllBookingScreen> {
   List<OrderModel> orderList = [];
-
+  List<AddressModel> addressList = [];
+  Future<List<AddressModel>> getPrefAddressData() async {
+      String getModel = await PrefData.getAddressModel();
+      if (getModel.isNotEmpty) {
+        addressList = AddressModel.fromList(
+            json.decode(getModel).cast<Map<String, dynamic>>());
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    return addressList;
+  }
 
   Future<List<OrderModel>> getPrefData() async {
     String getModel = await PrefData.getOrderModel();
@@ -34,7 +46,7 @@ class _AllBookingScreenState extends State<AllBookingScreen> {
 
   @override
   void initState() {
-
+    getPrefAddressData();
     PrefData.getOrderModel().then((value) {
       if (value.isNotEmpty) {
         orderList = OrderModel.fromList(
@@ -63,72 +75,10 @@ class _AllBookingScreenState extends State<AllBookingScreen> {
             color: backGroundColor,
             child: orderList.isEmpty
                 ? getPaddingWidget(edgeInsets, nullListView(context))
-                : allBookingList(),
+                : bookingListWidget(orderList, addressList),
           );
         }
         );
   }
 
-
-
-  ListView allBookingList() {
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      itemCount: orderList.length,
-      itemBuilder: (context, index) {
-        OrderModel orderModel = orderList[index];
-        return buildOrderListItem(orderModel, context, index, () {
-          // ModelBooking booking = ModelBooking(
-          //     "",
-          //     modelBooking.name ?? "",
-          //     modelBooking.date ?? "",
-          //     modelBooking.rating ?? "",
-          //     modelBooking.price ?? 0.0,
-          //     modelBooking.owner ?? "",
-          //     modelBooking.tag,
-          //     0,
-          //     null);
-          // PrefData.setBookingModel(jsonEncode(booking));
-          Constant.sendToNext(context, Routes.bookingRoute);
-        }, () {
-          setState(() {
-            orderList.removeAt(index);
-          });
-        });
-      },
-    );
-  }
-
-  Column nullListView(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        getSvgImage("clipboard.svg",
-            height: FetchPixels.getPixelHeight(124),
-            width: FetchPixels.getPixelHeight(124)),
-        getVerSpace(FetchPixels.getPixelHeight(40)),
-        getCustomFont("No Bookings Yet!", 20, Colors.black, 1,
-            fontWeight: FontWeight.w900),
-        getVerSpace(FetchPixels.getPixelHeight(10)),
-        getCustomFont(
-          "Go to services and book the best services. ",
-          16,
-          Colors.black,
-          1,
-          fontWeight: FontWeight.w400,
-        ),
-        getVerSpace(FetchPixels.getPixelHeight(30)),
-        getButton(
-            context, backGroundColor, "Go to Service", blueColor, () {}, 18,
-            weight: FontWeight.w600,
-            buttonHeight: FetchPixels.getPixelHeight(60),
-            insetsGeometry: EdgeInsets.symmetric(
-                horizontal: FetchPixels.getPixelWidth(106)),
-            borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(14)),
-            isBorder: true,
-            borderColor: blueColor,
-            borderWidth: 1.5)
-      ],
-    );
-  }
 }

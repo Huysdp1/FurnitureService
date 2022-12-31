@@ -1,5 +1,8 @@
 
+import 'package:customer_app/app/data/account_data.dart';
+import 'package:customer_app/app/models/model_account.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../base/color_data.dart';
@@ -17,6 +20,8 @@ class TabProfile extends StatefulWidget {
 }
 
 class _TabProfileState extends State<TabProfile> {
+
+
   @override
   Widget build(BuildContext context) {
     FetchPixels(context);
@@ -26,19 +31,32 @@ class _TabProfileState extends State<TabProfile> {
       body: Container(
         padding:
             EdgeInsets.symmetric(horizontal: FetchPixels.getPixelWidth(20)),
-        child: buildProfileWidget(context),
+        child: FutureBuilder<AccountModel>(
+          future: AccountData().fetchCustomerInfo(),
+          builder: (context,snapshot) {
+            if(snapshot.hasData) {
+              return buildProfileWidget(context,snapshot.data);
+            } else if(snapshot.hasError){
+              return buildProfileWidget(context);
+            }
+              return const Center(child: CircularProgressIndicator());
+          }
+        ),
       ),
     );
   }
 
-  ListView buildProfileWidget(BuildContext context) {
+  ListView buildProfileWidget(BuildContext context, [AccountModel? data]) {
     return ListView(
       children: [
         getVerSpace(FetchPixels.getPixelHeight(20)),
         buildToolbarWidget(context),
         getVerSpace(FetchPixels.getPixelHeight(30)),
-        Center(child: profilePictureView(context)),
-        getVerSpace(FetchPixels.getPixelHeight(46)),
+        Center(child: profilePictureView(context, data)),
+        getVerSpace(FetchPixels.getPixelHeight(16)),
+        Center(child: getCustomFont(data?.customerName ?? "", 18, textColor, 1,
+            fontWeight: FontWeight.w700),),
+        getVerSpace(FetchPixels.getPixelHeight(36)),
         myProfileButton(context),
         getVerSpace(FetchPixels.getPixelHeight(20)),
         myCardButton(context),
@@ -47,7 +65,7 @@ class _TabProfileState extends State<TabProfile> {
         getVerSpace(FetchPixels.getPixelHeight(20)),
         settingButton(context),
         getVerSpace(FetchPixels.getPixelHeight(30)),
-        logoutButton(context)
+        logoutButton(context, data)
       ],
     );
   }
@@ -55,7 +73,7 @@ class _TabProfileState extends State<TabProfile> {
   Widget buildToolbarWidget(BuildContext context) {
     return withoutleftIconToolbar(context,
         isrightimage: true,
-        title: "Profile",
+        title: "Thông tin cá nhân",
         weight: FontWeight.w900,
         textColor: Colors.black,
         fontsize: 24,
@@ -65,13 +83,22 @@ class _TabProfileState extends State<TabProfile> {
     });
   }
 
-  Widget logoutButton(BuildContext context) {
-    return getButton(context, blueColor, "Logout", Colors.white, () async {
-      PrefData.setLogIn(false);
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      await preferences.clear();
-      if(mounted){
-        Constant.sendToNext(context, Routes.loginRoute);
+  Widget logoutButton(BuildContext context, [AccountModel? data]) {
+    return getButton(context, blueColor, "Đăng xuất", Colors.white, () async {
+      if(data != null){
+        await AccountData().logoutCustomer(data.accountId!);
+        if(mounted){
+          Constant.sendToNext(context, Routes.loginRoute);
+        }
+      }else{
+        PrefData.setLogIn(false);
+        PrefData.setCusId(-1);
+        const FlutterSecureStorage().deleteAll();
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        await preferences.clear();
+        if(mounted){
+          Constant.sendToNext(context, Routes.loginRoute);
+        }
       }
       // Constant.closeApp();
     }, 18,
@@ -81,7 +108,7 @@ class _TabProfileState extends State<TabProfile> {
   }
 
   Widget settingButton(BuildContext context) {
-    return getButtonWithIcon(context, Colors.white, "Settings", Colors.black,
+    return getButtonWithIcon(context, Colors.white, "Cài đặt", Colors.black,
         () {
       Constant.sendToNext(context, Routes.settingRoute);
     }, 16,
@@ -99,7 +126,7 @@ class _TabProfileState extends State<TabProfile> {
   }
 
   Widget myAddressButton(BuildContext context) {
-    return getButtonWithIcon(context, Colors.white, "My Address", Colors.black,
+    return getButtonWithIcon(context, Colors.white, "Địa chỉ", Colors.black,
         () {
       Constant.sendToNext(context, Routes.myAddressRoute);
     }, 16,
@@ -117,7 +144,7 @@ class _TabProfileState extends State<TabProfile> {
   }
 
   Widget myCardButton(BuildContext context) {
-    return getButtonWithIcon(context, Colors.white, "My Cards", Colors.black,
+    return getButtonWithIcon(context, Colors.white, "Ví của tôi", Colors.black,
         () {
       Constant.sendToNext(context, Routes.cardRoute);
     }, 16,
@@ -135,7 +162,7 @@ class _TabProfileState extends State<TabProfile> {
   }
 
   Widget myProfileButton(BuildContext context) {
-    return getButtonWithIcon(context, Colors.white, "My Profile", Colors.black,
+    return getButtonWithIcon(context, Colors.white, "Hồ sơ", Colors.black,
         () {
       Constant.sendToNext(context, Routes.profileRoute);
     }, 16,
@@ -152,7 +179,7 @@ class _TabProfileState extends State<TabProfile> {
         suffixImage: "arrow_right.svg");
   }
 
-  Stack profilePictureView(BuildContext context) {
+  Stack profilePictureView(BuildContext context,[AccountModel? data]) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -185,7 +212,7 @@ class _TabProfileState extends State<TabProfile> {
               child: getSvgImage("camera.svg",
                   height: FetchPixels.getPixelHeight(24),
                   width: FetchPixels.getPixelHeight(24)),
-            ))
+            )),
       ],
     );
   }
