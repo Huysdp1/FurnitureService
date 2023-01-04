@@ -1,4 +1,5 @@
 
+import 'package:customer_app/app/data/account_data.dart';
 import 'package:flutter/material.dart';
 import '../../../base/color_data.dart';
 import '../../../base/constant.dart';
@@ -6,6 +7,7 @@ import '../../../base/pref_data.dart';
 import '../../../base/resizer/fetch_pixels.dart';
 import '../../../base/widget_utils.dart';
 import '../../routes/app_routes.dart';
+import '../dialog/failure_dialog.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -22,10 +24,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
-
+  TextEditingController passwordController = TextEditingController();
   bool agree = false;
 
-  TextEditingController passwordController = TextEditingController();
   bool isPass = true;
   String defCode = "";
   String defCountry = PrefData.defCountryName;
@@ -103,7 +104,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         getVerSpace(FetchPixels.getPixelHeight(20)),
         getDefaultTextFiledWithLabel(
           context,
-          "Email",
+          "Tài khoản",
           false,
           emailController,
           Colors.grey,
@@ -148,7 +149,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
         getVerSpace(FetchPixels.getPixelHeight(50)),
         getButton(context, blueColor, "Đăng ký", Colors.white, () {
-          Constant.sendToNext(context, Routes.verifyRoute);
+          AccountData().registerCustomer(nameController.text, emailController.text, passwordController.text, phoneNumberController.text).then((value) {
+            if(value.statusCode==200){
+              AccountData().loginCustomer(emailController.text, passwordController.text).then((value) => Constant.sendToNext(context, Routes.homeScreenRoute));
+            }else{
+              showDialog(
+                barrierDismissible: true,
+                context: context,
+                builder: (context) {
+                  return FailureDialog(title: 'Đăng ký thất bại', description: value.body.toString());
+                },);
+            }
+          }
+          );
+          //Constant.sendToNext(context, Routes.verifyRoute);
         }, 18,
             weight: FontWeight.w600,
             buttonHeight: FetchPixels.getPixelHeight(60),

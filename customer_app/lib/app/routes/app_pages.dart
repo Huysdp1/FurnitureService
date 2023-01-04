@@ -1,5 +1,6 @@
 import 'package:customer_app/app/view/address/edit_address_screen.dart';
 import 'package:customer_app/app/view/address/add_address_screen.dart';
+import 'package:customer_app/app/view/bookings/edit_booking.dart';
 
 import 'package:flutter/cupertino.dart';
 
@@ -63,5 +64,6 @@ class AppPages {
     Routes.securityRoute: (context) => const SecurityScreen(),
     Routes.termOfServiceRoute: (context) => const TermOfServiceScreen(),
     Routes.addAddressScreenRoute: (context) => const AddAddressScreen(),
+    Routes.editBookingScreen: (context) => const EditBookingScreen(),
   };
 }

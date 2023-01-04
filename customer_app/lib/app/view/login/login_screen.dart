@@ -120,8 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
             )),
         getVerSpace(FetchPixels.getPixelHeight(49)),
         getButton(context, blueColor, "Đăng nhập", Colors.white, () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          currentFocus.unfocus();
+          FocusScope.of(context).requestFocus(FocusNode());
           setState(() {
             isLoading = true;
           });

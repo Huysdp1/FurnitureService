@@ -1,3 +1,4 @@
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -16,7 +17,15 @@ class DateTimeScreen extends StatefulWidget {
   State<DateTimeScreen> createState() => _DateTimeScreenState();
 }
 
-class _DateTimeScreenState extends State<DateTimeScreen> {
+class _DateTimeScreenState extends State<DateTimeScreen> with SingleTickerProviderStateMixin{
+  final PageController _controller = PageController(
+    initialPage: 0,
+  );
+
+  late TabController tabController;
+  var position = 0;
+
+
   List<String> timeLists = DataFile.timeList;
   var select = 0;
 
@@ -24,12 +33,19 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
 
   @override
   void initState() {
+    tabController = TabController(length: 2, vsync: this);
     super.initState();
 
     SharedPreferences.getInstance().then((SharedPreferences sp) {
       selection = sp;
       setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,6 +73,8 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
                       fontsize: 24,
                       textColor: Colors.black),
                   getVerSpace(FetchPixels.getPixelHeight(30)),
+                  processTracker(),
+                  getVerSpace(FetchPixels.getPixelHeight(30)),
                   calendarContainer(),
                   getVerSpace(FetchPixels.getPixelHeight(30)),
                   getCustomFont("Chọn giờ", 16, Colors.black, 1,
@@ -83,9 +101,9 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
           left: FetchPixels.getPixelWidth(20),
           right: FetchPixels.getPixelWidth(20),
           bottom: FetchPixels.getPixelHeight(33)),
-      child: getButton(context, blueColor, "Done", Colors.white, () {
+      child: getButton(context, blueColor, "Tiếp tục", Colors.white, () {
 
-        Constant.sendToNext(context, Routes.paymentRoute);
+        Constant.sendToNext(context, Routes.orderDetailRoute);
       }, 18,
           weight: FontWeight.w600,
           buttonHeight: FetchPixels.getPixelHeight(60),
@@ -206,4 +224,61 @@ class _DateTimeScreenState extends State<DateTimeScreen> {
       ),
     );
   }
+
+  Row processTracker() {
+    return Row(
+      children: [
+        Container(
+          height: FetchPixels.getPixelHeight(52),
+          width: FetchPixels.getPixelHeight(52),
+          padding: EdgeInsets.all(FetchPixels.getPixelHeight(14)),
+          decoration: BoxDecoration(
+              color: procced,
+              borderRadius:
+              BorderRadius.circular(FetchPixels.getPixelHeight(50))),
+          child: getSvgImage("location_select.svg"),
+        ),
+        Expanded(
+          child: DottedLine(
+            dashColor: blueColor,
+            lineThickness: FetchPixels.getPixelHeight(1),
+          ),
+        ),
+        Container(
+          height: FetchPixels.getPixelHeight(52),
+          width: FetchPixels.getPixelHeight(52),
+          padding: EdgeInsets.all(FetchPixels.getPixelHeight(14)),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: const [
+                BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 10,
+                    offset: Offset(0.0, 4.0)),
+              ],
+              borderRadius:
+              BorderRadius.circular(FetchPixels.getPixelHeight(50))),
+          child: getSvgImage("clock.svg"),
+        ),
+        Expanded(
+          child: DottedLine(
+            dashColor: const Color(0xFFBEC4D3),
+            lineThickness: FetchPixels.getPixelHeight(1),
+          ),
+        ),
+        Container(
+          height: FetchPixels.getPixelHeight(52),
+          width: FetchPixels.getPixelHeight(52),
+          padding: EdgeInsets.all(FetchPixels.getPixelHeight(14)),
+          decoration: BoxDecoration(
+              border: Border.all(color: const Color(0xFFE5E8F1), width: 1),
+              borderRadius:
+              BorderRadius.circular(FetchPixels.getPixelHeight(50))),
+          child: getSvgImage("check.svg"),
+        ),
+      ],
+    );
+  }
+
+
 }

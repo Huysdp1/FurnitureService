@@ -11,6 +11,7 @@ class PrefData {
   static String defIndexVal = "${prefName}index";
   static String cusIdVal = "${prefName}customerId";
   static String modelOrder = "${prefName}orderModel";
+  static String modelAccount = "${prefName}accountModel";
   static String modelCategory = "${prefName}categoryModel";
   static String modelAddress = "${prefName}addressModel";
   static String defCountryName = "vietnam.png";
@@ -29,6 +30,11 @@ class PrefData {
   static setOrderModel(String avail) async {
     SharedPreferences preferences = await getPrefInstance();
     preferences.setString(modelOrder, avail);
+  }
+
+  static setAccountModel(String avail) async {
+    SharedPreferences preferences = await getPrefInstance();
+    preferences.setString(modelAccount, avail);
   }
 
   static setCategoryModel(String avail) async {
@@ -77,6 +83,12 @@ class PrefData {
     return isIntroAvailable;
   }
 
+  static Future<String> getAccountModel() async {
+    SharedPreferences preferences = await getPrefInstance();
+    String isIntroAvailable = preferences.getString(modelAccount) ?? "";
+    return isIntroAvailable;
+  }
+
   static Future<String> getOrderModel() async {
     SharedPreferences preferences = await getPrefInstance();
     String isIntroAvailable = preferences.getString(modelOrder) ?? "";
@@ -97,7 +109,7 @@ class PrefData {
 
   static Future<String> getDefCode() async {
     SharedPreferences preferences = await getPrefInstance();
-    String isIntroAvailable = preferences.getString(getDefaultCode) ?? "+1";
+    String isIntroAvailable = preferences.getString(getDefaultCode) ?? "+84";
     return isIntroAvailable;
   }
 

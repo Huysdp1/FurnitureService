@@ -29,7 +29,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
   late String _verificationCode;
      verify() async {
     await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: '+84 399 390 110',
+        phoneNumber: '+84399390110',
         verificationCompleted: (PhoneAuthCredential credential) async {
           await FirebaseAuth.instance
               .signInWithCredential(credential)
@@ -47,7 +47,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
         verificationFailed: (FirebaseAuthException e) {
         },
         codeSent: (String verificationId, int? resendToken) async {
-          PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode.text);
+          AuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode.text);
           await FirebaseAuth.instance.signInWithCredential(credential);
         },
         codeAutoRetrievalTimeout: (String verificationID) {
@@ -56,7 +56,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
           });
         },
         timeout: const Duration(seconds: 120));
-
   }
 
   @override
@@ -155,7 +154,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                            fontWeight: FontWeight.w400),
                       GestureDetector(
                         onTap: () {
-                          verify();
+                          //verify();
                         },
                         child: getCustomFont(" Gửi lại", 16, blueColor, 1,
                           fontWeight: FontWeight.w900, ),),

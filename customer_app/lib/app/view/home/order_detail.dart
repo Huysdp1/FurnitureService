@@ -58,15 +58,13 @@ class _OrderDetailState extends State<OrderDetail> {
   void getPrefData(){
     date = selection?.getString('selectDate')?? now.toString();
     time = selection?.getString("time") ?? "8:00";
-    image = selection?.getString("image") ?? "";
-    cardname = selection?.getString("cardname") ?? "";
-    cardnumber = selection?.getString("cardnumber") ?? "";
   }
   SharedPreferences? selection;
   DateTime now = DateTime.now();
   @override
   void initState() {
     super.initState();
+
 
     SharedPreferences.getInstance().then((SharedPreferences sp) {
       selection = sp;
@@ -78,9 +76,6 @@ class _OrderDetailState extends State<OrderDetail> {
 
   String? date;
   String? time;
-  String? image;
-  String? cardname;
-  String? cardnumber;
 
   bool confirm = false;
 
@@ -103,7 +98,7 @@ class _OrderDetailState extends State<OrderDetail> {
                   gettoolbarMenu(context, "back.svg", () {
                     Constant.backToPrev(context);
                   },
-                      title: "Proceed",
+                      title: "Hoàn tất đơn",
 
                       weight: FontWeight.w900,
                       istext: true,
@@ -124,8 +119,6 @@ class _OrderDetailState extends State<OrderDetail> {
                             dateTimeContainer(),
                             getVerSpace(FetchPixels.getPixelHeight(20)),
                             addressContainer(),
-                            getVerSpace(FetchPixels.getPixelHeight(20)),
-                            paymentContainer(),
                             getVerSpace(FetchPixels.getPixelHeight(20)),
                             cartList(),
                             getVerSpace(FetchPixels.getPixelHeight(30)),
@@ -161,8 +154,6 @@ class _OrderDetailState extends State<OrderDetail> {
           selection!.remove("selectDate");
           selection!.remove("time");
           selection!.remove("image");
-          selection!.remove("cardname");
-          selection!.remove("cardnumber");
           DataFile.selectionServices.clear();
         });
         showDialog(
@@ -370,52 +361,6 @@ class _OrderDetailState extends State<OrderDetail> {
     );
   }
 
-  Container paymentContainer() {
-    return Container(
-      alignment: Alignment.topLeft,
-      padding: EdgeInsets.symmetric(
-          vertical: FetchPixels.getPixelHeight(16),
-          horizontal: FetchPixels.getPixelWidth(16)),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: const [
-            BoxShadow(
-                color: Colors.black12,
-                blurRadius: 10,
-                offset: Offset(0.0, 4.0)),
-          ],
-          borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(12))),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          getCustomFont("Phương thức thanh toán", 16, Colors.black, 1,
-              fontWeight: FontWeight.w900, ),
-          getVerSpace(FetchPixels.getPixelHeight(14)),
-          Row(
-            children: [
-              getSvgImage(image ?? "",
-                  height: FetchPixels.getPixelHeight(46),
-                  width: FetchPixels.getPixelHeight(46)),
-              getHorSpace(FetchPixels.getPixelWidth(12)),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  getCustomFont(cardname ?? "", 16, Colors.black, 1,
-                      fontWeight: FontWeight.w600, ),
-                  getVerSpace(FetchPixels.getPixelHeight(3)),
-                  SizedBox(
-                    width: 250,
-                    child: getCustomFont(cardnumber ?? '', 15, Colors.black, 3,
-                         fontWeight: FontWeight.w400),
-                  )
-                ],
-              )
-            ],
-          )
-        ],
-      ),
-    );
-  }
 
   Container addressContainer() {
     return Container(
@@ -534,7 +479,7 @@ class _OrderDetailState extends State<OrderDetail> {
               color: procced,
               borderRadius:
                   BorderRadius.circular(FetchPixels.getPixelHeight(50))),
-          child: getSvgImage("wallet_select.svg"),
+          child: getSvgImage("clock.svg"),
         ),
         Expanded(
           child: DottedLine(

@@ -309,28 +309,10 @@ class _DetailScreenState extends State<DetailScreen> {
           overflow: TextOverflow.ellipsis,
           fontWeight: FontWeight.w700,
         ),
-        // getVerSpace(FetchPixels.getPixelHeight(4)),
-        // getCustomFont(serviceModel.categoryName ?? "", 14, textColor, 1,
-        //     fontWeight: FontWeight.w400),
         getVerSpace(FetchPixels.getPixelHeight(6)),
         getCustomFont("Mô tả: ${serviceModel.serviceDescription}", 14, textColor, 3,
             overflow: TextOverflow.ellipsis,
             fontWeight: FontWeight.w400),
-        // Row(
-        //   children: [
-        //     getSvgImage("star.svg",
-        //         height: FetchPixels.getPixelHeight(16),
-        //         width: FetchPixels.getPixelHeight(16)),
-        //     getHorSpace(FetchPixels.getPixelWidth(6)),
-        //     // getCustomFont(
-        //     //   modelSalon.rating ?? "",
-        //     //   14,
-        //     //   Colors.black,
-        //     //   1,
-        //     //   fontWeight: FontWeight.w400,
-        //     // )
-        //   ],
-        // )
       ],
     );
   }
@@ -353,40 +335,6 @@ class _DetailScreenState extends State<DetailScreen> {
         getCustomFont("Dịch vụ ${categoryLists.firstWhere((element) => element.categoryId==cateId).categoryName!.toLowerCase()}", 24, Colors.black, 1,
             fontWeight: FontWeight.w900),
         getVerSpace(FetchPixels.getPixelHeight(17)),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //   children: [
-        //     Row(
-        //       children: [
-        //         getSvgImage("star.svg",
-        //             width: FetchPixels.getPixelHeight(25),
-        //             height: FetchPixels.getPixelHeight(25)),
-        //         getHorSpace(FetchPixels.getPixelWidth(10)),
-        //         getCustomFont(
-        //           "4.5",
-        //           16,
-        //           Colors.black,
-        //           1,
-        //           fontWeight: FontWeight.w400,
-        //         ),
-        //       ],
-        //     ),
-        //     getButton(
-        //         context, Colors.white, "10K Bookings", blueColor, () {}, 14,
-        //         weight: FontWeight.w400,
-        //         boxShadow: [
-        //           const BoxShadow(
-        //               color: Colors.black12,
-        //               blurRadius: 10,
-        //               offset: Offset(0.0, 4.0)),
-        //         ],
-        //         borderRadius:
-        //             BorderRadius.circular(FetchPixels.getPixelHeight(20)),
-        //         buttonHeight: FetchPixels.getPixelHeight(40),
-        //         insetsGeometrypadding: EdgeInsets.symmetric(
-        //             horizontal: FetchPixels.getPixelWidth(18)))
-        //   ],
-        // ),
         getVerSpace(FetchPixels.getPixelHeight(24)),
         getMultilineCustomFont(
             "Đây là mô tả về dịch vụ vệ sinh",

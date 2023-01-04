@@ -1,4 +1,5 @@
 
+
 import 'package:customer_app/app/data/account_data.dart';
 import 'package:customer_app/app/models/model_account.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,6 @@ class TabProfile extends StatefulWidget {
 }
 
 class _TabProfileState extends State<TabProfile> {
-
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class _TabProfileState extends State<TabProfile> {
         Center(child: getCustomFont(data?.customerName ?? "", 18, textColor, 1,
             fontWeight: FontWeight.w700),),
         getVerSpace(FetchPixels.getPixelHeight(36)),
-        myProfileButton(context),
+        myProfileButton(context,data),
         getVerSpace(FetchPixels.getPixelHeight(20)),
         myCardButton(context),
         getVerSpace(FetchPixels.getPixelHeight(20)),
@@ -108,7 +108,7 @@ class _TabProfileState extends State<TabProfile> {
   }
 
   Widget settingButton(BuildContext context) {
-    return getButtonWithIcon(context, Colors.white, "Cài đặt", Colors.black,
+    return getButtonWithIcon(context, Colors.white, "Đổi mật khẩu", Colors.black,
         () {
       Constant.sendToNext(context, Routes.settingRoute);
     }, 16,
@@ -161,7 +161,7 @@ class _TabProfileState extends State<TabProfile> {
         suffixImage: "arrow_right.svg");
   }
 
-  Widget myProfileButton(BuildContext context) {
+  Widget myProfileButton(BuildContext context, [AccountModel? data]) {
     return getButtonWithIcon(context, Colors.white, "Hồ sơ", Colors.black,
         () {
       Constant.sendToNext(context, Routes.profileRoute);

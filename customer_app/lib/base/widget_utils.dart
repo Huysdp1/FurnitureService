@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:badges/badges.dart';
+import 'package:customer_app/app/data/data_file.dart';
 import 'package:customer_app/app/models/model_order.dart';
 import 'package:customer_app/base/resizer/fetch_pixels.dart';
 import 'package:flutter/material.dart';
@@ -102,49 +105,6 @@ GestureDetector buildBookingListItem(ModelBooking modelBooking,
           borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(12))),
       child: Column(
         children: [
-          // Expanded(child:
-          //   Row(
-          //     children: [
-          //       Container(
-          //         height: FetchPixels.getPixelHeight(91),
-          //         width: FetchPixels.getPixelHeight(91),
-          //         decoration: BoxDecoration(
-          //           image: getDecorationAssetImage(
-          //               context, modelBooking.image ?? ""),
-          //         ),
-          //       ),
-          //       Expanded(child: Column(
-          //         crossAxisAlignment: CrossAxisAlignment.start,
-          //         children: [
-          //           getCustomFont(
-          //               modelBooking.name ?? "", 16, Colors.black, 1,
-          //               fontWeight: FontWeight.w900),
-          //           getVerSpace(FetchPixels.getPixelHeight(6)),
-          //           getCustomFont(
-          //             modelBooking.date ?? "",
-          //             14,
-          //             textColor,
-          //             1,
-          //             fontWeight: FontWeight.w400,
-          //           ),
-          //           getVerSpace(FetchPixels.getPixelHeight(6)),
-          //           Row(
-          //             children: [
-          //               getSvgImage("star.svg",
-          //                   height: FetchPixels.getPixelHeight(16),
-          //                   width: FetchPixels.getPixelHeight(16)),
-          //               getHorSpace(FetchPixels.getPixelWidth(6)),
-          //               getCustomFont(
-          //                   modelBooking.rating ?? "", 14, Colors.black, 1,
-          //                   fontWeight: FontWeight.w400),
-          //             ],
-          //           )
-          //         ],
-          //       ),flex: 1,)
-          //     ],
-          //   )
-          //   ,flex: 1,),
-
           Expanded(
             flex: 1,
             child: Row(
@@ -271,11 +231,8 @@ ListView bookingListWidget(List<OrderModel> orderList, List<AddressModel> addres
     itemCount: orderList.length,
     itemBuilder: (context, index) {
       OrderModel orderModel = orderList[index];
-      orderModel.addressM = addressList.firstWhere((element) => element.addressId == int.tryParse(orderModel.address!));
-      return buildOrderListItem(orderModel, context, index, () {
-        Constant.sendToNext(context, Routes.bookingRoute);
-      }, () {
-      });
+      orderModel.addressM = addressList.firstWhere((element) => element.addressId == int.parse(orderModel.address!));
+      return buildOrderListItem(orderModel, context, index);
     },
   );
 }
@@ -362,7 +319,6 @@ Widget widgetOrderStatus(context, int status) {
     theme = error;
     text = "Huỷ";
   }
-
   return Wrap(
     children: [
       getButton(context, Color(color.toInt()), text, theme, () {}, 16,
@@ -376,10 +332,12 @@ Widget widgetOrderStatus(context, int status) {
 }
 
 GestureDetector buildOrderListItem(OrderModel modelBooking,
-    BuildContext context, int index, Function function, Function funDelete) {
+    BuildContext context, int index) {
   return GestureDetector(
     onTap: () {
-      function();
+      print(jsonEncode(modelBooking));
+      DataFile.orderDetailObj = modelBooking;
+      Constant.sendToNext(context, Routes.bookingRoute);
     },
     child: Container(
       height: FetchPixels.getPixelHeight(171),
@@ -437,17 +395,6 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                           modelBooking.address ?? "", 14, textColor, overflow: TextOverflow.ellipsis,
                           fontWeight: FontWeight.w400),
                       getVerSpace(FetchPixels.getPixelHeight(12)),
-                      // Row(
-                      //   children: [
-                      //     getSvgImage("star.svg",
-                      //         height: FetchPixels.getPixelHeight(16),
-                      //         width: FetchPixels.getPixelHeight(16)),
-                      //     getHorSpace(FetchPixels.getPixelWidth(6)),
-                      //     getCustomFont(
-                      //         modelBooking. ?? "", 14, Colors.black, 1,
-                      //         fontWeight: FontWeight.w400),
-                      //   ],
-                      // ),
                       Expanded(
                         flex: 1,
                         child: getHorSpace(0),
@@ -459,14 +406,6 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    // GestureDetector(
-                    //   onTap: () {
-                    //     funDelete();
-                    //   },
-                    //   child: getSvgImage("trash.svg",
-                    //       width: FetchPixels.getPixelHeight(20),
-                    //       height: FetchPixels.getPixelHeight(20)),
-                    // ),
                     getPaddingWidget(
                         EdgeInsets.only(bottom: FetchPixels.getPixelHeight(10)),
                         getCustomFont(

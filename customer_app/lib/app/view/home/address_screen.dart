@@ -266,7 +266,7 @@ class _AddressScreenState extends State<AddressScreen> {
               border: Border.all(color: const Color(0xFFE5E8F1), width: 1),
               borderRadius:
                   BorderRadius.circular(FetchPixels.getPixelHeight(50))),
-          child: getSvgImage("wallet.svg"),
+          child: getSvgImage("clock.svg"),
         ),
         Expanded(
           child: DottedLine(

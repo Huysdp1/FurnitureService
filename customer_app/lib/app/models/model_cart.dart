@@ -63,6 +63,18 @@ class CartModel {
     }
     return data;
   }
+  Map<String, dynamic> toUpdateJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["address"] = address.toString();
+    data["updateAt"] = DateTime.parse(DateTime.now().toString()).toString();
+    data["totalPrice"] = totalPrice;
+    data["implementationDate"] = implementationDate;
+    data["implementationTime"] = implementationTime;
+    if(listService != null) {
+      data["listService"] = listService?.map((e) => e.toJson()).toList();
+    }
+    return data;
+  }
 }
 
 class ListService {

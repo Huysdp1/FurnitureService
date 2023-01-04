@@ -1,3 +1,4 @@
+import 'package:customer_app/app/models/model_order.dart';
 import 'package:customer_app/app/models/model_service.dart';
 
 import '../../base/color_data.dart';
@@ -35,7 +36,7 @@ class DataFile {
         "intro3.png",
         intro3Color),
   ];
-
+  static String token = '';
   static List<ModelCountry> countryList = [
     ModelCountry("vietnam.png", "Việt Nam (VN)", "+84"),
   ];
@@ -69,7 +70,7 @@ class DataFile {
     ModelColor("blackhair.png", "Black", "Black Hair Color", "4.5", 6.00, 0),
     ModelColor("brownhair.png", "Brown", "Brown Hair Color", "4.5", 10.00, 0),
   ];
-
+  static OrderModel orderDetailObj = OrderModel();
   static Map<String, ModelCart> cartList = {};
   static AddressModel selectionAddress = AddressModel();
   static AddressModel defaultAddress = AddressModel();

@@ -1,12 +1,15 @@
-import 'dart:convert';
+import 'package:customer_app/app/data/data_file.dart';
+import 'package:customer_app/app/data/order_data.dart';
+import 'package:customer_app/app/models/model_order.dart';
+import 'package:customer_app/app/view/bookings/edit_booking.dart';
+import 'package:customer_app/app/view/home/payment_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../base/color_data.dart';
 import '../../../base/constant.dart';
-import '../../../base/pref_data.dart';
 import '../../../base/resizer/fetch_pixels.dart';
 import '../../../base/widget_utils.dart';
-import '../../models/model_booking.dart';
 
 class BookingDetail extends StatefulWidget {
   const BookingDetail({Key? key}) : super(key: key);
@@ -16,39 +19,34 @@ class BookingDetail extends StatefulWidget {
 }
 
 class _BookingDetailState extends State<BookingDetail> {
+  OrderModel? orderModel;
+  SharedPreferences? selection;
   @override
   void initState() {
+    orderModel = DataFile.orderDetailObj;
+    SharedPreferences.getInstance().then((SharedPreferences sp) {
+      selection = sp;
+      setState(() {});
+    });
     super.initState();
-
-    getPrefData();
   }
 
-  getPrefData() async {
-
+  String? cardName;
+  String? cardImage;
+  String? cardNumber;
+  bool isCard = false;
+  getCartData() {
+    cardImage = selection?.getString("image") ?? "";
+    cardName = selection?.getString("cardname") ?? "";
+    cardNumber = selection?.getString("cardnumber") ?? "";
+    if (cardName!.isNotEmpty) {
+      isCard = true;
+      setState(() {});
+    }
   }
-
-  String? name;
-  String? date;
-  String? rating;
-  String? tag;
-  String? owner;
-  double? price;
-  Color? color;
 
   @override
   Widget build(BuildContext context) {
-    if (tag == "Active") {
-      tag = "Booking Activated";
-      color = success;
-    } else if (tag == "Completed") {
-      tag = "Booking Completed";
-      color = completed;
-    } else if (tag == "Cancelled") {
-      tag = "Booking Cancelled";
-      color = error;
-    } else {
-      color = error;
-    }
     FetchPixels(context);
     double defHorSpace = FetchPixels.getDefaultHorSpace(context);
     EdgeInsets edgeInsets = EdgeInsets.symmetric(horizontal: defHorSpace);
@@ -213,28 +211,35 @@ class _BookingDetailState extends State<BookingDetail> {
   }
 
   Widget buildTopWidget(EdgeInsets edgeInsets, BuildContext context) {
+    getCartData();
     return getPaddingWidget(
       edgeInsets,
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           getVerSpace(FetchPixels.getPixelHeight(30)),
-          getCustomFont("Finding Pro Cleaner", 20, Colors.black, 1,
+          getCustomFont("Phương thức thanh toán", 20, Colors.black, 1,
               fontWeight: FontWeight.w900),
           getVerSpace(FetchPixels.getPixelHeight(10)),
-          getMultilineCustomFont(
-              "An cleaner will be assigned 60 minutes before booking time.",
-              16,
-              Colors.black,
-              fontWeight: FontWeight.w400,
-              txtHeight:1.3),
+          isCard
+              ? paymentContainer()
+              : getMultilineCustomFont(
+                  "Chưa chọn hình thức thanh toán", 16, Colors.black,
+                  fontWeight: FontWeight.w400, txtHeight: 1.3),
           getVerSpace(FetchPixels.getPixelHeight(16)),
           getButtonWithIcon(
             context,
             Colors.white,
-            "Assigning Pro",
+            "Chọn hình thức thanh toán",
             blueColor,
-            () {},
+            () async {
+              //Constant.sendToNext(context, Routes.paymentRoute);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PaymentScreen(),
+                  )).then((value) => getCartData());
+            },
             18,
             weight: FontWeight.w600,
             buttonHeight: FetchPixels.getPixelHeight(60),
@@ -332,53 +337,161 @@ class _BookingDetailState extends State<BookingDetail> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                getCustomFont(date ?? "", 14, textColor, 1,
-                    fontWeight: FontWeight.w400),
-                getSvgImage("question.svg",
-                    width: FetchPixels.getPixelHeight(24),
-                    height: FetchPixels.getPixelHeight(24))
-              ],
-            ),
-            getVerSpace(FetchPixels.getPixelHeight(6)),
-            Row(
-              children: [
-                getSvgImage("star.svg",
-                    width: FetchPixels.getPixelHeight(16),
-                    height: FetchPixels.getPixelHeight(16)),
-                getHorSpace(FetchPixels.getPixelWidth(6)),
                 getCustomFont(
-                  rating ?? "",
-                  14,
-                  Colors.black,
+                  'Thời gian hẹn:  ${orderModel!.implementationTime}, ${Constant.parseDateNoUTC(orderModel!.implementationDate, false)}',
+                  16,
+                  textColor,
                   1,
                   fontWeight: FontWeight.w400,
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EditBookingScreen(),
+                        )).then((value) async {
+                      await OrderData().fetchOrdersOfCustomer();
+                      setState(() {
+                        orderModel = DataFile.orderDetailObj;
+                      });
+                    });
+                  },
+                  child: getSvgImage("edit.svg",
+                      width: FetchPixels.getPixelHeight(24),
+                      height: FetchPixels.getPixelHeight(24)),
                 )
               ],
             ),
-            getVerSpace(FetchPixels.getPixelHeight(20)),
+            getVerSpace(FetchPixels.getPixelHeight(10)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    getSvgImage("check_complete.svg",
-                        width: FetchPixels.getPixelHeight(24),
-                        height: FetchPixels.getPixelHeight(24)),
-                    getHorSpace(FetchPixels.getPixelWidth(6)),
-                    getCustomFont(
-                      tag ?? "",
-                      16,
-                      color!,
-                      1,
-                      fontWeight: FontWeight.w600,
-                    )
-                  ],
+                Expanded(
+                  child: orderModel!.addressM?.addressId != null
+                      ? getMultilineCustomFont(
+                          "Địa chỉ:  ${orderModel!.addressM?.homeNumber},${orderModel!.addressM?.street},${orderModel!.addressM?.ward},${orderModel!.addressM?.district},${orderModel!.addressM?.city}",
+                          16,
+                          textColor,
+                          overflow: TextOverflow.ellipsis,
+                          fontWeight: FontWeight.w400)
+                      : getMultilineCustomFont(
+                          orderModel!.address ?? "", 16, textColor,
+                          overflow: TextOverflow.ellipsis,
+                          fontWeight: FontWeight.w400),
                 ),
-                getCustomFont("\$$price", 16, blueColor, 1,
+              ],
+            ),
+            getVerSpace(FetchPixels.getPixelHeight(10)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                getCustomFont("Tiến độ:", 16, textColor, 1,
+                    fontWeight: FontWeight.w400),
+                widgetOrderStatus(context, orderModel!.workingStatusId!),
+              ],
+            ),
+            getVerSpace(FetchPixels.getPixelHeight(10)),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                getCustomFont(
+                  "Chi tiết dịch vụ",
+                  16,
+                  Colors.black,
+                  1,
+                  fontWeight: FontWeight.w900,
+                ),
+                getVerSpace(FetchPixels.getPixelHeight(13)),
+                ListView.builder(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  primary: true,
+                  physics: const BouncingScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  itemCount: orderModel!.listOrderService?.length,
+                  itemBuilder: (context, index) {
+                    ListOrderService? serviceModel =
+                        orderModel!.listOrderService![index];
+                    return Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  height: FetchPixels.getPixelHeight(72),
+                                  width: FetchPixels.getPixelHeight(72),
+                                  decoration: BoxDecoration(
+                                    image: getDecorationAssetImage(
+                                        context, 'shaving.png'),
+                                  ),
+                                ),
+                                getHorSpace(FetchPixels.getPixelWidth(16)),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: 150,
+                                      child: getCustomFont(
+                                        serviceModel.serviceName ?? "",
+                                        16,
+                                        Colors.black,
+                                        2,
+                                        overflow: TextOverflow.ellipsis,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    getVerSpace(FetchPixels.getPixelHeight(4)),
+                                    getCustomFont(
+                                        "${Constant.showTextMoney(serviceModel.price)}đ",
+                                        16,
+                                        blueColor,
+                                        1,
+                                        fontWeight: FontWeight.w900)
+                                  ],
+                                )
+                              ],
+                            ),
+                            getCustomFont(
+                              serviceModel.quantity.toString(),
+                              14,
+                              Colors.black,
+                              1,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ],
+                        ),
+                        getVerSpace(FetchPixels.getPixelHeight(20)),
+                        index == 2
+                            ? Container()
+                            : getDivider(
+                                dividerColor, FetchPixels.getPixelHeight(1), 1),
+                        index == 2
+                            ? Container()
+                            : getVerSpace(FetchPixels.getPixelHeight(20)),
+                      ],
+                    );
+                  },
+                )
+              ],
+            ),
+            getVerSpace(FetchPixels.getPixelHeight(10)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                getCustomFont("Tổng:", 16, textColor, 1,
+                    fontWeight: FontWeight.w400),
+                getCustomFont(
+                    '${Constant.showTextMoney(orderModel!.totalPrice)}đ',
+                    16,
+                    blueColor,
+                    1,
                     fontWeight: FontWeight.w900)
               ],
             ),
-            getVerSpace(FetchPixels.getPixelHeight(20)),
+            getVerSpace(FetchPixels.getPixelHeight(10)),
             getDivider(dividerColor, 0, 1),
             getVerSpace(FetchPixels.getPixelHeight(20)),
             Row(
@@ -394,13 +507,34 @@ class _BookingDetailState extends State<BookingDetail> {
                               context, "booking_owner.png")),
                     ),
                     getHorSpace(FetchPixels.getPixelWidth(9)),
-                    getCustomFont(
-                      owner ?? "",
-                      14,
-                      textColor,
-                      1,
-                      fontWeight: FontWeight.w400,
-                    ),
+                    orderModel!.addressM?.addressId != null
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              getCustomFont(
+                                'Liên hệ: ${orderModel!.addressM!.customerNameOrder}',
+                                16,
+                                Colors.black,
+                                1,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              getVerSpace(FetchPixels.getPixelHeight(6)),
+                              getCustomFont(
+                                'Sđt: ${orderModel!.addressM!.customerPhoneOrder}',
+                                16,
+                                Colors.black,
+                                1,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ],
+                          )
+                        : getCustomFont(
+                            "",
+                            14,
+                            textColor,
+                            1,
+                            fontWeight: FontWeight.w400,
+                          ),
                   ],
                 ),
                 Container(
@@ -420,14 +554,71 @@ class _BookingDetailState extends State<BookingDetail> {
   Widget buildToolbar(BuildContext context) {
     return getPaddingWidget(
       EdgeInsets.symmetric(horizontal: FetchPixels.getPixelWidth(20)),
-      gettoolbarMenu(context, "back.svg", () {
-        Constant.backToPrev(context);
-      },
-          title: name ?? "",
-          fontsize: 24,
-          weight: FontWeight.w900,
-          textColor: Colors.black,
-          istext: true),
+      gettoolbarMenu(
+        context,
+        "back.svg",
+        () {
+          Constant.backToPrev(context);
+        },
+        title: "Chi tiết",
+        fontsize: 24,
+        weight: FontWeight.w900,
+        textColor: Colors.black,
+        istext: true,
+        // isrightimage: true,
+        // rightimage: "edit.svg",
+        // rightFunction: () {
+        // }
+      ),
+    );
+  }
+
+  Container paymentContainer() {
+    return Container(
+      alignment: Alignment.topLeft,
+      padding: EdgeInsets.symmetric(
+          vertical: FetchPixels.getPixelHeight(16),
+          horizontal: FetchPixels.getPixelWidth(16)),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: const [
+            BoxShadow(
+                color: Colors.black12,
+                blurRadius: 10,
+                offset: Offset(0.0, 4.0)),
+          ],
+          borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(12))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              getSvgImage(cardImage ?? "",
+                  height: FetchPixels.getPixelHeight(46),
+                  width: FetchPixels.getPixelHeight(46)),
+              getHorSpace(FetchPixels.getPixelWidth(12)),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  getCustomFont(
+                    cardName ?? "",
+                    16,
+                    Colors.black,
+                    1,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  getVerSpace(FetchPixels.getPixelHeight(3)),
+                  SizedBox(
+                    width: 250,
+                    child: getCustomFont(cardNumber ?? '', 15, Colors.black, 3,
+                        fontWeight: FontWeight.w400),
+                  )
+                ],
+              )
+            ],
+          )
+        ],
+      ),
     );
   }
 }

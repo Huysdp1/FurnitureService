@@ -40,6 +40,7 @@ class _TabHomeState extends State<TabHome> {
   Future<AddressModel> getPrefAddressData() async {
     loadAddressData().then((value) async {
       String getModel = await PrefData.getAddressModel();
+
       if (getModel.isNotEmpty) {
         addressModel = AddressModel.fromList(
                 json.decode(getModel).cast<Map<String, dynamic>>())
@@ -66,7 +67,6 @@ class _TabHomeState extends State<TabHome> {
     });
     return categoryList;
   }
-
   @override
   void initState() {
     // SharedPreferences.getInstance().then((SharedPreferences sp) {
@@ -101,28 +101,6 @@ class _TabHomeState extends State<TabHome> {
                   future: getPrefAddressData(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
-                      if (addressModel.homeNumber != null) {
-                        return SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              getSvgImage("location.svg"),
-                              getHorSpace(FetchPixels.getPixelWidth(4)),
-                              Expanded(
-                                child: getMultilineCustomFont(
-                                    "${addressModel.homeNumber}, ${addressModel.street}, ${addressModel.ward}, ${addressModel.district}, ${addressModel.city}",
-                                    14,
-                                    Colors.black,
-                                    overflow: TextOverflow.fade,
-                                    fontWeight: FontWeight.w400,
-                                    maxLines: 4
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
                       return Row(
                         children: [
                           getSvgImage("location.svg"),
@@ -133,8 +111,19 @@ class _TabHomeState extends State<TabHome> {
                             Colors.black,
                             1,
                             fontWeight: FontWeight.w400,
-                          )
+                          ),
                         ],
+                      );
+                    }
+                    if (addressModel.addressId == null) {
+                      return SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            getSvgImage("location.svg"),
+                          ],
+                        ),
                       );
                     }
                     return SizedBox(
@@ -146,12 +135,12 @@ class _TabHomeState extends State<TabHome> {
                           getHorSpace(FetchPixels.getPixelWidth(4)),
                           Expanded(
                             child: getMultilineCustomFont(
-                              "${addressModel.homeNumber}, ${addressModel.street}, ${addressModel.ward}, ${addressModel.district}, ${addressModel.city}",
-                              14,
-                              Colors.black,
-                              overflow: TextOverflow.fade,
-                              fontWeight: FontWeight.w400,
-                              maxLines: 4
+                                "${addressModel.homeNumber}, ${addressModel.street}, ${addressModel.ward}, ${addressModel.district}, ${addressModel.city}",
+                                14,
+                                Colors.black,
+                                overflow: TextOverflow.fade,
+                                fontWeight: FontWeight.w400,
+                                maxLines: 4
                             ),
                           ),
                         ],

@@ -1,10 +1,14 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import '../../../base/color_data.dart';
 import '../../../base/constant.dart';
+import '../../../base/pref_data.dart';
 import '../../../base/resizer/fetch_pixels.dart';
 import '../../../base/widget_utils.dart';
+import '../../models/model_account.dart';
 import '../../routes/app_routes.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -15,6 +19,24 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  AccountModel? accountModel;
+  Future<AccountModel?> getPrefData() async {
+    String getModel = await PrefData.getAccountModel();
+    if (getModel.isNotEmpty) {
+      accountModel = AccountModel.fromJson(jsonDecode(getModel.toString()));
+
+      if (mounted) {
+        setState(() {accountModel;});
+      }
+    }
+    return accountModel;
+  }
+  @override
+  void initState() {
+    getPrefData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     FetchPixels(context);
@@ -52,11 +74,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       getVerSpace(FetchPixels.getPixelHeight(30)),
                       profilePicture(context),
                       getVerSpace(FetchPixels.getPixelHeight(40)),
-                      getCustomFont("First Name", 16, textColor, 1,
+                      getCustomFont("Tên:", 16, textColor, 1,
                           fontWeight: FontWeight.w400),
                       getVerSpace(FetchPixels.getPixelHeight(6)),
                       getCustomFont(
-                        "Alena",
+                        accountModel?.customerName ?? "",
                         16,
                         Colors.black,
                         1,
@@ -65,11 +87,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       getVerSpace(FetchPixels.getPixelHeight(20)),
                       getDivider(dividerColor, 0, 1),
                       getVerSpace(FetchPixels.getPixelHeight(20)),
-                      getCustomFont("Last Name", 16, textColor, 1,
+                      getCustomFont("Tài khoản", 16, textColor, 1,
                           fontWeight: FontWeight.w400),
                       getVerSpace(FetchPixels.getPixelHeight(6)),
                       getCustomFont(
-                        "Gomez",
+                        accountModel?.account ?? "",
                         16,
                         Colors.black,
                         1,
@@ -78,11 +100,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       getVerSpace(FetchPixels.getPixelHeight(20)),
                       getDivider(dividerColor, 0, 1),
                       getVerSpace(FetchPixels.getPixelHeight(20)),
-                      getCustomFont("Email", 16, textColor, 1,
+                      getCustomFont("Số điện thoại", 16, textColor, 1,
                           fontWeight: FontWeight.w400),
                       getVerSpace(FetchPixels.getPixelHeight(6)),
                       getCustomFont(
-                        "alenagomez23@gmail.com",
+                        accountModel?.customerPhone ?? "",
                         16,
                         Colors.black,
                         1,
@@ -91,16 +113,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       getVerSpace(FetchPixels.getPixelHeight(20)),
                       getDivider(dividerColor, 0, 1),
                       getVerSpace(FetchPixels.getPixelHeight(20)),
-                      getCustomFont("Phone No", 16, textColor, 1,
-                          fontWeight: FontWeight.w400),
-                      getVerSpace(FetchPixels.getPixelHeight(6)),
-                      getCustomFont(
-                        "(907) 555-0101",
-                        16,
-                        Colors.black,
-                        1,
-                        fontWeight: FontWeight.w400,
-                      ),
                     ],
                   ),
                 );
@@ -111,7 +123,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Constant.backToPrev(context);
                 },
                     istext: true,
-                    title: "Profile",
+                    title: "Hồ sơ cá nhân",
                     weight: FontWeight.w900,
                     fontsize: 24,
                     textColor: Colors.black);
@@ -137,7 +149,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           left: FetchPixels.getPixelWidth(20),
           right: FetchPixels.getPixelWidth(20),
           bottom: FetchPixels.getPixelHeight(30)),
-      child: getButton(context, blueColor, "Edit Profile", Colors.white, () {
+      child: getButton(context, blueColor, "Cập nhật hồ sơ", Colors.white, () {
         Constant.sendToNext(context, Routes.editProfileRoute);
       }, 18,
           weight: FontWeight.w600,

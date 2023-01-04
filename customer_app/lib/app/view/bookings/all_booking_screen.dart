@@ -4,11 +4,9 @@ import 'package:customer_app/app/models/model_order.dart';
 import 'package:flutter/material.dart';
 
 import '../../../base/color_data.dart';
-import '../../../base/constant.dart';
 import '../../../base/pref_data.dart';
 import '../../../base/resizer/fetch_pixels.dart';
 import '../../../base/widget_utils.dart';
-import '../../routes/app_routes.dart';
 
 class AllBookingScreen extends StatefulWidget {
   const AllBookingScreen({Key? key}) : super(key: key);
@@ -31,7 +29,6 @@ class _AllBookingScreenState extends State<AllBookingScreen> {
       }
     return addressList;
   }
-
   Future<List<OrderModel>> getPrefData() async {
     String getModel = await PrefData.getOrderModel();
     if (getModel.isNotEmpty) {

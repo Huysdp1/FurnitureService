@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:customer_app/app/data/data_file.dart';
 import 'package:customer_app/app/models/model_account.dart';
 import 'package:customer_app/app/models/model_address.dart';
 import 'package:customer_app/app/models/model_auth.dart';
@@ -142,40 +143,18 @@ class AccountData{
         },
     );
     if(response.statusCode == 200){
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      preferences.clear();
+      DataFile.defaultAddress = AddressModel();
       PrefData.setLogIn(false);
       PrefData.setCusId(-1);
       const FlutterSecureStorage().deleteAll();
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      await preferences.clear();
       return true;
     }else{
       throw Exception('Lấy dữ liệu thất bại');
     }
   }
 
-
-  Future<void> registerCustomer(name, username, password, phone) async{
-    final response = await http.post(
-        Uri.parse('${PrefData.apiUrl}/api/account/login'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode({
-          "customerName": name,
-          "customerPhone": phone,
-          "username": username,
-          "password": password,
-          "roleId": 4,
-          "createAt": DateTime.now(),
-          "accountStatus": true
-        })
-    );
-    if(response.statusCode == 200){
-      loginCustomer(username, password);
-    }else{
-      throw Exception('Lấy dữ liệu thất bại');
-    }
-  }
 
   Future<AccountModel> fetchCustomerInfo(
       ) async{
@@ -189,9 +168,33 @@ class AccountData{
       },
     );
     if(response.statusCode == 200){
+      PrefData.setAccountModel(response.body.toString());
       return  AccountModel.fromJson(jsonDecode(response.body.toString()));
     }else{
       throw Exception('Lấy dữ liệu thất bại');
+    }
+  }
+
+  Future<http.Response> registerCustomer(name, username, password, phone) async{
+    final response = await http.post(
+        Uri.parse('${PrefData.apiUrl}/api/account/register'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          "customerName": name,
+          "customerPhone": phone,
+          "username": username,
+          "password": password,
+          "roleId": 4,
+          "createAt": DateTime.parse(DateTime.now().toString()).toString(),
+          "accountStatus": true
+        })
+    );
+    if(response.statusCode == 200){
+      return response;
+    }else{
+      return response;
     }
   }
 

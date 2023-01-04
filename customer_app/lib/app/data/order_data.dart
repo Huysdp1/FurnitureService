@@ -46,4 +46,37 @@ class OrderData{
       throw Exception(response.body.toString());
     }
   }
+
+  Future<void> updateOrderCustomer(CartModel fromCart,orderId
+      ) async{
+    int cusId = await PrefData.getCusId();
+    String? token = await const FlutterSecureStorage().read(key: 'accessToken');
+    final response = await http.put(
+        Uri.parse('${PrefData.apiUrl}/api/customer/updateOrder/orderId/$orderId/customerId/$cusId'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode(fromCart.toUpdateJson())
+    );
+    if(response.statusCode == 200){
+
+    }else{
+      throw Exception(response.body.toString());
+    }
+  }
+  Future<void> deleteOrderCustomer(orderId,orderServiceId) async{
+    String? token = await const FlutterSecureStorage().read(key: 'accessToken');
+    final response = await http.delete(
+        Uri.parse('${PrefData.apiUrl}/api/customer/deleteServiceInOrder/$orderId/orderServiceId/$orderServiceId'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+    );
+    if(response.statusCode == 200){
+    }else{
+      throw Exception(response.body.toString());
+    }
+  }
 }
