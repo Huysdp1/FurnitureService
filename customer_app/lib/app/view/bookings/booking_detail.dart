@@ -1,6 +1,7 @@
 import 'package:customer_app/app/data/data_file.dart';
 import 'package:customer_app/app/data/order_data.dart';
 import 'package:customer_app/app/models/model_order.dart';
+import 'package:customer_app/app/models/model_order_detail.dart';
 import 'package:customer_app/app/view/bookings/edit_booking.dart';
 import 'package:customer_app/app/view/home/payment_screen.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +20,16 @@ class BookingDetail extends StatefulWidget {
 }
 
 class _BookingDetailState extends State<BookingDetail> {
+  OrderDetail? _orderDetail;
   OrderModel? orderModel;
   SharedPreferences? selection;
+  Future<OrderDetail> getOrderDetailData()async{
+    _orderDetail = await OrderData().fetchOrderDetail(orderModel!.orderId);
+    return _orderDetail!;
+  }
   @override
   void initState() {
-    orderModel = DataFile.orderDetailObj;
+    orderModel = DataFile.orderModelObj;
     SharedPreferences.getInstance().then((SharedPreferences sp) {
       selection = sp;
       setState(() {});
@@ -55,13 +61,23 @@ class _BookingDetailState extends State<BookingDetail> {
           resizeToAvoidBottomInset: false,
           backgroundColor: backGroundColor,
           body: SafeArea(
-            child: Column(
-              children: [
-                getVerSpace(FetchPixels.getPixelHeight(20)),
-                buildToolbar(context),
-                getVerSpace(FetchPixels.getPixelHeight(30)),
-                buildBottomExpand(context, edgeInsets, defHorSpace)
-              ],
+            child: FutureBuilder<OrderDetail>(
+              future: getOrderDetailData(),
+              builder: (context,snap) {
+                if(!snap.hasData){
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return Column(
+                  children: [
+                    getVerSpace(FetchPixels.getPixelHeight(20)),
+                    buildToolbar(context),
+                    getVerSpace(FetchPixels.getPixelHeight(30)),
+                    buildBottomExpand(context, edgeInsets, defHorSpace)
+                  ],
+                );
+              }
             ),
           ),
         ),
@@ -350,10 +366,10 @@ class _BookingDetailState extends State<BookingDetail> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const EditBookingScreen(),
-                        )).then((value) async {
-                      await OrderData().fetchOrdersOfCustomer();
+                        )).then((value) {
                       setState(() {
-                        orderModel = DataFile.orderDetailObj;
+                        orderModel = DataFile.orderModelObj;
+                        _orderDetail = DataFile.orderDetailObj;
                       });
                     });
                   },
@@ -409,10 +425,10 @@ class _BookingDetailState extends State<BookingDetail> {
                   primary: true,
                   physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.vertical,
-                  itemCount: orderModel!.listOrderService?.length,
+                  itemCount: _orderDetail!.listOrderServiceDto?.length,
                   itemBuilder: (context, index) {
-                    ListOrderService? serviceModel =
-                        orderModel!.listOrderService![index];
+                    ListOrderServiceDto? serviceModel =
+                        _orderDetail!.listOrderServiceDto![index];
                     return Column(
                       children: [
                         Row(

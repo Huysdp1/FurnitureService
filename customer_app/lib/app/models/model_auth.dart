@@ -120,3 +120,33 @@ class RegisterModel {
     return data;
   }
 }
+
+
+
+class ChangePasswordModel {
+  String? oldPassword;
+  String? newPassword;
+  String? updateAt;
+
+  ChangePasswordModel({this.oldPassword, this.newPassword, this.updateAt});
+
+  ChangePasswordModel.fromJson(Map<String, dynamic> json) {
+    if(json["oldPassword"] is String) {
+      oldPassword = json["oldPassword"];
+    }
+    if(json["newPassword"] is String) {
+      newPassword = json["newPassword"];
+    }
+    if(json["updateAt"] is String) {
+      updateAt = json["updateAt"];
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["oldPassword"] = oldPassword;
+    data["newPassword"] = newPassword;
+    data["updateAt"] = updateAt;
+    return data;
+  }
+}

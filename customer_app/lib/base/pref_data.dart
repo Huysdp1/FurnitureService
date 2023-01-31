@@ -10,6 +10,7 @@ class PrefData {
   static String getDefaultCountry = "${prefName}country";
   static String defIndexVal = "${prefName}index";
   static String cusIdVal = "${prefName}customerId";
+  static String accIdVal = "${prefName}accountId";
   static String modelOrder = "${prefName}orderModel";
   static String modelAccount = "${prefName}accountModel";
   static String modelCategory = "${prefName}categoryModel";
@@ -55,7 +56,10 @@ class PrefData {
     SharedPreferences preferences = await getPrefInstance();
     preferences.setInt(cusIdVal, avail);
   }
-
+  static setAccId(int avail) async {
+    SharedPreferences preferences = await getPrefInstance();
+    preferences.setInt(accIdVal, avail);
+  }
   static setDefCode(String avail) async {
     SharedPreferences preferences = await getPrefInstance();
     preferences.setString(getDefaultCode, avail);
@@ -106,7 +110,11 @@ class PrefData {
     int isIntroAvailable = preferences.getInt(cusIdVal) ?? -1;
     return isIntroAvailable;
   }
-
+  static Future<int> getAccId() async {
+    SharedPreferences preferences = await getPrefInstance();
+    int isIntroAvailable = preferences.getInt(accIdVal) ?? -1;
+    return isIntroAvailable;
+  }
   static Future<String> getDefCode() async {
     SharedPreferences preferences = await getPrefInstance();
     String isIntroAvailable = preferences.getString(getDefaultCode) ?? "+84";

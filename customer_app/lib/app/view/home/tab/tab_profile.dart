@@ -107,10 +107,10 @@ class _TabProfileState extends State<TabProfile> {
         buttonHeight: FetchPixels.getPixelHeight(60));
   }
 
-  Widget settingButton(BuildContext context) {
+  Widget settingButton(BuildContext context,) {
     return getButtonWithIcon(context, Colors.white, "Đổi mật khẩu", Colors.black,
         () {
-      Constant.sendToNext(context, Routes.settingRoute);
+      Constant.sendToNext(context, Routes.changePasswordScreen);
     }, 16,
         weight: FontWeight.w400,
         buttonHeight: FetchPixels.getPixelHeight(60),

@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:customer_app/app/data/data_file.dart';
 import 'package:customer_app/app/models/model_cart.dart';
+import 'package:customer_app/app/models/model_order_detail.dart';
 import 'package:customer_app/base/pref_data.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -46,8 +48,25 @@ class OrderData{
       throw Exception(response.body.toString());
     }
   }
-
-  Future<void> updateOrderCustomer(CartModel fromCart,orderId
+  Future<OrderDetail> fetchOrderDetail(orderId) async{
+    //int cusId = await PrefData.getCusId();
+    String? token = await const FlutterSecureStorage().read(key: 'accessToken');
+    final response = await http.get(
+        Uri.parse('${PrefData.apiUrl}/api/customer/getOrderInformation/orderId/$orderId'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        }
+    );
+    if(response.statusCode == 200){
+      final parsed = json.decode(response.body);
+      DataFile.orderDetailObj = OrderDetail.fromJson(parsed);
+      return  OrderDetail.fromJson(parsed);
+    }else{
+      throw Exception(response.body.toString());
+    }
+  }
+  Future<OrderModel> updateOrderCustomer(CartModel fromCart,orderId
       ) async{
     int cusId = await PrefData.getCusId();
     String? token = await const FlutterSecureStorage().read(key: 'accessToken');
@@ -60,7 +79,7 @@ class OrderData{
         body: json.encode(fromCart.toUpdateJson())
     );
     if(response.statusCode == 200){
-
+      return OrderModel.fromJson(json.decode(response.body));
     }else{
       throw Exception(response.body.toString());
     }

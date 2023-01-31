@@ -1,8 +1,10 @@
 import 'package:customer_app/app/view/address/edit_address_screen.dart';
 import 'package:customer_app/app/view/address/add_address_screen.dart';
 import 'package:customer_app/app/view/bookings/edit_booking.dart';
+import 'package:customer_app/app/view/profile/change_password_screen.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:path/path.dart';
 
 import '../view/address/my_address_screen.dart';
 import '../view/bookings/booking_detail.dart';
@@ -65,5 +67,6 @@ class AppPages {
     Routes.termOfServiceRoute: (context) => const TermOfServiceScreen(),
     Routes.addAddressScreenRoute: (context) => const AddAddressScreen(),
     Routes.editBookingScreen: (context) => const EditBookingScreen(),
+    Routes.changePasswordScreen: (context) => const ChangePasswordScreen()
   };
 }

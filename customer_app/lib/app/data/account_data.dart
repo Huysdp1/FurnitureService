@@ -125,6 +125,7 @@ class AccountData{
     if(response.statusCode == 200){
       PrefData.setLogIn(true);
       PrefData.setCusId(AuthModel.fromJson(jsonDecode(response.body.toString())).userLoginBasicInformationDto!.userId!);
+      PrefData.setAccId(AuthModel.fromJson(jsonDecode(response.body.toString())).userLoginBasicInformationDto!.accountId!);
       const FlutterSecureStorage().write(key: 'accessToken', value: AuthModel.fromJson(jsonDecode(response.body.toString())).accessToken);
       const FlutterSecureStorage().write(key: 'refreshToken', value: AuthModel.fromJson(jsonDecode(response.body.toString())).refreshToken);
       return response;
@@ -148,6 +149,7 @@ class AccountData{
       DataFile.defaultAddress = AddressModel();
       PrefData.setLogIn(false);
       PrefData.setCusId(-1);
+      PrefData.setAccId(-1);
       const FlutterSecureStorage().deleteAll();
       return true;
     }else{
@@ -197,5 +199,25 @@ class AccountData{
       return response;
     }
   }
-
+  Future<http.Response> changePassword(oldPass, newPass) async{
+    int accountId = await PrefData.getAccId();
+    String? token = await const FlutterSecureStorage().read(key: 'accessToken');
+    final response = await http.put(
+        Uri.parse('${PrefData.apiUrl}/api/customer/customerChangePassword/accountId/$accountId'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          "oldPassword": oldPass,
+          "newPassword": newPass,
+          "updateAt": DateTime.parse(DateTime.now().toString()).toString(),
+        })
+    );
+    if(response.statusCode == 200){
+      return response;
+    }else{
+      return response;
+    }
+  }
 }

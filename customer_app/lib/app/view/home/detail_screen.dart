@@ -39,8 +39,9 @@ class _DetailScreenState extends State<DetailScreen> {
           json.decode(getModel).cast<Map<String, dynamic>>());
       setState(() {});
     }
-    serviceList = await ServiceData().fetchServicesAndCategories(cateId);
+    serviceList = await ServiceData().fetchServicesAndCategories();
     if(serviceList.isNotEmpty){
+      serviceList = serviceList.where((element) => element.categoryId == cateId).toList();
     setState(() {
     });}
   }

@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:customer_app/app/models/model_order.dart';
+import 'package:customer_app/app/models/model_order_detail.dart';
 import 'package:flutter/material.dart';
 
 import '../../../base/color_data.dart';
@@ -25,7 +26,7 @@ class CategoryDialog extends StatefulWidget {
 class _CategoryDialogState extends State<CategoryDialog> {
   List<CategoryModel> categoryLists = [];
   List<ServiceModel> serviceList = [];
-  OrderModel? orderModel;
+  OrderDetail? orderDetail;
   var cateId = -1;
   getPrefCateSerData() async {
     String getModel = await PrefData.getCategoryModel();
@@ -37,14 +38,15 @@ class _CategoryDialogState extends State<CategoryDialog> {
     if (cateId == -1) {
       cateId = categoryLists.first.categoryId!;
     }
-    serviceList = await ServiceData().fetchServicesAndCategories(cateId);
+    serviceList = await ServiceData().fetchServicesAndCategories();
     if (serviceList.isNotEmpty) {
+      serviceList = serviceList.where((element) => element.categoryId == cateId).toList();
       setState(() {});
     }
   }
   @override
   void initState() {
-    orderModel = DataFile.orderDetailObj;
+    orderDetail = DataFile.orderDetailObj;
     getPrefCateSerData();
     super.initState();
   }
@@ -92,6 +94,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
 
   Widget continueButton(BuildContext context) {
     return getButton(context, blueColor, "Xong", Colors.white, () {
+      DataFile.orderDetailObj = orderDetail!;
       Constant.backToPrev(context);
     }, 18,
         weight: FontWeight.w600,
@@ -151,13 +154,13 @@ class _CategoryDialogState extends State<CategoryDialog> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if(!orderModel!.listOrderService!.any((element) => element.serviceId == serviceModel.serviceId)
+        if(!orderDetail!.listOrderServiceDto!.any((element) => element.serviceId == serviceModel.serviceId)
         )
           getButton(context, Colors.transparent, "Thêm", blueColor, () {
-            orderModel!.totalPrice = (int.parse(orderModel!.totalPrice!) +
+            orderDetail!.totalPrice = (int.parse(orderDetail!.totalPrice!) +
                 (int.parse(serviceModel.price!) * 1))
                 .toString();
-            orderModel!.listOrderService?.add(ListOrderService(
+            orderDetail!.listOrderServiceDto?.add(ListOrderServiceDto(
                 serviceId: serviceModel.serviceId, quantity: 1,serviceName: serviceModel.serviceName,price: serviceModel.price));
             setState(() {});
           }, 14,
@@ -178,15 +181,15 @@ class _CategoryDialogState extends State<CategoryDialog> {
                     width: FetchPixels.getPixelHeight(30),
                     height: FetchPixels.getPixelHeight(30)),
                 onTap: () {
-                  orderModel!.listOrderService
+                  orderDetail!.listOrderServiceDto
                       ?.firstWhere((element) =>
                   element.serviceId == serviceModel.serviceId)
-                      .quantity = (orderModel!.listOrderService!
+                      .quantity = (orderDetail!.listOrderServiceDto!
                       .firstWhere((element) =>
                   element.serviceId == serviceModel.serviceId)
                       .quantity! +
                       1);
-                  orderModel!.totalPrice = (int.parse(orderModel!.totalPrice!) +
+                  orderDetail!.totalPrice = (int.parse(orderDetail!.totalPrice!) +
                       (int.parse(serviceModel.price!) * 1))
                       .toString();
                   setState(() {});
@@ -194,7 +197,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
               ),
               getHorSpace(FetchPixels.getPixelWidth(10)),
               getCustomFont(
-                orderModel!.listOrderService
+                orderDetail!.listOrderServiceDto
                     ?.firstWhere((element) =>
                 element.serviceId == serviceModel.serviceId)
                     .quantity
@@ -210,25 +213,25 @@ class _CategoryDialogState extends State<CategoryDialog> {
                     width: FetchPixels.getPixelHeight(30),
                     height: FetchPixels.getPixelHeight(30)),
                 onTap: () async {
-                  if (orderModel!.listOrderService!
+                  if (orderDetail!.listOrderServiceDto!
                       .firstWhere((element) =>
                   element.serviceId == serviceModel.serviceId)
                       .quantity! >
                       1) {
-                    orderModel!.listOrderService
+                    orderDetail!.listOrderServiceDto
                         ?.firstWhere((element) =>
                     element.serviceId == serviceModel.serviceId)
-                        .quantity = (orderModel!.listOrderService!
+                        .quantity = (orderDetail!.listOrderServiceDto!
                         .firstWhere((element) =>
                     element.serviceId == serviceModel.serviceId)
                         .quantity! -
                         1);
                   } else {
-                    await OrderData().deleteOrderCustomer(orderModel!.orderId, orderModel!.listOrderService?.firstWhere((element) => element.serviceId==serviceModel.serviceId).orderServiceId);
-                    orderModel!.listOrderService?.removeWhere((element) =>
+                    //await OrderData().deleteOrderCustomer(orderDetail!.orderId, orderDetail!.listOrderServiceDto?.firstWhere((element) => element.serviceId==serviceModel.serviceId).orderServiceId);
+                    orderDetail!.listOrderServiceDto?.removeWhere((element) =>
                     element.serviceId == serviceModel.serviceId);
                   }
-                  orderModel!.totalPrice = (int.parse(orderModel!.totalPrice!) -
+                  orderDetail!.totalPrice = (int.parse(orderDetail!.totalPrice!) -
                       (int.parse(serviceModel.price!) * 1))
                       .toString();
                   setState(() {});

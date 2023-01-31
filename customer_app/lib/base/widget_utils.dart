@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:badges/badges.dart';
 import 'package:customer_app/app/data/data_file.dart';
@@ -335,8 +334,7 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
     BuildContext context, int index) {
   return GestureDetector(
     onTap: () {
-      print(jsonEncode(modelBooking));
-      DataFile.orderDetailObj = modelBooking;
+      DataFile.orderModelObj = modelBooking;
       Constant.sendToNext(context, Routes.bookingRoute);
     },
     child: Container(

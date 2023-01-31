@@ -9,30 +9,30 @@ import 'package:http/http.dart' as http;
 class ServiceData{
   static const storage = FlutterSecureStorage();
   //Get list service  from api
-  Future<List<ServiceModel>> fetchServicesAndCategories(id
+  Future<List<ServiceModel>> fetchServicesAndCategories(
       ) async{
-    String token = const FlutterSecureStorage().read(key: 'accessToken').toString();
+    String? token = await const FlutterSecureStorage().read(key: 'accessToken');
     final response = await http.get(
-      Uri.parse('${PrefData.apiUrl}/api/manager/getAllServiceByCategory/categoryId/$id'),
+      Uri.parse('${PrefData.apiUrl}/api/customer/getServiceAndCategoryInfor'),
       headers: <String, String>{
-        'Authorization': token,
+        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-
     if(response.statusCode == 200){
       final parsed = json.decode(response.body).cast<Map<String, dynamic>>();
       return  ServiceModel.fromList(parsed);
     }else{
+
       throw Exception('Lấy dữ liệu thất bại');
     }
   }
   Future<List<CategoryModel>> fetchCategories() async{
-    String token = const FlutterSecureStorage().read(key: 'accessToken').toString();
+    String? token = await const FlutterSecureStorage().read(key: 'accessToken');
     final response = await http.get(
       Uri.parse('${PrefData.apiUrl}/api/category/getallcategory'),
       headers: <String, String>{
-        'Authorization': token,
+        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );

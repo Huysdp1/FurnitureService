@@ -11,9 +11,9 @@ class OrderModel {
   String? implementationTime;
   String? createAt;
   AddressModel? addressM;
-  List<ListOrderService>? listOrderService;
+  //List<ListOrderService>? listOrderService;
 
-  OrderModel({this.orderId, this.customerId, this.workingStatusId, this.address, this.totalPrice, this.implementationDate, this.implementationTime, this.createAt, this.listOrderService, this.addressM});
+  OrderModel({this.orderId, this.customerId, this.workingStatusId, this.address, this.totalPrice, this.implementationDate, this.implementationTime, this.createAt, this.addressM});
 
   OrderModel.fromJson(Map<String, dynamic> json) {
     if(json["orderId"] is int) {
@@ -40,9 +40,9 @@ class OrderModel {
     if(json["createAt"] is String) {
       createAt = json["createAt"];
     }
-    if(json["listOrderService"] is List) {
-      listOrderService = json["listOrderService"] == null ? null : (json["listOrderService"] as List).map((e) => ListOrderService.fromJson(e)).toList();
-    }
+    // if(json["listOrderService"] is List) {
+    //   listOrderService = json["listOrderService"] == null ? null : (json["listOrderService"] as List).map((e) => ListOrderService.fromJson(e)).toList();
+    // }
   }
 
   static List<OrderModel> fromList(List<Map<String, dynamic>> list) {
@@ -60,51 +60,51 @@ class OrderModel {
     data["implementationDate"] = implementationDate;
     data["implementationTime"] = implementationTime;
     data["createAt"] = createAt;
-    if(listOrderService != null) {
-      data["listOrderService"] = listOrderService?.map((e) => e.toJson()).toList();
-    }
+    // if(listOrderService != null) {
+    //   data["listOrderService"] = listOrderService?.map((e) => e.toJson()).toList();
+    // }
     return data;
   }
 }
 
-class ListOrderService {
-  int? orderServiceId;
-  int? quantity;
-  int? serviceId;
-  String? serviceName;
-  String? price;
-
-  ListOrderService({this.orderServiceId, this.quantity, this.serviceId, this.serviceName, this.price});
-
-  ListOrderService.fromJson(Map<String, dynamic> json) {
-    if(json["orderServiceId"] is int) {
-      orderServiceId = json["orderServiceId"];
-    }
-    if(json["quantity"] is int) {
-      quantity = json["quantity"];
-    }
-    if(json["serviceId"] is int) {
-      serviceId = json["serviceId"];
-    }
-    if(json["serviceName"] is String) {
-      serviceName = json["serviceName"];
-    }
-    if(json["price"] is String) {
-      price = json["price"];
-    }
-  }
-
-  static List<ListOrderService> fromList(List<Map<String, dynamic>> list) {
-    return list.map((map) => ListOrderService.fromJson(map)).toList();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data["orderServiceId"] = orderServiceId;
-    data["quantity"] = quantity;
-    data["serviceId"] = serviceId;
-    data["serviceName"] = serviceName;
-    data["price"] = price;
-    return data;
-  }
-}
+// class ListOrderService {
+//   int? orderServiceId;
+//   int? quantity;
+//   int? serviceId;
+//   String? serviceName;
+//   String? price;
+//
+//   ListOrderService({this.orderServiceId, this.quantity, this.serviceId, this.serviceName, this.price});
+//
+//   ListOrderService.fromJson(Map<String, dynamic> json) {
+//     if(json["orderServiceId"] is int) {
+//       orderServiceId = json["orderServiceId"];
+//     }
+//     if(json["quantity"] is int) {
+//       quantity = json["quantity"];
+//     }
+//     if(json["serviceId"] is int) {
+//       serviceId = json["serviceId"];
+//     }
+//     if(json["serviceName"] is String) {
+//       serviceName = json["serviceName"];
+//     }
+//     if(json["price"] is String) {
+//       price = json["price"];
+//     }
+//   }
+//
+//   static List<ListOrderService> fromList(List<Map<String, dynamic>> list) {
+//     return list.map((map) => ListOrderService.fromJson(map)).toList();
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = <String, dynamic>{};
+//     data["orderServiceId"] = orderServiceId;
+//     data["quantity"] = quantity;
+//     data["serviceId"] = serviceId;
+//     data["serviceName"] = serviceName;
+//     data["price"] = price;
+//     return data;
+//   }
+// }

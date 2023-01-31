@@ -4,6 +4,7 @@ import 'package:customer_app/app/data/data_file.dart';
 import 'package:customer_app/app/data/order_data.dart';
 import 'package:customer_app/app/models/model_cart.dart';
 import 'package:customer_app/app/models/model_order.dart';
+import 'package:customer_app/app/models/model_order_detail.dart';
 import 'package:customer_app/app/view/dialog/category_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,10 +16,7 @@ import '../../../base/pref_data.dart';
 import '../../../base/resizer/fetch_pixels.dart';
 import '../../../base/widget_utils.dart';
 import '../../data/account_data.dart';
-import '../../data/service_data.dart';
 import '../../models/model_address.dart';
-import '../../models/model_category.dart';
-import '../../models/model_service.dart';
 import '../../routes/app_routes.dart';
 
 class EditBookingScreen extends StatefulWidget {
@@ -29,29 +27,13 @@ class EditBookingScreen extends StatefulWidget {
 }
 
 class _EditBookingScreenState extends State<EditBookingScreen> {
-  List<CategoryModel> categoryLists = [];
-  List<ServiceModel> serviceList = [];
   List<String> timeLists = DataFile.timeList;
   OrderModel? orderModel;
+  CartModel? orderUpdate;
+  OrderDetail? orderDetail;
   bool showMoreAddress = false;
   SharedPreferences? selection;
-  var cateId = -1;
   int total = 0;
-  getPrefCateSerData() async {
-    String getModel = await PrefData.getCategoryModel();
-    if (getModel.isNotEmpty) {
-      categoryLists = CategoryModel.fromList(
-          json.decode(getModel).cast<Map<String, dynamic>>());
-      setState(() {});
-    }
-    if (cateId == -1) {
-      cateId = categoryLists.first.categoryId!;
-    }
-    serviceList = await ServiceData().fetchServicesAndCategories(cateId);
-    if (serviceList.isNotEmpty) {
-      setState(() {});
-    }
-  }
 
   List<AddressModel> addressLists = [];
   getPrefAddressData() async {
@@ -72,9 +54,16 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
 
   @override
   void initState() {
-    orderModel = DataFile.orderDetailObj;
+    orderModel = DataFile.orderModelObj;
+    orderDetail = DataFile.orderDetailObj;
+    orderUpdate = CartModel(
+        address: orderDetail!.address,
+        implementationTime: orderModel!.implementationTime,
+        implementationDate: orderModel!.implementationDate,
+        totalPrice: orderModel!.totalPrice,
+        listService: []
+    );
     getPrefAddressData();
-    getPrefCateSerData();
     SharedPreferences.getInstance().then((SharedPreferences sp) {
       selection = sp;
       setState(() {});
@@ -161,9 +150,9 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
       padding: EdgeInsets.zero,
       scrollDirection: Axis.vertical,
       primary: false,
-      itemCount: orderModel!.listOrderService?.length,
+      itemCount: orderDetail!.listOrderServiceDto?.length,
       itemBuilder: (context, index) {
-        ListOrderService serviceModel = orderModel!.listOrderService![index];
+        ListOrderServiceDto serviceModel = orderDetail!.listOrderServiceDto![index];
         return Container(
           margin: EdgeInsets.only(
               bottom: FetchPixels.getPixelHeight(20),
@@ -205,7 +194,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
     );
   }
 
-  Column packageDescription(ListOrderService serviceModel) {
+  Column packageDescription(ListOrderServiceDto serviceModel) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -222,32 +211,11 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
     );
   }
 
-  Column addButton(ListOrderService serviceModel, BuildContext context) {
+  Column addButton(ListOrderServiceDto serviceModel, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         getVerSpace(FetchPixels.getPixelWidth(8)),
-        if (orderModel!.listOrderService?.any(
-                (element) => element.serviceId == serviceModel.serviceId) ==
-            false)
-          getButton(context, Colors.transparent, "Thêm", blueColor, () {
-            orderModel!.totalPrice = (int.parse(orderModel!.totalPrice!) +
-                    (int.parse(serviceModel.price!) * 1))
-                .toString();
-            orderModel!.listOrderService?.add(ListOrderService(
-                serviceId: serviceModel.serviceId, quantity: 1));
-            setState(() {});
-          }, 14,
-              weight: FontWeight.w600,
-              insetsGeometrypadding: EdgeInsets.symmetric(
-                  horizontal: FetchPixels.getPixelWidth(20),
-                  vertical: FetchPixels.getPixelHeight(12)),
-              borderColor: blueColor,
-              borderWidth: 1.5,
-              isBorder: true,
-              borderRadius:
-                  BorderRadius.circular(FetchPixels.getPixelHeight(10)))
-        else
           Row(
             children: [
               GestureDetector(
@@ -255,15 +223,15 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
                     width: FetchPixels.getPixelHeight(30),
                     height: FetchPixels.getPixelHeight(30)),
                 onTap: () {
-                  orderModel!.listOrderService
+                  orderDetail!.listOrderServiceDto
                       ?.firstWhere((element) =>
                           element.serviceId == serviceModel.serviceId)
-                      .quantity = (orderModel!.listOrderService!
+                      .quantity = (orderDetail!.listOrderServiceDto!
                           .firstWhere((element) =>
                               element.serviceId == serviceModel.serviceId)
                           .quantity! +
                       1);
-                  orderModel!.totalPrice = (int.parse(orderModel!.totalPrice!) +
+                  orderUpdate!.totalPrice = (int.parse(orderUpdate!.totalPrice!) +
                           (int.parse(serviceModel.price!) * 1))
                       .toString();
                   setState(() {});
@@ -271,7 +239,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
               ),
               getHorSpace(FetchPixels.getPixelWidth(10)),
               getCustomFont(
-                orderModel!.listOrderService
+                orderDetail!.listOrderServiceDto
                         ?.firstWhere((element) =>
                             element.serviceId == serviceModel.serviceId)
                         .quantity
@@ -288,28 +256,25 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
                     width: FetchPixels.getPixelHeight(30),
                     height: FetchPixels.getPixelHeight(30)),
                 onTap: () {
-                  if (orderModel!.listOrderService!
+                  if (orderDetail!.listOrderServiceDto!
                           .firstWhere((element) =>
                               element.serviceId == serviceModel.serviceId)
                           .quantity! >
                       1) {
-                    orderModel!.listOrderService
+                    orderDetail!.listOrderServiceDto
                         ?.firstWhere((element) =>
                             element.serviceId == serviceModel.serviceId)
-                        .quantity = (orderModel!.listOrderService!
+                        .quantity = (orderDetail!.listOrderServiceDto!
                             .firstWhere((element) =>
                                 element.serviceId == serviceModel.serviceId)
                             .quantity! -
                         1);
                   } else {
-                    orderModel!.listOrderService?.removeWhere((element) =>
-                        element.serviceId == serviceModel.serviceId);
                     OrderData().deleteOrderCustomer(orderModel!.orderId, serviceModel.orderServiceId);
-                    DataFile.orderDetailObj.listOrderService?.removeWhere((element) =>
-                  element.serviceId == serviceModel.serviceId);
-                    DataFile.orderDetailObj.totalPrice = totalPriceCalculator(DataFile.orderDetailObj).toString();
+                    orderDetail!.listOrderServiceDto?.removeWhere((element) =>
+                    element.serviceId == serviceModel.serviceId);
                   }
-                  orderModel!.totalPrice = (int.parse(orderModel!.totalPrice!) -
+                  orderUpdate!.totalPrice = (int.parse(orderUpdate!.totalPrice!) -
                           (int.parse(serviceModel.price!) * 1))
                       .toString();
                   setState(() {});
@@ -325,7 +290,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
     );
   }
 
-  Container packageImage(BuildContext context, ListOrderService model) {
+  Container packageImage(BuildContext context, ListOrderServiceDto model) {
     return Container(
       height: FetchPixels.getPixelHeight(96),
       width: FetchPixels.getPixelHeight(96),
@@ -356,20 +321,15 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
               borderRadius:
                   BorderRadius.circular(FetchPixels.getPixelHeight(14))),
           getButton(context, blueColor, "Lưu", Colors.white, () async {
-                  CartModel cart = CartModel(
-                    address: orderModel?.address,
-                    totalPrice: totalPriceCalculator(orderModel!).toString(),
-                    implementationDate: orderModel?.implementationDate,
-                    implementationTime: orderModel?.implementationTime,
-                    listService: []
-                  );
-                  for(var e in orderModel!.listOrderService!){
-                     cart.listService!.add(ListService(serviceId: e.serviceId,quantity: e.quantity));
+                  for(var e in orderDetail!.listOrderServiceDto!){
+                     orderUpdate!.listService?.add(ListService(serviceId: e.serviceId,quantity: e.quantity));
                   }
-                  await OrderData().updateOrderCustomer(cart, orderModel!.orderId);
-                  if(mounted) {
-                    Constant.backToFinish(context);
-                  }
+
+                  await OrderData().updateOrderCustomer(orderUpdate!, orderModel!.orderId).then((value) {
+                    DataFile.orderDetailObj = orderDetail!;
+                    DataFile.orderModelObj = value!;
+                    DataFile.orderModelObj.addressM = addressLists.firstWhere((element) => element.addressId.toString() == value.address);
+                    Constant.backToFinish(context);});
 
           }, 18,
               weight: FontWeight.w600,
@@ -407,7 +367,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
 
   Widget newAddressButton(BuildContext context) {
     return getButton(
-        context, const Color(0xFFF2F4F8), "+ Add New Address", blueColor, () {
+        context, const Color(0xFFF2F4F8), "+ Thêm địa chỉ", blueColor, () {
       Navigator.pushNamed(context, Routes.addAddressScreenRoute)
           .then((value) => onGoBack());
     }, 18,
@@ -426,7 +386,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
           if(showMoreAddress){
             btnTitle = "Địa chỉ khác";
           }else{
-            btnTitle = 'Đóng';
+            btnTitle = 'Ẩn địa chỉ';
           }
         setState(() {
           showMoreAddress = !showMoreAddress;
@@ -437,10 +397,10 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
         buttonHeight: FetchPixels.getPixelHeight(30),
         borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(12)));
   }
-  int totalPriceCalculator(OrderModel order){
-    int totalPrice = 0;
-    for(var e in order.listOrderService!){
-      totalPrice = totalPrice + (int.parse(e.price!) * e.quantity!);
+  int? totalPriceCalculator(OrderDetail order){
+    int? totalPrice = 0;
+    for(var e in order.listOrderServiceDto!){
+      totalPrice = (totalPrice! + (int.parse(e.price!) * e.quantity!)) as int?;
     }
     return totalPrice;
   }
@@ -458,9 +418,11 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
             ),
           ),
           builder: (context) {
-            DataFile.orderDetailObj = orderModel!;
+            DataFile.orderDetailObj = orderDetail!;
             return const CategoryDialog();
-          }).then((value) => orderModel = DataFile.orderDetailObj);
+          }).then((value) { orderDetail = DataFile.orderDetailObj; setState(() {
+
+          });});
     }, 16,
         weight: FontWeight.w500,
         buttonWidth: FetchPixels.getPixelWidth(154),
@@ -497,8 +459,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
                 return GestureDetector(
                   onTap: () {
                     setState(() {
-                      orderModel!.address = modelAddress.addressId.toString();
-                      orderModel!.addressM = modelAddress;
+                      orderUpdate!.address = modelAddress.addressId.toString();
                     });
                   },
                   child: Container(
@@ -557,8 +518,8 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
                           ],
                         ),
                         getSvgImage(
-                            orderModel!.addressM?.addressId ==
-                                    modelAddress.addressId
+                            orderUpdate!.address ==
+                                    modelAddress.addressId.toString()
                                 ? "selected.svg"
                                 : "unselected.svg",
                             height: FetchPixels.getPixelHeight(24),
@@ -668,7 +629,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
         return GestureDetector(
           onTap: () {
             setState(() {
-              orderModel!.implementationTime =
+              orderUpdate!.implementationTime =
                   timeLists[index].characters.take(5).toString();
             });
           },
@@ -682,7 +643,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
                       blurRadius: 10,
                       offset: Offset(0.0, 4.0)),
                 ],
-                border: orderModel!.implementationTime ==
+                border: orderUpdate!.implementationTime ==
                         timeLists[index].characters.take(5).toString()
                     ? Border.all(color: blueColor, width: 2)
                     : null,
@@ -691,7 +652,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
             child: getCustomFont(
               timeLists[index],
               16,
-              orderModel!.implementationTime ==
+              orderUpdate!.implementationTime ==
                       timeLists[index].characters.take(5).toString()
                   ? blueColor
                   : Colors.black,
@@ -728,10 +689,10 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
             dayFormat: "EEE",
           ),
           onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-            orderModel!.implementationDate =
+            orderUpdate!.implementationDate =
                 DateTime.parse(args.value.toString()).toString();
           },
-          initialSelectedDate: DateTime.parse(orderModel!.implementationDate!),
+          initialSelectedDate: DateTime.parse(orderUpdate!.implementationDate!),
           selectionShape: DateRangePickerSelectionShape.circle,
           selectableDayPredicate: (date) {
             // if (date.weekday == 6 || date.weekday == 7) {
