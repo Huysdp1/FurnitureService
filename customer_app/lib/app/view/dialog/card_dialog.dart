@@ -41,7 +41,7 @@ class _CardDialogState extends State<CardDialog> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  getCustomFont("Add Card", 20, Colors.black, 1,
+                  getCustomFont("Thêm thẻ mới", 20, Colors.black, 1,
                       fontWeight: FontWeight.w900, ),
                   GestureDetector(
                     onTap: () {
@@ -55,7 +55,7 @@ class _CardDialogState extends State<CardDialog> {
               ),
               getVerSpace(FetchPixels.getPixelHeight(20)),
               getDefaultTextFiledWithLabel(
-                  context, "Name On Card", false, nameController, Colors.grey,
+                  context, "Họ và tên", false, nameController, Colors.grey,
                   function: () {},
                   height: FetchPixels.getPixelHeight(60),
                   isEnable: false,
@@ -65,7 +65,7 @@ class _CardDialogState extends State<CardDialog> {
                   imageHeight: FetchPixels.getPixelHeight(17.66)),
               getVerSpace(FetchPixels.getPixelHeight(20)),
               getCardEditText(
-                  context, "Card Number", cardController, Colors.grey,
+                  context, "Số thẻ", cardController, Colors.grey,
                   function: () {},
                   height: FetchPixels.getPixelHeight(60),
                   isEnable: false,
@@ -80,7 +80,7 @@ class _CardDialogState extends State<CardDialog> {
                     flex: 1,
                     child: getCardDateTextField(
                       context,
-                      "MM/YY",
+                      "Ngày mở thẻ",
                       dateController,
                       Colors.grey,
                       function: () {},
@@ -93,7 +93,7 @@ class _CardDialogState extends State<CardDialog> {
                     flex: 1,
                     child: getCardDateTextField(
                       context,
-                      "CVV",
+                      "Ngày hết hạn",
                       cvvController,
                       Colors.grey,
                       function: () {},
@@ -130,13 +130,13 @@ class _CardDialogState extends State<CardDialog> {
                   ),
                   getHorSpace(FetchPixels.getPixelWidth(10)),
                   Expanded(flex: 1,child: getCustomFont(
-                      "Save Card", 16, Colors.black, 1,
+                      "Lưu", 16, Colors.black, 1,
                       fontWeight: FontWeight.w400),)
                 ],
               ),
               getVerSpace(FetchPixels.getPixelHeight(30)),
               getButton(
-                  context, blueColor, "Add", Colors.white, () {
+                  context, blueColor, "Thêm", Colors.white, () {
                     Constant.backToPrev(context);
                 // Constant.sendToNext(context, Routes.verifyRoute);
               }, 18,

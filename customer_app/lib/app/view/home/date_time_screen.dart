@@ -39,7 +39,7 @@ class _DateTimeScreenState extends State<DateTimeScreen> with SingleTickerProvid
     SharedPreferences.getInstance().then((SharedPreferences sp) {
       selection = sp;
       setState(() {});
-    });
+    }).then((value) { selection!.setString('selectDate', noww.toString());});
   }
 
   @override
@@ -110,7 +110,21 @@ class _DateTimeScreenState extends State<DateTimeScreen> with SingleTickerProvid
           borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(14))),
     );
   }
+  bool checkValidTime(time){
+    if(DateTime.parse(selection!.getString('selectDate')!).isAfter(noww)){
+      print('1');
+      return true;
+    }else{
+      if(int.parse(time.toString()) > noww.hour){
+        print('2');
+        return true;
+      }else{
+        print('3');
+        return false;
+      }
+    }
 
+  }
   Expanded timeList() {
     return Expanded(
       child: GridView.builder(
@@ -118,7 +132,8 @@ class _DateTimeScreenState extends State<DateTimeScreen> with SingleTickerProvid
         physics: const BouncingScrollPhysics(),
         itemCount: timeLists.length,
         itemBuilder: (context, index) {
-          return GestureDetector(
+          return checkValidTime(timeLists[index].characters.take(2))
+           ? GestureDetector(
             onTap: () {
               setState(() {
                 select = index;
@@ -131,8 +146,8 @@ class _DateTimeScreenState extends State<DateTimeScreen> with SingleTickerProvid
                   color: Colors.white,
                   boxShadow: const [
                     BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 10,
+                        color: Colors.black26,
+                        blurRadius: 12,
                         offset: Offset(0.0, 4.0)),
                   ],
                   border: select == index
@@ -147,6 +162,25 @@ class _DateTimeScreenState extends State<DateTimeScreen> with SingleTickerProvid
                 1,
                 fontWeight: FontWeight.w600,
               ),
+            ),
+          ): Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                color: Colors.white12.withOpacity(0.8),
+                boxShadow: const [
+                  BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6,
+                      offset: Offset(0.0, 2.0)),
+                ],
+                border: null,
+                borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(12))),
+            child: getCustomFont(
+              timeLists[index],
+              16,
+              Colors.black,
+              1,
+              fontWeight: FontWeight.w600,
             ),
           );
         },
@@ -179,6 +213,8 @@ class _DateTimeScreenState extends State<DateTimeScreen> with SingleTickerProvid
           ),
           onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
             selection!.setString('selectDate', DateTime.parse(args.value.toString()).toString());
+            setState(() {
+            });
           },
           initialSelectedDate: noww,
           selectionShape: DateRangePickerSelectionShape.circle,

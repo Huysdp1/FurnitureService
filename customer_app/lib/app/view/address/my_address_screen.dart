@@ -24,7 +24,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
   SharedPreferences? selection;
   List<AddressModel> addressList =[];
   Future loadAddressData() async {
-    await AccountData().fetchCustomerAddress();
+    await AccountData().fetchCustomerAddress(context);
   }
 
   Future<List<AddressModel>> getPrefAddressData() async {

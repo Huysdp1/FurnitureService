@@ -42,7 +42,7 @@ class _OnlineCardScreenState extends State<OnlineCardScreen> {
     FetchPixels(context);
     return Column(
       children: [
-        // getVerSpace(FetchPixels.getPixelHeight(30)),
+        getVerSpace(FetchPixels.getPixelHeight(20)),
         cardList(),
         getVerSpace(FetchPixels.getPixelHeight(10)),
         addCardButton(context)

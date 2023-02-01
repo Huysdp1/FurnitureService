@@ -86,13 +86,14 @@ class _TabProfileState extends State<TabProfile> {
   Widget logoutButton(BuildContext context, [AccountModel? data]) {
     return getButton(context, blueColor, "Đăng xuất", Colors.white, () async {
       if(data != null){
-        await AccountData().logoutCustomer(data.accountId!);
+        await AccountData().logoutCustomer();
         if(mounted){
           Constant.sendToNext(context, Routes.loginRoute);
         }
       }else{
         PrefData.setLogIn(false);
         PrefData.setCusId(-1);
+        PrefData.setAccId(-1);
         const FlutterSecureStorage().deleteAll();
         SharedPreferences preferences = await SharedPreferences.getInstance();
         await preferences.clear();

@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> bottomBarList = [
     "home.svg",
     "documnet.svg",
-    "calender.svg",
+    // "calender.svg",
     "profile.svg"
   ];
 
@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> tabList = [
     const TabHome(),
     const TabBookings(),
-    const TabSchedule(),
+    //const TabSchedule(),
     const TabProfile(),
   ];
 

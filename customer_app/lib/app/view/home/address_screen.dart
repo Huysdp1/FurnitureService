@@ -28,7 +28,7 @@ class AddressScreen extends StatefulWidget {
 class _AddressScreenState extends State<AddressScreen> {
   SharedPreferences? selection;
   FutureOr onGoBack() async{
-    await AccountData().fetchCustomerAddress();
+    await AccountData().fetchCustomerAddress(context);
     setState(() {
       getPrefData();
     });
@@ -112,7 +112,7 @@ class _AddressScreenState extends State<AddressScreen> {
 
   Widget newAddressButton(BuildContext context) {
     return getButton(
-        context, const Color(0xFFF2F4F8), "+ Add New Address", blueColor, () {
+        context, const Color(0xFFF2F4F8), "+ Thêm địa chỉ mới", blueColor, () {
             //Constant.sendToNext(context, Routes.addAddressScreenRoute);
             Navigator.pushNamed(context, Routes.addAddressScreenRoute).then((value) => onGoBack());
     }, 18,
@@ -138,7 +138,7 @@ class _AddressScreenState extends State<AddressScreen> {
               borderRadius:
                   BorderRadius.circular(FetchPixels.getPixelHeight(12))),
           child: FutureBuilder<List<AddressModel>>(
-            future: AccountData().fetchCustomerAddress(),
+            future: AccountData().fetchCustomerAddress(context),
             builder: (context,snapshot) {
               if(!snapshot.hasData){
                 return const Center(child: CircularProgressIndicator(),);

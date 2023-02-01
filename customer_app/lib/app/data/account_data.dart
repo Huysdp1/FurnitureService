@@ -5,14 +5,17 @@ import 'package:customer_app/app/models/model_account.dart';
 import 'package:customer_app/app/models/model_address.dart';
 import 'package:customer_app/app/models/model_auth.dart';
 import 'package:customer_app/base/pref_data.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../view/dialog/sesstion_out_dialog.dart';
+
 class AccountData{
 
   //Get list address of customer from api
-  Future<List<AddressModel>> fetchCustomerAddress(
+  Future<List<AddressModel>> fetchCustomerAddress(context
       ) async{
     int cusId = await PrefData.getCusId();
      String? token = await const FlutterSecureStorage().read(key: 'accessToken');
@@ -29,7 +32,8 @@ class AccountData{
       final parsed = json.decode(response.body).cast<Map<String, dynamic>>();
       return  AddressModel.fromList(parsed);
     }else{
-      throw Exception('Lấy dữ liệu thất bại');
+      //throw Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const TimeOutDialog(),));
+      throw Exception('err');
     }
   }
 
@@ -134,8 +138,9 @@ class AccountData{
     }
   }
 
-  Future<bool> logoutCustomer(int accountId) async{
+  Future<bool> logoutCustomer() async{
     String? token = await const FlutterSecureStorage().read(key: 'accessToken');
+    int accountId = await PrefData.getAccId();
     final response = await http.put(
         Uri.parse('${PrefData.apiUrl}/api/account/logout/accountId/$accountId'),
         headers: <String, String>{

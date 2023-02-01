@@ -335,14 +335,13 @@ class _DetailScreenState extends State<DetailScreen> {
       children: [
         getCustomFont("Dịch vụ ${categoryLists.firstWhere((element) => element.categoryId==cateId).categoryName!.toLowerCase()}", 24, Colors.black, 1,
             fontWeight: FontWeight.w900),
-        getVerSpace(FetchPixels.getPixelHeight(17)),
-        getVerSpace(FetchPixels.getPixelHeight(24)),
-        getMultilineCustomFont(
-            "Đây là mô tả về dịch vụ vệ sinh",
-            16,
-            Colors.black,
-            fontWeight: FontWeight.w400,
-            txtHeight: 1.3),
+        //getVerSpace(FetchPixels.getPixelHeight(17)),
+        // getMultilineCustomFont(
+        //     categoryLists.firstWhere((element) => element.categoryId==cateId).,
+        //     16,
+        //     Colors.black,
+        //     fontWeight: FontWeight.w400,
+        //     txtHeight: 1.3),
       ],
     );
   }

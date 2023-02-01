@@ -46,7 +46,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
   }
 
   FutureOr onGoBack() async {
-    await AccountData().fetchCustomerAddress();
+    await AccountData().fetchCustomerAddress(context);
     setState(() {
       getPrefAddressData();
     });
@@ -297,7 +297,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(FetchPixels.getPixelHeight(10)),
           color: listColor,
-          image: getDecorationAssetImage(context, 'shaving.png' ?? "")),
+          image: getDecorationAssetImage(context, 'salonmen.png' ?? "")),
     );
   }
 
@@ -327,8 +327,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
 
                   await OrderData().updateOrderCustomer(orderUpdate!, orderModel!.orderId).then((value) {
                     DataFile.orderDetailObj = orderDetail!;
-                    DataFile.orderModelObj = value!;
-                    DataFile.orderModelObj.addressM = addressLists.firstWhere((element) => element.addressId.toString() == value.address);
+                    DataFile.orderModelObj = value;
                     Constant.backToFinish(context);});
 
           }, 18,
@@ -575,8 +574,7 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
                           children: [
                             Align(
                               alignment: Alignment.bottomLeft,
-                              child: getCustomFont(
-                                  orderModel!.addressM!.customerNameOrder ?? '',
+                              child: getCustomFont('Mã đơn: ${orderModel!.orderId} ',
                                   16,
                                   Colors.black,
                                   1,
@@ -585,23 +583,12 @@ class _EditBookingScreenState extends State<EditBookingScreen> {
                             getVerSpace(FetchPixels.getPixelHeight(10)),
                             Align(
                               alignment: Alignment.topLeft,
-                              child: getCustomFont(
-                                  orderModel!.addressM!.customerPhoneOrder ?? '',
-                                  16,
-                                  Colors.black,
-                                  1,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            Align(
-                              alignment: Alignment.topLeft,
                               child: SizedBox(
                                   width: FetchPixels.getPixelWidth(280),
                                   child: getMultilineCustomFont(
-                                      '${orderModel!.addressM!.homeNumber},  ${orderModel!.addressM!.street}, ${orderModel!.addressM!.ward}, ${orderModel!.addressM!.district}, ${orderModel!.addressM!.city}',
-                                      16,
-                                      Colors.black,
-                                      fontWeight: FontWeight.w400,
-                                      txtHeight: 1.4)),
+                                      orderModel?.address ?? "", 14, textColor, overflow: TextOverflow.ellipsis,
+                                      fontWeight: FontWeight.w400),
+                            ),
                             ),
                           ],
                         ),

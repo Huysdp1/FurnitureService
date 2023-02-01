@@ -83,7 +83,7 @@ class _IntroScreenState extends State<IntroScreen> {
                 SizedBox(
                   width: FetchPixels.getPixelHeight(263),
                   child: getMultilineCustomFont(
-                      introModel.title ?? "", 34, Colors.black,
+                      introModel.title ?? "", 28, Colors.black,
                       fontWeight: FontWeight.w900,
                       textAlign: TextAlign.center,
                       txtHeight:1.3),
@@ -96,6 +96,7 @@ class _IntroScreenState extends State<IntroScreen> {
                       introModel.description ?? "", 16, Colors.black,
                       fontWeight: FontWeight.w400,
                       textAlign: TextAlign.center,
+                      maxLines: 3,
                       txtHeight:1.3),
                 ),
                 getVerSpace(FetchPixels.getPixelHeight(51)),
@@ -110,7 +111,7 @@ class _IntroScreenState extends State<IntroScreen> {
                         spacing: EdgeInsets.symmetric(
                             horizontal: FetchPixels.getPixelWidth(5)))),
                 getVerSpace(FetchPixels.getPixelHeight(29)),
-                getButton(context, blueColor, "Next", Colors.white, () {
+                getButton(context, blueColor, "Tiếp", Colors.white, () {
                   if (index == DataFile.introList.length - 1) {
                     Constant.sendToNext(context, Routes.loginRoute);
                   } else {
@@ -133,7 +134,7 @@ class _IntroScreenState extends State<IntroScreen> {
                           Constant.sendToNext(context, Routes.loginRoute);
                         },
                         child: getCustomFont(
-                          "Skip",
+                          "Bỏ qua",
                           19,
                           blueColor,
                           1,

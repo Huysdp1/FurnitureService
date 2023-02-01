@@ -5,8 +5,8 @@ class OrderDetail {
   String? totalPrice;
   String? createAt;
   dynamic updateAt;
-  dynamic description;
-  List<dynamic>? listEmployeeDto;
+  String? description;
+  List<ListEmployeeDto>? listEmployeeDto;
   List<ListOrderServiceDto>? listOrderServiceDto;
 
   OrderDetail({this.statusName, this.address, this.totalPrice, this.createAt, this.updateAt, this.description, this.listEmployeeDto, this.listOrderServiceDto});
@@ -25,9 +25,11 @@ class OrderDetail {
       createAt = json["createAt"];
     }
     updateAt = json["updateAt"];
-    description = json["description"];
+    if(json["description"] is String) {
+      description = json["description"];
+    }
     if(json["listEmployeeDto"] is List) {
-      listEmployeeDto = json["listEmployeeDto"] ?? [];
+      listEmployeeDto = json["listEmployeeDto"] == null ? null : (json["listEmployeeDto"] as List).map((e) => ListEmployeeDto.fromJson(e)).toList();
     }
     if(json["listOrderServiceDto"] is List) {
       listOrderServiceDto = json["listOrderServiceDto"] == null ? null : (json["listOrderServiceDto"] as List).map((e) => ListOrderServiceDto.fromJson(e)).toList();
@@ -35,20 +37,20 @@ class OrderDetail {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data["statusName"] = statusName;
-    data["address"] = address;
-    data["totalPrice"] = totalPrice;
-    data["createAt"] = createAt;
-    data["updateAt"] = updateAt;
-    data["description"] = description;
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["statusName"] = statusName;
+    _data["address"] = address;
+    _data["totalPrice"] = totalPrice;
+    _data["createAt"] = createAt;
+    _data["updateAt"] = updateAt;
+    _data["description"] = description;
     if(listEmployeeDto != null) {
-      data["listEmployeeDto"] = listEmployeeDto;
+      _data["listEmployeeDto"] = listEmployeeDto?.map((e) => e.toJson()).toList();
     }
     if(listOrderServiceDto != null) {
-      data["listOrderServiceDto"] = listOrderServiceDto?.map((e) => e.toJson()).toList();
+      _data["listOrderServiceDto"] = listOrderServiceDto?.map((e) => e.toJson()).toList();
     }
-    return data;
+    return _data;
   }
 }
 
@@ -58,8 +60,8 @@ class ListOrderServiceDto {
   int? serviceId;
   String? serviceName;
   String? price;
-  dynamic categoryName;
-  dynamic quantity;
+  String? categoryName;
+  int? quantity;
   dynamic estimateTimeFinish;
 
   ListOrderServiceDto({this.orderServiceId, this.orderId, this.serviceId, this.serviceName, this.price, this.categoryName, this.quantity, this.estimateTimeFinish});
@@ -80,21 +82,64 @@ class ListOrderServiceDto {
     if(json["price"] is String) {
       price = json["price"];
     }
-    categoryName = json["categoryName"];
-    quantity = json["quantity"];
+    if(json["categoryName"] is String) {
+      categoryName = json["categoryName"];
+    }
+    if(json["quantity"] is int) {
+      quantity = json["quantity"];
+    }
     estimateTimeFinish = json["estimateTimeFinish"];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data["orderServiceId"] = orderServiceId;
-    data["orderId"] = orderId;
-    data["serviceId"] = serviceId;
-    data["serviceName"] = serviceName;
-    data["price"] = price;
-    data["categoryName"] = categoryName;
-    data["quantity"] = quantity;
-    data["estimateTimeFinish"] = estimateTimeFinish;
-    return data;
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["orderServiceId"] = orderServiceId;
+    _data["orderId"] = orderId;
+    _data["serviceId"] = serviceId;
+    _data["serviceName"] = serviceName;
+    _data["price"] = price;
+    _data["categoryName"] = categoryName;
+    _data["quantity"] = quantity;
+    _data["estimateTimeFinish"] = estimateTimeFinish;
+    return _data;
+  }
+}
+
+class ListEmployeeDto {
+  dynamic imageUrl;
+  int? accountId;
+  String? employeeName;
+  dynamic email;
+  String? employeePhoneNumber;
+  bool? status;
+
+  ListEmployeeDto({this.imageUrl, this.accountId, this.employeeName, this.email, this.employeePhoneNumber, this.status});
+
+  ListEmployeeDto.fromJson(Map<String, dynamic> json) {
+    imageUrl = json["imageUrl"];
+    if(json["accountId"] is int) {
+      accountId = json["accountId"];
+    }
+    if(json["employeeName"] is String) {
+      employeeName = json["employeeName"];
+    }
+    email = json["email"];
+    if(json["employeePhoneNumber"] is String) {
+      employeePhoneNumber = json["employeePhoneNumber"];
+    }
+    if(json["status"] is bool) {
+      status = json["status"];
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["imageUrl"] = imageUrl;
+    _data["accountId"] = accountId;
+    _data["employeeName"] = employeeName;
+    _data["email"] = email;
+    _data["employeePhoneNumber"] = employeePhoneNumber;
+    _data["status"] = status;
+    return _data;
   }
 }

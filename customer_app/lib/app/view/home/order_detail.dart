@@ -39,7 +39,7 @@ class _OrderDetailState extends State<OrderDetail> {
     }
     CartModel fromCart = CartModel(
       customerId: 2,
-      address: DataFile.selectionAddress.addressId.toString(),
+      address: '${DataFile.selectionAddress.homeNumber}, ${DataFile.selectionAddress.street}, ${DataFile.selectionAddress.ward}, ${DataFile.selectionAddress.district}, ${DataFile.selectionAddress.city}',
       createAt: DateTime.now().toString(),
       implementationDate: date,
       implementationTime: time,

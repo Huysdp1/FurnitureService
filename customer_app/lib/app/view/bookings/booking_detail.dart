@@ -23,15 +23,18 @@ class _BookingDetailState extends State<BookingDetail> {
   OrderDetail? _orderDetail;
   OrderModel? orderModel;
   SharedPreferences? selection;
-  Future<OrderDetail> getOrderDetailData()async{
+  Future<OrderDetail> getOrderDetailData() async {
     _orderDetail = await OrderData().fetchOrderDetail(orderModel!.orderId);
     return _orderDetail!;
   }
+
   @override
   void initState() {
+    isCard = false;
     orderModel = DataFile.orderModelObj;
     SharedPreferences.getInstance().then((SharedPreferences sp) {
       selection = sp;
+      getCartData();
       setState(() {});
     });
     super.initState();
@@ -45,7 +48,7 @@ class _BookingDetailState extends State<BookingDetail> {
     cardImage = selection?.getString("image") ?? "";
     cardName = selection?.getString("cardname") ?? "";
     cardNumber = selection?.getString("cardnumber") ?? "";
-    if (cardName!.isNotEmpty) {
+    if (cardName != "") {
       isCard = true;
       setState(() {});
     }
@@ -62,23 +65,22 @@ class _BookingDetailState extends State<BookingDetail> {
           backgroundColor: backGroundColor,
           body: SafeArea(
             child: FutureBuilder<OrderDetail>(
-              future: getOrderDetailData(),
-              builder: (context,snap) {
-                if(!snap.hasData){
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                future: getOrderDetailData(),
+                builder: (context, snap) {
+                  if (!snap.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  return Column(
+                    children: [
+                      getVerSpace(FetchPixels.getPixelHeight(20)),
+                      buildToolbar(context),
+                      getVerSpace(FetchPixels.getPixelHeight(30)),
+                      buildBottomExpand(context, edgeInsets, defHorSpace)
+                    ],
                   );
-                }
-                return Column(
-                  children: [
-                    getVerSpace(FetchPixels.getPixelHeight(20)),
-                    buildToolbar(context),
-                    getVerSpace(FetchPixels.getPixelHeight(30)),
-                    buildBottomExpand(context, edgeInsets, defHorSpace)
-                  ],
-                );
-              }
-            ),
+                }),
           ),
         ),
         onWillPop: () async {
@@ -139,11 +141,11 @@ class _BookingDetailState extends State<BookingDetail> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  getCustomFont("Know about cleaning", 16, Colors.black, 1,
+                  getCustomFont("Thiếu dịch vụ", 16, Colors.black, 1,
                       fontWeight: FontWeight.w900),
                   getVerSpace(FetchPixels.getPixelHeight(4)),
                   getCustomFont(
-                    "Cleaning Service Required",
+                    "Yêu cầu thêm dịch vụ?",
                     16,
                     Colors.black,
                     1,
@@ -166,11 +168,11 @@ class _BookingDetailState extends State<BookingDetail> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           getVerSpace(FetchPixels.getPixelHeight(30)),
-          getCustomFont("Need Help?", 20, Colors.black, 1,
+          getCustomFont("Cần hỗ trợ?", 20, Colors.black, 1,
               fontWeight: FontWeight.w900),
           getVerSpace(FetchPixels.getPixelHeight(10)),
           getButtonWithIcon(
-              context, Colors.white, "Professional not assigned", Colors.black,
+              context, Colors.white, "Chưa có nhân viên thực hiện?", Colors.black,
               () {
             // Constant.sendToNext(context, Routes.profileRoute);
           }, 16,
@@ -188,7 +190,7 @@ class _BookingDetailState extends State<BookingDetail> {
               suffixImage: "arrow_right.svg"),
           getVerSpace(FetchPixels.getPixelHeight(20)),
           getButtonWithIcon(context, Colors.white,
-              "I’m unhappy with my booking experience", Colors.black, () {
+              "Không hài lòng, cho chúng tôi biết", Colors.black, () {
             // Constant.sendToNext(context, Routes.profileRoute);
           }, 16,
               weight: FontWeight.w400,
@@ -205,7 +207,7 @@ class _BookingDetailState extends State<BookingDetail> {
               suffixImage: "arrow_right.svg"),
           getVerSpace(FetchPixels.getPixelHeight(20)),
           getButtonWithIcon(context, Colors.white,
-              "Need help with other issues", Colors.black, () {
+              "Có vấn đề cần hỗ trợ?", Colors.black, () {
             // Constant.sendToNext(context, Routes.profileRoute);
           }, 16,
               weight: FontWeight.w400,
@@ -227,7 +229,6 @@ class _BookingDetailState extends State<BookingDetail> {
   }
 
   Widget buildTopWidget(EdgeInsets edgeInsets, BuildContext context) {
-    getCartData();
     return getPaddingWidget(
       edgeInsets,
       Column(
@@ -248,13 +249,13 @@ class _BookingDetailState extends State<BookingDetail> {
             Colors.white,
             "Chọn hình thức thanh toán",
             blueColor,
-            () async {
+            () {
               //Constant.sendToNext(context, Routes.paymentRoute);
               Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const PaymentScreen(),
-                  )).then((value) => getCartData());
+                  )).whenComplete(() => getCartData());
             },
             18,
             weight: FontWeight.w600,
@@ -269,60 +270,60 @@ class _BookingDetailState extends State<BookingDetail> {
             sufixIcon: true,
             suffixImage: "arrow_right.svg",
           ),
-          getVerSpace(FetchPixels.getPixelHeight(30)),
-          getCustomFont("About Your Service", 20, Colors.black, 1,
-              fontWeight: FontWeight.w900),
-          getVerSpace(FetchPixels.getPixelHeight(10)),
-          getButtonWithIcon(
-              context, Colors.white, "Fixstore Care", Colors.black, () {}, 16,
-              weight: FontWeight.w900,
-              buttonHeight: FetchPixels.getPixelHeight(72),
-              borderRadius:
-                  BorderRadius.circular(FetchPixels.getPixelHeight(12)),
-              boxShadow: [
-                const BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 10,
-                    offset: Offset(0.0, 4.0)),
-              ],
-              prefixIcon: true,
-              prefixImage: "headset.svg",
-              sufixIcon: true,
-              suffixImage: "arrow_right.svg"),
-          getVerSpace(FetchPixels.getPixelHeight(20)),
-          getButtonWithIcon(
-              context, Colors.white, "UC Warrenty", Colors.black, () {}, 16,
-              weight: FontWeight.w900,
-              buttonHeight: FetchPixels.getPixelHeight(72),
-              borderRadius:
-                  BorderRadius.circular(FetchPixels.getPixelHeight(12)),
-              boxShadow: [
-                const BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 10,
-                    offset: Offset(0.0, 4.0)),
-              ],
-              prefixIcon: true,
-              prefixImage: "safe.svg",
-              sufixIcon: true,
-              suffixImage: "arrow_right.svg"),
-          getVerSpace(FetchPixels.getPixelHeight(20)),
-          getButtonWithIcon(context, Colors.white, "Standard Rate Card",
-              Colors.black, () {}, 16,
-              weight: FontWeight.w900,
-              buttonHeight: FetchPixels.getPixelHeight(72),
-              borderRadius:
-                  BorderRadius.circular(FetchPixels.getPixelHeight(12)),
-              boxShadow: [
-                const BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 10,
-                    offset: Offset(0.0, 4.0)),
-              ],
-              prefixIcon: true,
-              prefixImage: "starts.svg",
-              sufixIcon: true,
-              suffixImage: "arrow_right.svg"),
+          //getVerSpace(FetchPixels.getPixelHeight(30)),
+          // getCustomFont("About Your Service", 20, Colors.black, 1,
+          //     fontWeight: FontWeight.w900),
+          // getVerSpace(FetchPixels.getPixelHeight(10)),
+          // getButtonWithIcon(
+          //     context, Colors.white, "Fixstore Care", Colors.black, () {}, 16,
+          //     weight: FontWeight.w900,
+          //     buttonHeight: FetchPixels.getPixelHeight(72),
+          //     borderRadius:
+          //         BorderRadius.circular(FetchPixels.getPixelHeight(12)),
+          //     boxShadow: [
+          //       const BoxShadow(
+          //           color: Colors.black12,
+          //           blurRadius: 10,
+          //           offset: Offset(0.0, 4.0)),
+          //     ],
+          //     prefixIcon: true,
+          //     prefixImage: "headset.svg",
+          //     sufixIcon: true,
+          //     suffixImage: "arrow_right.svg"),
+          // getVerSpace(FetchPixels.getPixelHeight(20)),
+          // getButtonWithIcon(
+          //     context, Colors.white, "UC Warrenty", Colors.black, () {}, 16,
+          //     weight: FontWeight.w900,
+          //     buttonHeight: FetchPixels.getPixelHeight(72),
+          //     borderRadius:
+          //         BorderRadius.circular(FetchPixels.getPixelHeight(12)),
+          //     boxShadow: [
+          //       const BoxShadow(
+          //           color: Colors.black12,
+          //           blurRadius: 10,
+          //           offset: Offset(0.0, 4.0)),
+          //     ],
+          //     prefixIcon: true,
+          //     prefixImage: "safe.svg",
+          //     sufixIcon: true,
+          //     suffixImage: "arrow_right.svg"),
+          // getVerSpace(FetchPixels.getPixelHeight(20)),
+          // getButtonWithIcon(context, Colors.white, "Standard Rate Card",
+          //     Colors.black, () {}, 16,
+          //     weight: FontWeight.w900,
+          //     buttonHeight: FetchPixels.getPixelHeight(72),
+          //     borderRadius:
+          //         BorderRadius.circular(FetchPixels.getPixelHeight(12)),
+          //     boxShadow: [
+          //       const BoxShadow(
+          //           color: Colors.black12,
+          //           blurRadius: 10,
+          //           offset: Offset(0.0, 4.0)),
+          //     ],
+          //     prefixIcon: true,
+          //     prefixImage: "starts.svg",
+          //     sufixIcon: true,
+          //     suffixImage: "arrow_right.svg"),
         ],
       ),
     );
@@ -384,17 +385,10 @@ class _BookingDetailState extends State<BookingDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: orderModel!.addressM?.addressId != null
-                      ? getMultilineCustomFont(
-                          "Địa chỉ:  ${orderModel!.addressM?.homeNumber},${orderModel!.addressM?.street},${orderModel!.addressM?.ward},${orderModel!.addressM?.district},${orderModel!.addressM?.city}",
-                          16,
-                          textColor,
-                          overflow: TextOverflow.ellipsis,
-                          fontWeight: FontWeight.w400)
-                      : getMultilineCustomFont(
-                          orderModel!.address ?? "", 16, textColor,
-                          overflow: TextOverflow.ellipsis,
-                          fontWeight: FontWeight.w400),
+                  child: getMultilineCustomFont(
+                      orderModel!.address ?? "", 16, textColor,
+                      overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.w400),
                 ),
               ],
             ),
@@ -509,58 +503,92 @@ class _BookingDetailState extends State<BookingDetail> {
             ),
             getVerSpace(FetchPixels.getPixelHeight(10)),
             getDivider(dividerColor, 0, 1),
-            getVerSpace(FetchPixels.getPixelHeight(20)),
+            getVerSpace(FetchPixels.getPixelHeight(10)),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      height: FetchPixels.getPixelHeight(42),
-                      width: FetchPixels.getPixelHeight(42),
-                      decoration: BoxDecoration(
-                          image: getDecorationAssetImage(
-                              context, "booking_owner.png")),
-                    ),
-                    getHorSpace(FetchPixels.getPixelWidth(9)),
-                    orderModel!.addressM?.addressId != null
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                Container(
+                  height: FetchPixels.getPixelHeight(42),
+                  width: FetchPixels.getPixelHeight(42),
+                  decoration: BoxDecoration(
+                      image: getDecorationAssetImage(
+                          context, "booking_owner.png")),
+                ),
+                getHorSpace(FetchPixels.getPixelWidth(12)),
+                getCustomFont(
+                  'Nhân viên thực hiện:',
+                  18,
+                  Colors.black,
+                  1,
+                  fontWeight: FontWeight.w500,
+                ),
+              ],
+            ),
+            getVerSpace(FetchPixels.getPixelHeight(6)),
+            _orderDetail!.listEmployeeDto != null
+                ? ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    primary: true,
+                    physics: const BouncingScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    itemCount: _orderDetail!.listEmployeeDto!.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              getCustomFont(
-                                'Liên hệ: ${orderModel!.addressM!.customerNameOrder}',
-                                16,
-                                Colors.black,
-                                1,
-                                fontWeight: FontWeight.w400,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  getHorSpace(FetchPixels.getPixelWidth(48)),
+                                  getCustomFont(
+                                    '${_orderDetail!.listEmployeeDto![index].employeeName}',
+                                    18,
+                                    Colors.black,
+                                    1,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ],
                               ),
                               getVerSpace(FetchPixels.getPixelHeight(6)),
+                              Container(
+                                height: FetchPixels.getPixelHeight(36),
+                                width: FetchPixels.getPixelHeight(36),
+                                decoration: BoxDecoration(
+                                    image: getDecorationAssetImage(context, "call_bg.png")),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              getHorSpace(FetchPixels.getPixelWidth(48)),
                               getCustomFont(
-                                'Sđt: ${orderModel!.addressM!.customerPhoneOrder}',
+                                '${_orderDetail!.listEmployeeDto![index].employeePhoneNumber}',
                                 16,
                                 Colors.black,
                                 1,
                                 fontWeight: FontWeight.w400,
                               ),
                             ],
-                          )
-                        : getCustomFont(
-                            "",
-                            14,
-                            textColor,
-                            1,
-                            fontWeight: FontWeight.w400,
                           ),
-                  ],
-                ),
-                Container(
-                  height: FetchPixels.getPixelHeight(42),
-                  width: FetchPixels.getPixelHeight(42),
-                  decoration: BoxDecoration(
-                      image: getDecorationAssetImage(context, "call_bg.png")),
-                ),
-              ],
-            )
+                          Padding(
+                            padding: const EdgeInsets.only(left: 48.0),
+                            child: getDivider(dividerColor, 0, 1),
+                          ),
+                        ],
+                      );
+                    },
+                  )
+                : getCustomFont(
+                    "Chờ quản lí tiếp nhận",
+                    14,
+                    textColor,
+                    1,
+                    fontWeight: FontWeight.w400,
+                  ),
           ],
         ),
       ),

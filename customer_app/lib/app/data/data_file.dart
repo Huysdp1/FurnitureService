@@ -20,20 +20,20 @@ class DataFile {
   static List<ModelIntro> introList = [
     ModelIntro(
         1,
-        "Best Services For Your Home ",
-        "Homecare is health care provided by a professional caregiver in the individual home.",
+        "Dịch vụ tốt nhất cho căn nhà của bạn ",
+        "FMS cung cấp cho bạn những dịch vụ tốt nhất đảm bảo cho những món nội thất của bạn luôn trong tình trạng tốt nhất.",
         "intro1.png",
         intro1Color),
     ModelIntro(
         2,
-        "Care Your Home With Us",
-        "Some nurses travel to multiple homes per day and provide short visits to multiple patients.",
+        "Luôn Luôn như mới",
+        "Với đội ngũ nhân viên chuyên nghiệp sẵn sàng biến mọi món đồ nội thất của bạn trở thành như lúc mới mua.",
         "intro2.png",
         intro2Color),
     ModelIntro(
         3,
-        "Using Smart Gadgets ",
-        "Homecare is also known as domiciliary care, social care or in-home care.",
+        "Giá cả rõ ràng ",
+        "Chúng tôi đề cao sự minh bạch đảm bảo cho khách hàng giá cả tốt nhất và rõ ràng trước khi thanh toán.",
         "intro3.png",
         intro3Color),
   ];

@@ -104,23 +104,24 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         }),
         getVerSpace(FetchPixels.getPixelHeight(19)),
-        Align(
-            alignment: Alignment.topRight,
-            child: GestureDetector(
-              onTap: () {
-                Constant.sendToNext(context, Routes.forgotRoute);
-              },
-              child: getCustomFont(
-                "Quên mật khẩu?",
-                16,
-                blueColor,
-                1,
-                fontWeight: FontWeight.w900,
-              ),
-            )),
+        // Align(
+        //     alignment: Alignment.topRight,
+        //     child: GestureDetector(
+        //       onTap: () {
+        //         Constant.sendToNext(context, Routes.forgotRoute);
+        //       },
+        //       child: getCustomFont(
+        //         "Quên mật khẩu?",
+        //         16,
+        //         blueColor,
+        //         1,
+        //         fontWeight: FontWeight.w900,
+        //       ),
+        //     )),
         getVerSpace(FetchPixels.getPixelHeight(49)),
         getButton(context, blueColor, "Đăng nhập", Colors.white, () {
           FocusScope.of(context).requestFocus(FocusNode());
+          if(emailController.text != '' && passwordController.text != ''){
           setState(() {
             isLoading = true;
           });
@@ -141,7 +142,14 @@ class _LoginScreenState extends State<LoginScreen> {
                  },);
                }
               }
-           );
+           );}else{
+            showDialog(
+              barrierDismissible: true,
+              context: context,
+              builder: (context) {
+                return const FailureDialog(title: 'Đăng nhập thất bại', description: 'Số điện thoại hoặc mật khẩu trống');
+              },);
+          }
         }, 18,
             weight: FontWeight.w600,
             buttonHeight: FetchPixels.getPixelHeight(60),

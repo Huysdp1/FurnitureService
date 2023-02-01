@@ -230,7 +230,6 @@ ListView bookingListWidget(List<OrderModel> orderList, List<AddressModel> addres
     itemCount: orderList.length,
     itemBuilder: (context, index) {
       OrderModel orderModel = orderList[index];
-      orderModel.addressM = addressList.firstWhere((element) => element.addressId == int.parse(orderModel.address!));
       return buildOrderListItem(orderModel, context, index);
     },
   );
@@ -382,13 +381,9 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                         flex: 1,
                         child: getHorSpace(0),
                       ),
-                      getCustomFont(
-                          modelBooking.addressM?.customerNameOrder ?? modelBooking.orderId.toString(), 16, Colors.black, 1,
+                      getCustomFont('Đơn hàng: ${modelBooking.orderId}', 16, Colors.black, 1,
                           fontWeight: FontWeight.w700),
                       getVerSpace(FetchPixels.getPixelHeight(12)),
-                      modelBooking.addressM?.addressId != null ? getMultilineCustomFont(
-                          "${modelBooking.addressM?.homeNumber},${modelBooking.addressM?.street},${modelBooking.addressM?.ward},${modelBooking.addressM?.district},${modelBooking.addressM?.city}", 14, textColor, overflow: TextOverflow.ellipsis,
-                          fontWeight: FontWeight.w400):
                       getMultilineCustomFont(
                           modelBooking.address ?? "", 14, textColor, overflow: TextOverflow.ellipsis,
                           fontWeight: FontWeight.w400),

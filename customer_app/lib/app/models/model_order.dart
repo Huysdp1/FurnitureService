@@ -10,10 +10,9 @@ class OrderModel {
   String? implementationDate;
   String? implementationTime;
   String? createAt;
-  AddressModel? addressM;
   //List<ListOrderService>? listOrderService;
 
-  OrderModel({this.orderId, this.customerId, this.workingStatusId, this.address, this.totalPrice, this.implementationDate, this.implementationTime, this.createAt, this.addressM});
+  OrderModel({this.orderId, this.customerId, this.workingStatusId, this.address, this.totalPrice, this.implementationDate, this.implementationTime, this.createAt});
 
   OrderModel.fromJson(Map<String, dynamic> json) {
     if(json["orderId"] is int) {

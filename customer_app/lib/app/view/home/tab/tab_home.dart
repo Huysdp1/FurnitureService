@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:customer_app/app/data/service_data.dart';
 import 'package:customer_app/app/models/model_address.dart';
+import 'package:customer_app/app/view/dialog/sesstion_out_dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../base/color_data.dart';
@@ -33,14 +35,13 @@ class _TabHomeState extends State<TabHome> {
   }
 
   Future loadAddressData() async {
-    await AccountData().fetchCustomerAddress();
+    await AccountData().fetchCustomerAddress(context);
   }
 
   final _controller = PageController();
   Future<AddressModel> getPrefAddressData() async {
     loadAddressData().then((value) async {
       String getModel = await PrefData.getAddressModel();
-
       if (getModel.isNotEmpty) {
         addressModel = AddressModel.fromList(
                 json.decode(getModel).cast<Map<String, dynamic>>())
@@ -65,6 +66,7 @@ class _TabHomeState extends State<TabHome> {
         }
       }
     });
+    //await Future.delayed(const Duration(seconds: 5));
     return categoryList;
   }
   @override
@@ -149,7 +151,7 @@ class _TabHomeState extends State<TabHome> {
                   }),
               GestureDetector(
                 onTap: () {
-                  Constant.sendToNext(context, Routes.notificationRoutes);
+                  //Constant.sendToNext(context, Routes.notificationRoutes);
                 },
                 child: getSvgImage(
                   "notification.svg",
@@ -158,13 +160,13 @@ class _TabHomeState extends State<TabHome> {
             ],
           ),
         ),
-        getVerSpace(FetchPixels.getPixelHeight(32)),
-        getPaddingWidget(
-            EdgeInsets.symmetric(horizontal: FetchPixels.getPixelWidth(20)),
-            getSearchWidget(context, searchController, () {
-              Constant.sendToNext(context, Routes.searchRoute);
-            }, (value) {})),
-        getVerSpace(FetchPixels.getPixelHeight(20)),
+        getVerSpace(FetchPixels.getPixelHeight(22)),
+        // getPaddingWidget(
+        //     EdgeInsets.symmetric(horizontal: FetchPixels.getPixelWidth(20)),
+        //     getSearchWidget(context, searchController, () {
+        //       Constant.sendToNext(context, Routes.searchRoute);
+        //     }, (value) {})),
+        // getVerSpace(FetchPixels.getPixelHeight(20)),
         Expanded(
           flex: 1,
           child: ListView(
@@ -293,8 +295,8 @@ class _TabHomeState extends State<TabHome> {
                         popularServiceLists[index];
                     return GestureDetector(
                       onTap: () {
-                        PrefData.setDefIndex(index);
-                        Constant.sendToNext(context, Routes.detailRoute);
+                        //PrefData.setDefIndex(index);
+                        //Constant.sendToNext(context, Routes.detailRoute);
                       },
                       child: Container(
                         width: FetchPixels.getPixelWidth(177),
@@ -412,19 +414,20 @@ class _TabHomeState extends State<TabHome> {
                               SizedBox(
                                   width: FetchPixels.getPixelHeight(130),
                                   child: getMultilineCustomFont(
-                                      "Wall Painting Service", 20, Colors.black,
+                                      "Dịch vụ sơn tường", 20, Colors.black,
                                       fontWeight: FontWeight.w900,
+                                      textAlign: TextAlign.left,
                                       txtHeight: 1.3)),
                               // getVerSpace(FetchPixels.getPixelHeight(6)),
                               getCustomFont(
-                                "Make your wall stylish",
+                                "Thợ sơn tốt nhất",
                                 14,
                                 Colors.black,
                                 1,
                                 fontWeight: FontWeight.w400,
                               ),
                               // getVerSpace(FetchPixels.getPixelHeight(16)),
-                              getButton(context, blueColor, "Book Now",
+                              getButton(context, blueColor, "Đặt ngay",
                                   Colors.white, () {}, 14,
                                   weight: FontWeight.w600,
                                   buttonWidth: FetchPixels.getPixelWidth(108),
