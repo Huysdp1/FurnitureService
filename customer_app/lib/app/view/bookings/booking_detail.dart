@@ -361,7 +361,7 @@ class _BookingDetailState extends State<BookingDetail> {
                   1,
                   fontWeight: FontWeight.w400,
                 ),
-                GestureDetector(
+                orderModel!.workingStatusId! < 3 ? GestureDetector(
                   onTap: () async {
                     Navigator.push(
                         context,
@@ -377,7 +377,7 @@ class _BookingDetailState extends State<BookingDetail> {
                   child: getSvgImage("edit.svg",
                       width: FetchPixels.getPixelHeight(24),
                       height: FetchPixels.getPixelHeight(24)),
-                )
+                ): const Text(''),
               ],
             ),
             getVerSpace(FetchPixels.getPixelHeight(10)),
