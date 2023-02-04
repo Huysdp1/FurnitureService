@@ -4,6 +4,7 @@ import 'package:customer_app/app/models/model_order.dart';
 import 'package:customer_app/app/models/model_order_detail.dart';
 import 'package:customer_app/app/view/bookings/edit_booking.dart';
 import 'package:customer_app/app/view/home/payment_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,6 +64,227 @@ class _BookingDetailState extends State<BookingDetail> {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: backGroundColor,
+          floatingActionButton: orderModel!.workingStatusId == 1005
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    FloatingActionButton.extended(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      FetchPixels.getPixelHeight(20))),
+                              backgroundColor: backGroundColor,
+                              content: Builder(
+                                builder: (context) {
+                                  return Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      getVerSpace(
+                                          FetchPixels.getPixelHeight(20)),
+                                      getSvgImage("confirm.svg",
+                                          width:
+                                              FetchPixels.getPixelHeight(71.37),
+                                          height: FetchPixels.getPixelHeight(
+                                              99.92)),
+                                      getVerSpace(
+                                          FetchPixels.getPixelHeight(40)),
+                                      getCustomFont(
+                                        "Từ chối dịch vụ",
+                                        22,
+                                        Colors.black,
+                                        1,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                      getVerSpace(
+                                          FetchPixels.getPixelHeight(10)),
+                                      getMultilineCustomFont(
+                                          "Yêu cầu nhân viên khảo sát lại và thay đổi các dịch vụ!",
+                                          16,
+                                          Colors.black,
+                                          fontWeight: FontWeight.w400,
+                                          txtHeight: 1.3,
+                                          textAlign: TextAlign.center),
+                                      getVerSpace(
+                                          FetchPixels.getPixelHeight(30)),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          getButton(context, Colors.white70,
+                                              "Quay lại", Colors.blue,
+                                              isBorder: true,
+                                              borderColor: Colors.blue,
+                                              borderWidth: 2, () {
+                                            Constant.backToPrev(context);
+                                          }, 16,
+                                              weight: FontWeight.w500,
+                                              buttonHeight:
+                                                  FetchPixels.getPixelHeight(
+                                                      60),
+                                              buttonWidth:
+                                                  FetchPixels.getPixelWidth(
+                                                      100),
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      FetchPixels
+                                                          .getPixelHeight(14))),
+                                          getButton(context, blueColor,
+                                              "Xác nhận", Colors.white, () {
+                                                OrderData()
+                                                    .updateOrderStatus(
+                                                    orderModel!.orderId!, 4)
+                                                    .whenComplete(() {
+                                                  orderModel!.workingStatusId = 4;
+                                                  Constant.backToPrev(context);
+                                            });
+
+                                          }, 16,
+                                              weight: FontWeight.w500,
+                                              buttonHeight:
+                                                  FetchPixels.getPixelHeight(
+                                                      60),
+                                              buttonWidth:
+                                                  FetchPixels.getPixelWidth(
+                                                      100),
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      FetchPixels
+                                                          .getPixelHeight(14))),
+                                        ],
+                                      ),
+                                      getVerSpace(
+                                          FetchPixels.getPixelHeight(10)),
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ).then((value) {setState(() {
+
+                        });});
+                      },
+                      label: const Text('Từ chối dịch vụ',
+                          style: TextStyle(fontSize: 18)),
+                      backgroundColor: Colors.orange,
+                    ),
+                    FloatingActionButton.extended(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      FetchPixels.getPixelHeight(20))),
+                              backgroundColor: backGroundColor,
+                              content: Builder(
+                                builder: (context) {
+                                  return Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      getVerSpace(
+                                          FetchPixels.getPixelHeight(20)),
+                                      getSvgImage("confirm.svg",
+                                          width:
+                                              FetchPixels.getPixelHeight(71.37),
+                                          height: FetchPixels.getPixelHeight(
+                                              99.92)),
+                                      getVerSpace(
+                                          FetchPixels.getPixelHeight(40)),
+                                      getCustomFont(
+                                        "Đồng ý dịch vụ",
+                                        22,
+                                        Colors.black,
+                                        1,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                      getVerSpace(
+                                          FetchPixels.getPixelHeight(10)),
+                                      getMultilineCustomFont(
+                                          "Chấp nhận các dịch vụ để nhân viên bắt đầu tiến hành công việc!",
+                                          16,
+                                          Colors.black,
+                                          fontWeight: FontWeight.w400,
+                                          txtHeight: 1.3,
+                                          textAlign: TextAlign.center),
+                                      getVerSpace(
+                                          FetchPixels.getPixelHeight(30)),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          getButton(context, Colors.white70,
+                                              "Quay lại", Colors.blue,
+                                              isBorder: true,
+                                              borderColor: Colors.blue,
+                                              borderWidth: 2, () {
+                                            Constant.backToPrev(context);
+                                          }, 16,
+                                              weight: FontWeight.w500,
+                                              buttonHeight:
+                                                  FetchPixels.getPixelHeight(
+                                                      60),
+                                              buttonWidth:
+                                                  FetchPixels.getPixelWidth(
+                                                      100),
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      FetchPixels
+                                                          .getPixelHeight(14))),
+                                          getButton(context, blueColor,
+                                              "Xác nhận", Colors.white, () {
+                                            OrderData()
+                                                .updateOrderStatus(
+                                                    orderModel!.orderId!, 1006)
+                                                .whenComplete(() {
+                                                  orderModel!.workingStatusId = 1006;
+                                              Constant.backToPrev(context);
+                                            });
+
+                                          }, 16,
+                                              weight: FontWeight.w500,
+                                              buttonHeight:
+                                                  FetchPixels.getPixelHeight(
+                                                      60),
+                                              buttonWidth:
+                                                  FetchPixels.getPixelWidth(
+                                                      100),
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      FetchPixels
+                                                          .getPixelHeight(14))),
+                                        ],
+                                      ),
+                                      getVerSpace(
+                                          FetchPixels.getPixelHeight(10)),
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ).then((value) {setState(() {
+
+                        });});
+                      },
+                      label: const Text('Đồng ý dịch vụ',
+                          style: TextStyle(fontSize: 18)),
+                      backgroundColor: Colors.green,
+                    ),
+                  ],
+                )
+              : const SizedBox(),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
           body: SafeArea(
             child: FutureBuilder<OrderDetail>(
                 future: getOrderDetailData(),
@@ -171,9 +393,8 @@ class _BookingDetailState extends State<BookingDetail> {
           getCustomFont("Cần hỗ trợ?", 20, Colors.black, 1,
               fontWeight: FontWeight.w900),
           getVerSpace(FetchPixels.getPixelHeight(10)),
-          getButtonWithIcon(
-              context, Colors.white, "Chưa có nhân viên thực hiện?", Colors.black,
-              () {
+          getButtonWithIcon(context, Colors.white,
+              "Chưa có nhân viên thực hiện?", Colors.black, () {
             // Constant.sendToNext(context, Routes.profileRoute);
           }, 16,
               weight: FontWeight.w400,
@@ -206,8 +427,8 @@ class _BookingDetailState extends State<BookingDetail> {
               sufixIcon: true,
               suffixImage: "arrow_right.svg"),
           getVerSpace(FetchPixels.getPixelHeight(20)),
-          getButtonWithIcon(context, Colors.white,
-              "Có vấn đề cần hỗ trợ?", Colors.black, () {
+          getButtonWithIcon(
+              context, Colors.white, "Có vấn đề cần hỗ trợ?", Colors.black, () {
             // Constant.sendToNext(context, Routes.profileRoute);
           }, 16,
               weight: FontWeight.w400,
@@ -361,23 +582,26 @@ class _BookingDetailState extends State<BookingDetail> {
                   1,
                   fontWeight: FontWeight.w400,
                 ),
-                orderModel!.workingStatusId! < 3 ? GestureDetector(
-                  onTap: () async {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const EditBookingScreen(),
-                        )).then((value) {
-                      setState(() {
-                        orderModel = DataFile.orderModelObj;
-                        _orderDetail = DataFile.orderDetailObj;
-                      });
-                    });
-                  },
-                  child: getSvgImage("edit.svg",
-                      width: FetchPixels.getPixelHeight(24),
-                      height: FetchPixels.getPixelHeight(24)),
-                ): const Text(''),
+                (orderModel!.workingStatusId! == 1 ||
+                        orderModel!.workingStatusId! == 4)
+                    ? GestureDetector(
+                        onTap: () async {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const EditBookingScreen(),
+                              )).then((value) {
+                            setState(() {
+                              orderModel = DataFile.orderModelObj;
+                              _orderDetail = DataFile.orderDetailObj;
+                            });
+                          });
+                        },
+                        child: getSvgImage("edit.svg",
+                            width: FetchPixels.getPixelHeight(24),
+                            height: FetchPixels.getPixelHeight(24)),
+                      )
+                    : const Text(''),
               ],
             ),
             getVerSpace(FetchPixels.getPixelHeight(10)),
@@ -557,7 +781,8 @@ class _BookingDetailState extends State<BookingDetail> {
                                 height: FetchPixels.getPixelHeight(36),
                                 width: FetchPixels.getPixelHeight(36),
                                 decoration: BoxDecoration(
-                                    image: getDecorationAssetImage(context, "call_bg.png")),
+                                    image: getDecorationAssetImage(
+                                        context, "call_bg.png")),
                               ),
                             ],
                           ),

@@ -98,4 +98,26 @@ class OrderData{
       throw Exception(response.body.toString());
     }
   }
+
+  Future<bool> updateOrderStatus(orderId,statusReq
+      ) async{
+    String? token = await const FlutterSecureStorage().read(key: 'accessToken');
+    final response = await http.put(
+        Uri.parse('${PrefData.apiUrl}/api/customer/update_order_status_by_id/$orderId'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode(
+          {
+            'statusId': statusReq,
+          }
+        )
+    );
+    if(response.statusCode == 200){
+      return true;
+    }else{
+      return false;
+    }
+  }
 }

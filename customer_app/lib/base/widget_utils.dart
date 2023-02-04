@@ -224,7 +224,7 @@ GestureDetector buildBookingListItem(ModelBooking modelBooking,
   );
 }
 
-ListView bookingListWidget(List<OrderModel> orderList, List<AddressModel> addressList) {
+ListView bookingListWidget(List<OrderModel> orderList) {
   return ListView.builder(
     padding: EdgeInsets.zero,
     itemCount: orderList.length,
@@ -294,7 +294,7 @@ Widget widgetOrderStatus(context, int status) {
   }
   if (status == 5) {
     color = 0xFFFFF3F3;
-    theme = error;
+    theme = waiting;
     text = "Chờ thanh toán";
   }
   if (status == 6) {
@@ -305,17 +305,32 @@ Widget widgetOrderStatus(context, int status) {
   if (status == 7) {
     color = 0x00CC99;
     theme = error;
-    text = "Nhân viên đang có việc";
+    text = "Nhân viên có việc";
   }
   if (status == 8) {
     color = 0xFFCC99;
     theme = error;
-    text = "Nhân viên đang chờ việc";
+    text = "Nhân viên chờ việc";
   }
   if (status == 1002) {
     color = 0xFFFFF3F3;
     theme = error;
     text = "Huỷ";
+  }
+  if (status == 1004) {
+    color = 0xFFF0F8FF;
+    theme = waiting;
+    text = "Chờ QL xác nhận";
+  }
+  if (status == 1005) {
+    color = 0xFFF0F8FF;
+    theme = waiting;
+    text = "Chờ khách xác nhận";
+  }
+  if (status == 1006) {
+    color = 0x80FF80;
+    theme = procced;
+    text = "Khách đã duyệt";
   }
   return Wrap(
     children: [
@@ -381,7 +396,7 @@ GestureDetector buildOrderListItem(OrderModel modelBooking,
                         flex: 1,
                         child: getHorSpace(0),
                       ),
-                      getCustomFont('Đơn hàng: ${modelBooking.orderId}', 16, Colors.black, 1,
+                      getCustomFont('Mã đơn: ${modelBooking.orderId}', 16, Colors.black, 1,
                           fontWeight: FontWeight.w700),
                       getVerSpace(FetchPixels.getPixelHeight(12)),
                       getMultilineCustomFont(

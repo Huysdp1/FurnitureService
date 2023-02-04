@@ -17,26 +17,13 @@ class ActiveBookingScreen extends StatefulWidget {
 
 class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
   List<OrderModel> orderList = [];
-  List<AddressModel> addressList = [];
-  Future<List<AddressModel>?> getPrefAddressData() async {
-    String getModel = await PrefData.getAddressModel();
-    if (getModel.isNotEmpty) {
-      addressList = AddressModel.fromList(
-          json.decode(getModel).cast<Map<String, dynamic>>());
-      if (mounted) {
-        setState(() {});
-      }
-    }
-    return addressList;
-  }
 
   @override
   void initState() {
-    getPrefAddressData();
     PrefData.getOrderModel().then((value) {
       if (value.isNotEmpty) {
         orderList = OrderModel.fromList(
-            json.decode(value).cast<Map<String, dynamic>>()).where((element) => element.workingStatusId! < 6).toList();
+            json.decode(value).cast<Map<String, dynamic>>()).where((element) => element.workingStatusId! != 6 && element.workingStatusId! != 1002).toList();
         if (mounted) {
           setState(() {});
         }
@@ -50,7 +37,7 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
     FetchPixels(context);
     return Container(
       color: backGroundColor,
-      child: orderList.isEmpty ? nullListView(context) : bookingListWidget(orderList, addressList),
+      child: orderList.isEmpty ? nullListView(context) : bookingListWidget(orderList),
     );
   }
 }

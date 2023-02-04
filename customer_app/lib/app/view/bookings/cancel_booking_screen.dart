@@ -18,22 +18,9 @@ class CancelBookingScreen extends StatefulWidget {
 
 class _CancelBookingScreenState extends State<CancelBookingScreen> {
   List<OrderModel> orderList = [];
-  List<AddressModel> addressList = [];
-  Future<List<AddressModel>?> getPrefAddressData() async {
-    String getModel = await PrefData.getAddressModel();
-    if (getModel.isNotEmpty) {
-      addressList = AddressModel.fromList(
-          json.decode(getModel).cast<Map<String, dynamic>>());
-      if (mounted) {
-        setState(() {});
-      }
-    }
-    return addressList;
-  }
 
   @override
   void initState() {
-    getPrefAddressData();
     PrefData.getOrderModel().then((value) {
       if (value.isNotEmpty) {
         orderList = OrderModel.fromList(
@@ -50,7 +37,7 @@ class _CancelBookingScreenState extends State<CancelBookingScreen> {
     FetchPixels(context);
     return Container(
       color: backGroundColor,
-      child: orderList.isEmpty ? nullListView(context) : bookingListWidget(orderList, addressList),
+      child: orderList.isEmpty ? nullListView(context) : bookingListWidget(orderList),
     );
   }
 }

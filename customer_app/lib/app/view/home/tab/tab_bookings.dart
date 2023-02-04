@@ -65,7 +65,7 @@ class _TabBookingsState extends State<TabBookings>
                       horizontal: FetchPixels.getDefaultHorSpace(context)),
                   withoutleftIconToolbar(context,
                       isrightimage: true,
-                      title: "Lịch sử",
+                      title: "Lịch hẹn",
                       weight: FontWeight.w900,
                       textColor: Colors.black,
                       fontsize: 24,

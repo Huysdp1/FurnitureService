@@ -17,18 +17,6 @@ class AllBookingScreen extends StatefulWidget {
 
 class _AllBookingScreenState extends State<AllBookingScreen> {
   List<OrderModel> orderList = [];
-  List<AddressModel> addressList = [];
-  Future<List<AddressModel>> getPrefAddressData() async {
-      String getModel = await PrefData.getAddressModel();
-      if (getModel.isNotEmpty) {
-        addressList = AddressModel.fromList(
-            json.decode(getModel).cast<Map<String, dynamic>>());
-        if (mounted) {
-          setState(() {});
-        }
-      }
-    return addressList;
-  }
   Future<List<OrderModel>> getPrefData() async {
     String getModel = await PrefData.getOrderModel();
     if (getModel.isNotEmpty) {
@@ -43,7 +31,6 @@ class _AllBookingScreenState extends State<AllBookingScreen> {
 
   @override
   void initState() {
-    getPrefAddressData();
     PrefData.getOrderModel().then((value) {
       if (value.isNotEmpty) {
         orderList = OrderModel.fromList(
@@ -72,7 +59,7 @@ class _AllBookingScreenState extends State<AllBookingScreen> {
             color: backGroundColor,
             child: orderList.isEmpty
                 ? getPaddingWidget(edgeInsets, nullListView(context))
-                : bookingListWidget(orderList, addressList),
+                : bookingListWidget(orderList),
           );
         }
         );
